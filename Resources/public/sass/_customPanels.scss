@@ -1,0 +1,18 @@
+.panel-blue {
+	@include panel-variant($panel-default-border, $panel-default-text, $blue-color, $panel-default-border);
+}
+.panel-red {
+	@include panel-variant($panel-default-border, $panel-default-text, $red-color, $panel-default-border);
+}
+.panel-brown {
+	@include panel-variant($panel-default-border, $secondary-color-1, $brown-color, $panel-default-border);
+}
+.panel-green {
+	@include panel-variant($panel-default-border, $panel-default-text, $green-color, $panel-default-border);
+}
+.panel-yellow {
+	@include panel-variant($panel-default-border, $panel-default-text, $yellow-color, $panel-default-border);
+}
+.panel-inversed {
+	@include panel-variant($panel-default-border, $secondary-color-1, $inversed-background, $inversed-background);
+}

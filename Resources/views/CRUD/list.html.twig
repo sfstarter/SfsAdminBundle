@@ -1,0 +1,114 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+{% extends 'SfsAdminBundle:Core:base.html.twig' %}
+{% block content %}
+	{% if filterForm %}
+		<div class="col-lg-12">
+			{% include 'SfsAdminBundle:CRUD:list_filter.html.twig' %}
+		</div>
+	{% endif %}
+
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<i class="fa fa-list"></i>
+					{% trans %}sfs.admin.crud.list{% endtrans %}
+				</h3>
+
+				<!-- dropdown button -->
+				<div class="btn-group panel-actions">
+					<a href="{{ admin_url('create') }}" class="btn btn-sm btn-default">
+						<i class="fa fa-plus-circle"></i> {% trans %}sfs.admin.crud.create{% endtrans %}
+					</a>
+					<div class="btn-group">
+						<button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+							<i class="fa fa-wrench"></i>
+							{% trans %}sfs.admin.action.tools{% endtrans %}
+							<i class="caret"></i>
+						</button>
+						<ul class="dropdown-menu pull-right">
+							<li>
+								<a href="{{ admin_url('export', {'format': 'csv'}) }}">{% trans %}sfs.admin.action.export.csv{% endtrans %}</a>
+							</li>
+							<li>
+								<a href="{{ admin_url('export', {'format': 'json'}) }}">{% trans %}sfs.admin.action.export.json{% endtrans %}</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="panel-body">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th style="width:30px">
+								<div class="checkbox">
+									<input id="check_all" class="checkbox-inversed batch-checkbox" type="checkbox" value="">
+									<label for="check_all"></label>
+								</div>
+							</th>
+							{% for key, field in listFields %}
+								<th>
+									{% if field.name is defined %}
+										{{ field.name }}
+									{% else %}
+										{{ key|capitalize }}
+									{% endif %}
+								</th>
+							{% endfor %}
+							<th class="text-right" style="width:90px">{% trans %}sfs.admin.crud.actions{% endtrans %}</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						{% for object in pagination %}
+							<tr>
+								<td>
+									<div class="checkbox margin-0">
+										<input class="checkbox-inversed batch-row-checkbox" type="checkbox" value="">
+										<label></label>
+									</div>
+								</td>
+								
+								{% for key, field in listFields %}
+									{% if attribute(object, key) is of_type('bool') %}
+										{% include 'SfsAdminBundle:CRUD:list_field_bool.html.twig' %}
+									{% elseif attribute(object, key) is of_type('class', 'DateTime') %}
+										{% include 'SfsAdminBundle:CRUD:list_field_datetime.html.twig' %}
+									{% elseif attribute(object, key) is of_type('class', "Doctrine\\ORM\\PersistentCollection") %}
+										{% include 'SfsAdminBundle:CRUD:list_field_many.html.twig' %}
+									{% else %}
+										{% include 'SfsAdminBundle:CRUD:list_field_string.html.twig' %}
+									{% endif %}
+								{% endfor %}
+
+								<td class="text-right">
+									<a href="{{ admin_url('update', {'object': object}) }}" data-title="Edit row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-default btn-equal" type="button">
+										<i class="fa fa-pencil"></i>
+									</a>
+									<a href="{{ admin_url('delete', {'object': object}) }}" data-title="Delete row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-danger btn-equal" type="button">
+										<i class="fa fa-trash"></i>
+									</a>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+							
+				<div class="row">
+					<div class="col-lg-12 text-right">
+						<div class="pagination-panel">
+							{{ knp_pagination_render(pagination, 'SfsAdminBundle:CRUD:pagination.html.twig') }}
+						</div>
+						<p class="">{% trans with {'%count%': pagination.getTotalItemCount} %}sfs.admin.message.list_total{% endtrans %}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

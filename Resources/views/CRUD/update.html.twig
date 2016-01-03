@@ -1,0 +1,60 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+{% extends 'SfsAdminBundle:Core:base.html.twig' %}
+
+{% block content %}
+	{{ form_start(form, { 'attr': {'class': 'form-horizontal form-seperated dashed'} }) }}
+		{{ form_errors(form) }}
+		
+		<div class="col-lg-12">
+			<!-- Nav tabs -->
+			<div class="tabs">
+				<div class="tab-title clearfix">
+					<h4 class="pull-left">
+						Update <strong>{{ object }}</strong>
+					</h4>
+					<ul class="nav nav-tabs pull-right" role="tablist">
+						{% for key, tab in form.vars.tabs %}
+							<li class="{% if loop.index == 1 %}active{% endif %}" role="presentation">
+								<a href="#admin-tab-{{ key }}" role="tab" data-toggle="tab">{{ tab.title }}</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+
+				<!-- Tab panes -->
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="inbox">
+						{% for key, tab in form.vars.tabs %}
+							<div id="admin-tab-{{ key }}" class="tab-pane fade row {% if loop.index == 1 %}in active{% endif %}" role="tabpanel">
+								{% for block in tab.blocks %}
+									{% set blockColumnClass = attribute(form.vars.blocks, block).classes.column | default('col-md-12') %}
+									{% set blockPanelClass = attribute(form.vars.blocks, block).classes.panel | default('panel-primary') %}
+		
+									<div class="{{ blockColumnClass }}">
+										<div class="panel {{ blockPanelClass }}">
+											<div class="panel-heading">{{ attribute(form.vars.blocks, block).title }}</div>
+											<div class="panel-body pan">
+												<div class="form-body">
+													{% for field in attribute(form.vars.blocks, block).fields %}
+														{{ form_row(attribute(form.children, field)) }}
+													{% endfor %}
+												</div>
+											</div>
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+						{% endfor %}
+						{{ form_rest(form) }}
+					</div>
+				</div>
+			</div>
+
+			{% include 'SfsAdminBundle:CRUD:update_buttons.html.twig' %}
+		</div>
+	{{ form_end(form) }}
+{% endblock %}

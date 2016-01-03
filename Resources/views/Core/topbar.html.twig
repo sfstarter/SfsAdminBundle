@@ -1,0 +1,32 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+<!--BEGIN TOPBAR-->
+<div class="top-bar">
+	<nav class="navbar navbar-default pr-16" role="navigation">
+		<ul class="nav navbar-nav">
+			<li>
+				<a href="#menu-toggle" id="menu-toggle" class="">
+					<i class="fa fa-bars fa-lg"></i>
+				</a>
+			</li>
+			<li>
+				<a href="{{ path('sfs_admin_root') }}" class="">
+					<span id="topbar-title-site">
+						{% if sfs_admin_preferences.title_logo != null %}
+							<img class="logo-image" src="{{ asset(sfs_admin_preferences.title_logo) }}">
+						{% else %}
+							<span class="logo-text">{{ sfs_admin_preferences.title_text }}</span>
+						{% endif %}
+					</span>
+					<i class="fa fa-home fa-lg"></i>
+				</a>
+			</li>
+		</ul>
+
+		{{ knp_menu_render('topbar', {'template': 'SfsAdminBundle:Menu:knp_topbar.html.twig', 'allow_safe_labels': true }) }}
+	</nav>
+</div>
+<!--END TOPBAR-->

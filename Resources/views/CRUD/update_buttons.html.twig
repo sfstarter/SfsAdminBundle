@@ -1,0 +1,11 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+<div class="text-right mt-24">
+	<button class="btn btn-success" name="btn_save_and_list" type="submit"><i class="fa fa-save"></i> {% trans %}sfs.admin.action.button.save_and_list{% endtrans %}</button>
+	<button class="btn btn-success" name="btn_save" type="submit"><i class="fa fa-save"></i> {% trans %}sfs.admin.action.button.save{% endtrans %}</button>
+	<a href="{{ admin_url('delete', {'object': object}) }}" class="btn btn-danger"><i class="fa fa-trash-o"></i> {% trans %}sfs.admin.crud.delete{% endtrans %}</a>
+	<a href="{{ admin_url('list') }}" class="btn btn-info"><i class="fa fa-list"></i> {% trans %}sfs.admin.action.button.back_list{% endtrans %}</a>
+</div>

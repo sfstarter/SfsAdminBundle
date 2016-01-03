@@ -1,0 +1,64 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+{% extends "SfsAdminBundle:Core:base.html.twig" %}
+
+{% block body_id %}login-page{% endblock %}
+
+{% block body %}
+	<div class="login-header text-center">
+		<h2>Sfs<strong>Admin</strong></h2>
+	</div>
+
+	<div class="page-form padding-24">
+		<form action="{{ path("sfs_admin_login_check") }}" method="post" class="form">
+			<div class="header-content text-center mb-24">
+				<h2 class="mt-0">Log In</h2>
+			</div>
+
+			{% if error %}
+				<div class="alert alert-danger">
+						{{ error|trans({}, 'FOSUserBundle') }}
+				</div>
+			{% endif %}
+
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<i class="fa fa-user"></i>
+					</span>
+					<input type="text" placeholder="{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}" name="_username" class="form-control" value="{{ last_username }}" required="required">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<i class="fa fa-lock"></i>
+					</span>
+					<input type="password" placeholder="{{ 'security.login.password'|trans({}, 'FOSUserBundle') }}" name="_password" class="form-control" required="required">
+				</div>
+			</div>
+
+			<div class="form-group pull-left">
+				<div class="checkbox">
+					<input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+					<label for="remember_me">
+						{{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}
+					</label>
+				</div>
+			</div>
+
+			<div class="form-group pull-right">
+				<button type="submit" class="btn btn-default" value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}">
+					Log In <i class="fa fa-chevron-circle-right"></i>
+				</button>
+			</div>
+			<div class="clearfix"></div>
+
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+		</form>
+	</div>
+{% endblock %}

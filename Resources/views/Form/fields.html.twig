@@ -1,0 +1,116 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+{% extends 'MopaBootstrapBundle:Form:fields.html.twig' %}
+
+{% block sfs_admin_field_switch_widget %}
+	{% spaceless %}
+		{% if label is not sameas(false) and label is empty %}
+			{%- if label_format is defined and label_format is not empty -%}
+                {% set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+                }) %}
+			{%- else -%}
+				{% set label = name|humanize %}
+			{%- endif -%}
+		{% endif %}
+            <div class="make-switch" {% for attrname, attrvalue in switch_colors %} {{attrname}}="{{attrvalue}}"{% endfor %}>
+				<input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}/>
+            </div>
+	{% endspaceless %}
+{% endblock %}
+
+{% block sfs_admin_field_slider_widget %}
+	{% spaceless %}
+		<input type="text" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %} />
+	{% endspaceless %}
+{% endblock %}
+
+{% block sfs_admin_field_datetime_picker_widget %}
+	{% spaceless %}
+		{% if widget == 'single_text' %}
+			{% set attr = attr|merge({'class': ' form-control'}) %}
+			<div class="input-group datetimepicker date">
+				<span class="input-group-addon">
+					<i class="fa fa-calendar"></i>
+				</span>
+				<input {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %} />
+			</div>
+		{% else %}
+			<div {{ block('widget_container_attributes') }}>
+				{{ form_errors(form.date) }}
+				{{ form_errors(form.time) }}
+				{{ form_widget(form.date) }}
+				{{ form_widget(form.time) }}
+			</div>
+		{% endif %}
+	{% endspaceless %}
+{% endblock %}
+
+{% block sfs_admin_field_select_widget %}
+    {% if ( widget_addon_prepend|default(null) is not null or widget_addon_append|default(null) is not null ) %}
+    <div class="input-group">
+        {% if widget_addon_prepend|default(null) is not null %}
+            {% set widget_addon = widget_addon_prepend %}
+            {{ block('widget_addon') }}
+        {% endif %}
+    {% endif %}
+    {% set attr = attr|merge({'class': attr.class|default('') ~ ' ' ~ widget_form_control_class}) %}
+
+    {%- if required and placeholder is none and not placeholder_in_choices and not multiple -%}
+        {% set required = false %}
+    {%- endif -%}
+    <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        {%- if placeholder is not none -%}
+            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? placeholder|trans({}, translation_domain) }}</option>
+        {%- endif -%}
+        {%- if preferred_choices|length > 0 -%}
+            {% set options = preferred_choices %}
+            {{- block('choice_widget_options') -}}
+            {%- if choices|length > 0 and separator is not none -%}
+                <option disabled="disabled">{{ separator }}</option>
+            {%- endif -%}
+        {%- endif -%}
+        {%- set options = choices -%}
+        {{- block('choice_widget_options') -}}
+    </select>
+
+    {% if ( widget_addon_prepend|default(null) is not null or widget_addon_append|default(null) is not null ) %}
+        {% if widget_addon_append|default(null) is not null %}
+        {% set widget_addon = widget_addon_append %}
+        {{ block('widget_addon') }}
+        {% endif %}
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block sfs_admin_filter_datetime_range_widget %}
+	{% set attr = attr|merge({'class': ' form-control'}) %}
+
+	<div class="form-group">
+		{{ form_label(form.left_datetime) }}
+		<div class="col-sm-9">
+			<div class="input-group datetimepicker date pbm">
+				<span class="input-group-addon">
+					<i class="fa fa-calendar"></i>
+				</span>
+		        {{ form_widget(form.left_datetime, {'attr': attr}) }}
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		{{ form_label(form.right_datetime) }}
+		<div class="col-sm-9">
+			<div class="input-group datetimepicker date">
+				<span class="input-group-addon">
+					<i class="fa fa-calendar"></i>
+				</span>
+				{{ form_widget(form.right_datetime, {'attr': attr}) }}
+			</div>
+		</div>
+	</div>
+{% endblock %}

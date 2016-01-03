@@ -1,0 +1,15 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+<td>
+	{% if field.relation is defined and field.relation %}
+		{% set relatedObject = attribute(object, key) %}
+		<a target="_blank" href="{{ admin_url('read', {'object': relatedObject}) }}">
+			{{ relatedObject }}
+		</a>
+	{% else %}
+		{{ attribute(object, key) }}
+	{% endif %}
+</td>

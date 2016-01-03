@@ -1,0 +1,70 @@
+/**
+ * PATHS RESOLVE
+ */
+$icon-font-path: "../vendors/bootstrap-sass/assets/fonts/bootstrap/";
+$fa-font-path:        "../vendors/font-awesome/fonts/";
+
+/**
+ * MAIN COLORS
+ */
+$primary-color-1: #333;
+$primary-color-2: #555;
+$secondary-color-1: #fff;
+$secondary-color-2: #ddd;
+$brand-primary: #ee9e35;
+$text-color: $primary-color-1;
+
+$brown-color: #4d4842;
+$blue-color: #4d79b0;
+$red-color: #e46a6a;
+$green-color: #7ad385;
+$yellow-color: #ede97a;
+
+$font-family-sans-serif: 'Open Sans', 'Roboto';
+$font-size-base: 13px;
+
+$primary-background: #f2f2f2;
+$secondary-background: #ffffff;
+$sidebar-background: #322f2b;
+$sidebar-background-level: #24221f;
+$body-bg: $primary-background;
+$inversed-background: $primary-color-1;
+
+/**
+ * BORDERS
+ */
+$border-radius-base: 0;
+
+/**
+ * SIDE MENU
+ */
+$sidemenu-width: 220px;
+$sidebar-background-hover: #4d4842;
+
+/**
+ * NAVBAR
+ */
+$navbar-default-color: $primary-color-1;
+$navbar-default-bg: $secondary-background;
+$navbar-link-color-1: #fff;
+$navbar-link-color-2: #f2f2f2;
+$navbar-border-radius: 0;
+$navbar-margin-bottom: 0;
+
+/**
+ * PANELS
+ */
+$panel-border-radius: 0;
+$panel-default-heading-bg: #fff;
+
+/**
+ * BUTTONS
+ */
+$btn-border-radius-base: 0;
+$btn-border-radius-large: 0;
+$btn-border-radius-small: 0;
+
+/**
+ * FORMS
+ */
+$input-border-focus: $brand-primary;

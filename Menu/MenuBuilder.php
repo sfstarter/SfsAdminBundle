@@ -1,0 +1,175 @@
+<?php
+
+/**
+ * SfsAdminBundle - Symfony2 project
+ *
+ * @author Ramine AGOUNE <ramine.agoune@solidlynx.com>
+ */
+
+namespace Sfs\AdminBundle\Menu;
+
+use Knp\Menu\FactoryInterface;
+use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\HttpFoundation\RequestStack;
+
+class MenuBuilder extends ContainerAware
+{
+	protected $adminResources;
+	private $factory;
+	
+	public function __construct(FactoryInterface $factory) {
+		$this->adminResources = array();
+		$this->adminPages = array();
+		$this->factory = $factory;
+	}
+	
+	public function addResource($attributes) {
+    	$this->adminResources[] = array(
+    			'slug' => $attributes['slug'],
+    			'title' => $attributes['title'],
+    			'category' => $attributes['category'],
+    			'icon' => $attributes['icon']
+    	);
+    }
+
+	public function sidebarMenu(RequestStack $requestStack) {
+		$routes = $this->container->get('sfs.admin.core')->getRoutes();
+		$categories = $this->container->getParameter('sfs_admin.menu_categories');
+		$pages = $this->container->getParameter('sfs_admin.pages');
+
+		$menu = $this->factory->createItem('sidebar', array(
+			'childrenAttributes'    => array(
+				'class'             => 'nav nav-sidebar mt-32'
+	    	)
+		));
+
+		foreach($categories as $category) {
+			$idCategory = strtolower(preg_replace('/\s+/', '_', $category['name']));
+			$menu->addChild($category['name'], array(
+					'uri' => 'javascript:void(0);',
+					'linkAttributes' => array(
+						'data-toggle' => 'collapse',
+						'data-target' => '#'.$idCategory
+					),
+					'childrenAttributes' => array(
+						'id' => $idCategory,
+						'class'		=> 'nav nav-second-level collapse'
+					),
+					'attributes' => array(
+						'icon' => $category['icon']
+					)
+			));
+
+			foreach($this->adminResources as $resource) {
+				if($resource['category'] == $category['name']) {
+					$slug = $resource['slug'];
+					$menu[$category['name']]->addChild(
+							$resource['title'],
+							array('route' 	=> $routes[$slug]['list']['route'],
+							'attributes' => array(
+									'icon' => $resource['icon']
+							)
+					));
+				}
+			}
+			foreach($pages as $page) {
+				if($page['category'] == $category['name']) {
+					$slug = $resource['slug'];
+					$menu[$category['name']]->addChild(
+							$page['title'],
+							array('route' 	=> $page['route'],
+									'attributes' => array(
+											'icon' => $page['icon']
+									)
+							));
+				}
+			}
+		}
+
+		return $menu;
+	}
+
+	public function breadcrumbMenu(RequestStack $requestStack) {
+		$translator = $this->container->get('translator');
+		$core = $this->container->get('sfs.admin.core');
+		$currentAdmin = $core->getCurrentAdmin();
+	
+		$menu = $this->factory->createItem('breadcrumb', array(
+				'childrenAttributes' => array(
+						'class' => 'breadcrumb pull-right margin-0'
+				)
+		));
+		$menu->addChild($translator->trans('sfs.admin.page.dashboard'), array(
+				'route' => 'sfs_admin_dashboard',
+				'attributes' => array(
+						'icon' => 'fa-home'
+				)
+		));
+	
+		// Two possibilities: currently on an Admin Resource
+		if($currentAdmin !== null) {
+			$admin = $this->container->get($currentAdmin['service']);
+	
+			if($core->getCurrentAction() === 'list') {
+				$menu->addChild($admin->getTitle() .' List');
+			}
+			else {
+				$menu->addChild($admin->getTitle() .' List', array('route' => $core->getRouteBySlug($admin->getSlug(), 'list')));
+			}
+		}
+		// Otherwise looking on a custom page
+		else {
+				
+		}
+	
+		return $menu;
+	}
+
+	public function topbarMenu(RequestStack $requestStack) {
+		$buttons = $this->container->getParameter('sfs_admin.topbar_buttons');
+
+		$menu = $this->factory->createItem('topbar', array(
+				'childrenAttributes' => array(
+						'class' => 'nav navbar-nav navbar-right'
+				)
+		));
+
+		foreach($buttons as $button) {
+			if($button['route']) {
+				$menu->addChild($button['title'], array(
+						'route' 	=> $button['route'],
+						'attributes' => array(
+							'icon' => $button['icon']
+						)
+				));
+			}
+			else if($button['url']) {
+				$menu->addChild($button['title'], array(
+						'uri' 	=> $button['url'],
+						'attributes' => array(
+							'icon' => $button['icon']
+						),
+						'linkAttributes' => array(
+							'target' => '_blank'
+						)
+				));
+			}
+		}
+
+		$this->displayUserInfos($menu);
+
+		return $menu;
+	}
+
+	// Display datas about the user on the topbar menu (avatar, logout ...)
+	private function displayUserInfos($menu) {
+		$twig = $this->container->get('twig');
+
+		$htmlContent = $twig->render('SfsAdminBundle:Core:userinfos_topbar.html.twig', array());
+
+		$menu->addChild($htmlContent, array(
+				'attributes'	=> array('class' => 'user-panel'),
+				'extras' 		=> array('safe_label' => true)
+		));
+	}
+}

@@ -1,0 +1,27 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+<!-- ASIDE MENU -->
+<aside id="side-menu" class="sidebar pt-16">
+<!-- Title of dashboard-->
+
+	<div class="text-center">
+		<a href="{{ path('sfs_admin_root') }}" class="logo text-light h3">
+			{% if sfs_admin_preferences.title_logo != null %}
+				<img class="logo-image" src="{{ asset(sfs_admin_preferences.title_logo) }}">
+			{% else %}
+				<span class="logo-text">{{ sfs_admin_preferences.title_text }}</span>
+			{% endif %}
+		</a>
+	</div>
+
+	{{ knp_menu_render('sidebar', {'template': 'SfsAdminBundle:Menu:knp_sidebar.html.twig', 'allow_safe_labels': true, 'currentClass': 'active', 'ancestorClass': 'active'}) }}
+
+
+	<div class="horizontal-separator mt-24"></div>
+	<div class="text-center mt-8">
+		<a href=""><small>powered by SfsAdmin</small></a>
+	</div>
+</aside>

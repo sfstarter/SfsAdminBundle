@@ -1,0 +1,17 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+<td>
+	{% for element in attribute(object, key) %}
+		{% if field.relation is defined and field.relation %}
+			<a target="_blank" href="{{ admin_url('read', {'object': element}) }}">
+				{{ element }}
+			</a>
+		{% else %}
+			{{ element }}
+		{% endif %}
+		{% if not loop.last %}, {% endif %}
+	{% endfor %}
+</td>

@@ -1,0 +1,23 @@
+sfs_admin_root:
+    pattern: /
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: sfs_admin_dashboard
+        permanent: true
+
+sfs_admin_dashboard:
+    pattern:  /dashboard
+    defaults: { _controller: SfsAdminBundle:Page:dashboard }
+
+# Security routes
+sfs_admin_login:
+    pattern:  /login
+    defaults: { _controller: SfsAdminBundle:Security:login }
+
+sfs_admin_login_check:
+    pattern:  /login-check
+    defaults: { _controller: SfsAdminBundle:Security:check }
+
+sfs_admin_logout:
+    pattern:  /logout
+    defaults: { _controller: SfsAdminBundle:Security:logout }

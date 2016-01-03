@@ -1,0 +1,12 @@
+site_name: Sfs Admin
+site_description: SfsAdmin documentation
+site_author: Ramine AGOUNE
+theme: yeti
+
+pages:
+    - Home: index.md
+    - Common Usage: common-usage.md
+    - Advanced Usage: advanced-usage.md
+    - About: about.md
+
+copyright: <small>Copyright (c) 2015-2016 , Ramine AGOUNE</small>

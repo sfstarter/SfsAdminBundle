@@ -1,0 +1,86 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>Administration | Dashboard</title>
+
+	    <link rel="icon" href="{{ asset('favicon.ico') }}">
+	
+	    <!-- CSS -->
+		{% block stylesheets %}
+			<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300,400italic,600' rel='stylesheet' type='text/css'>
+			<link href='https://fonts.googleapis.com/css?family=Roboto:400,300italic,400italic,100,500,300,500italic,700italic,700' rel='stylesheet' type='text/css'>
+			<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" type='text/css'>
+			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/vendors/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.min.css') }}" type="text/css">
+			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/vendors/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') }}" type="text/css">
+			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/vendors/select2/dist/css/select2.min.css') }}" type="text/css">
+			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/vendors/multiselect/css/multi-select.css') }}" type="text/css">
+			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/vendors/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css') }}" type="text/css">
+			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/vendors/ionrangeslider/css/ion.rangeSlider.css') }}" type="text/css">
+			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/vendors/ionrangeslider/css/ion.rangeSlider.skinFlat.css') }}" type="text/css">
+
+			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/css/tools.css') }}" type="text/css">
+			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/css/style.css') }}" type="text/css">
+		{% endblock %}
+	
+		<!-- JS -->
+		{% block javascripts_header %} {% endblock %}
+	</head>
+	<body id="{% block body_id %}{% endblock %}">
+		{% block body %}
+			<div id="wrapper">
+				{% block sidebar %}
+					{% include 'SfsAdminBundle:Core:sidebar.html.twig' %}
+				{% endblock %}
+		
+				<!-- TOP MENU -->
+				<div>
+					<header id="menu-top" >
+						{% block topbar %}
+							{% include 'SfsAdminBundle:Core:topbar.html.twig' %}
+						{% endblock %}
+						{% block breadcrumb %}
+							{% include 'SfsAdminBundle:Core:breadcrumb.html.twig' %}
+						{% endblock %}
+			
+						{% block footer %}
+							{% include 'SfsAdminBundle:Core:footer.html.twig' %}
+						{% endblock %}
+						<!--END PAGE WRAPPER-->
+					</header>
+
+					<!--BEGIN CONTENT-->
+					<div class="page-content padding-24 clearfix">
+						{% block content %}
+						{% endblock %}
+					</div>
+					<!--END CONTENT-->
+				</div>
+			</div>		    
+		{% endblock %}
+	
+		<!-- JS -->
+		{% block javascripts_footer %}
+			<script src="{{ asset('bundles/sfsadmin/vendors/jquery/dist/jquery.min.js') }}"></script>
+			<script src="{{ asset('bundles/sfsadmin/vendors/bootstrap-sass/assets/javascripts/bootstrap.min.js') }}"></script>
+			<script src="{{ asset('bundles/sfsadmin/vendors/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.all.min.js') }}"></script>
+			<script src="{{ asset('bundles/sfsadmin/vendors/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js') }}"></script>
+			<script src="{{ asset('bundles/sfsadmin/vendors/select2/dist/js/select2.min.js') }}"></script>
+			<script src="{{ asset('bundles/sfsadmin/vendors/multiselect/js/jquery.multi-select.js') }}"></script>
+			<script src="{{ asset('bundles/sfsadmin/vendors/bootstrap-switch/dist/js/bootstrap-switch.min.js') }}"></script>
+			<script src="{{ asset('bundles/sfsadmin/vendors/ionrangeslider/js/ion.rangeSlider.min.js') }}"></script>
+			<script src="{{ asset('bundles/sfsadmin/vendors/moment/min/moment-with-locales.min.js') }}"></script>
+			<script src="{{ asset('bundles/sfsadmin/vendors/ionrangeslider/js/ion.rangeSlider.min.js') }}"></script>
+			<script src="{{ asset('bundles/sfsadmin/vendors/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+			<script src="{{ asset('bundles/sfsadmin/js/main.js') }}"></script>
+		{% endblock %}
+	</body>
+</html>

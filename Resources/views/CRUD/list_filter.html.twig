@@ -1,0 +1,31 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">{% trans %}sfs.admin.crud.filters{% endtrans %}</h3>
+
+		<div class="panel-actions">
+			<div class="btn-group btn-group-transparent">
+				<a class="btn btn-sm" role="button" data-toggle="collapse" href="#filters" aria-expanded="false" aria-controls="collapse">
+					<i class="fa fa-chevron-down"></i>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div id="filters" class="panel-body collapse">
+		<form method="get" class="form-horizontal">
+			<div class="form-body">
+		    	{{ form_rest(filterForm) }}
+		    </div>
+
+		    <div class="form-actions text-right pal">
+				<button type="submit" name="submit-filter" class="btn btn-default">
+					<i class="fa fa-search"></i>
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
