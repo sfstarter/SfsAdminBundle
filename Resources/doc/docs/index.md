@@ -31,7 +31,7 @@ This command requires you to have Composer installed globally, as explained in t
 ## Configuration
 
 ###Configure the kernel
-To enable the bundle, you need to add the following line in the *app/AppKernel.php* file:
+To enable the bundle, you need to add the following lines in the *app/AppKernel.php* file:
 ```
 // app/AppKernel.php
 
@@ -42,6 +42,11 @@ class AppKernel extends Kernel
     {
         $bundles = array(
             // ...
+			new FOS\UserBundle\FOSUserBundle(),
+			new Knp\Bundle\MenuBundle\KnpMenuBundle(),
+			new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+			new Lexik\Bundle\FormFilterBundle\LexikFormFilterBundle(),
+			new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
 
 			new Sfs\AdminBundle\SfsAdminBundle(),
         );

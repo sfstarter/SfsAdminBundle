@@ -2,8 +2,6 @@
 
 Administration bundle for Symfony2
 
----
-
 ## Overview
 SfsAdmin is an entity-oriented back-office generator. It allows you to generate fastly a CRUD system for your whole website.
 
@@ -16,13 +14,9 @@ SfsAdmin is an entity-oriented back-office generator. It allows you to generate 
 - Add custom pages easily
 - Only few dependencies
 
---- 
-
 ## Documentation
 
 The online documentation is available in http://sfsadmin.solidlynx.com
-
----
 
 ## License
 This project is under the terms of the MIT License (MIT)
