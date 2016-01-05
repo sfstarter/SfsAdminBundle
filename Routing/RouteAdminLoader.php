@@ -16,15 +16,33 @@ use Sfs\AdminBundle\Core\CoreAdmin;
 
 class RouteAdminLoader extends Loader
 {
+	/**
+	 * @var CoreAdmin
+	 */
 	protected $core;
 
+	/**
+	 * @var bool
+	 */
     private $loaded = false;
 
+    /**
+     * 
+     * @param CoreAdmin $core
+     */
     public function __construct(CoreAdmin $core)
     {
     	$this->core = $core;
     }
 
+    /**
+     * load
+     * 
+     * @param unknown $resource
+     * @param mixed $type
+     * 
+     * @return array
+     */
     public function load($resource, $type = null)
     {
         if (true === $this->loaded) {
@@ -56,6 +74,12 @@ class RouteAdminLoader extends Loader
 		return $routes;
 	}
 
+	/**
+	 * supports
+	 * 
+	 * @param unknown $resource
+	 * @param mixed $type
+	 */
 	public function supports($resource, $type = null)
 	{
 		return 'adminRoute' === $type;

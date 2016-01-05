@@ -13,6 +13,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractFilterType extends AbstractType
 {
+	/**
+	 * Set the defaults values for the formType
+	 * 
+	 * @param OptionsResolver $resolver
+	 */
 	public function configureOptions(OptionsResolver $resolver) {
 		$resolver->setDefaults(array(
 			'method'            => 'get',

@@ -11,12 +11,24 @@ namespace Sfs\AdminBundle\Twig;
 use Sfs\AdminBundle\Core\CoreAdmin;
 
 class AdminRouterExtension extends \Twig_Extension {
+	/**
+	 * @var CoreAdmin
+	 */
 	protected $core;
-	
+
+	/**
+	 * 
+	 * @param CoreAdmin $core
+	 */
 	public function __construct(CoreAdmin $core) {
 		$this->core = $core;
 	}
 
+	/**
+	 * getFunctions
+	 * 
+	 * @return array
+	 */
 	public function getFunctions() {
 		return array (
 				'admin_url' => new \Twig_Function_Method($this, 'getAdminUrl'),
@@ -24,6 +36,14 @@ class AdminRouterExtension extends \Twig_Extension {
 		);
 	}
 
+	/**
+	 * getAdminUrl
+	 * 
+	 * @param string $action
+	 * @param array $parameters
+	 * 
+	 * @return string
+	 */
 	public function getAdminUrl($action, array $parameters = array()) {
 		if(isset($parameters['object'])) {
 			$slug = $this->core->getAdminSlug($parameters['object']);
@@ -49,6 +69,11 @@ class AdminRouterExtension extends \Twig_Extension {
 		}
 	}
 
+	/**
+	 * getName
+	 * 
+	 * @return string
+	 */
 	public function getName() {
 		return 'twig_sfs_admin_router';
 	}

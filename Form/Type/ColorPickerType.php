@@ -13,6 +13,11 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 
 class ColorPickerType extends AbstractType {
+	/**
+	 * setDefaultOptions
+	 * 
+	 * @param OptionsResolverInterface $resolver
+	 */
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		$resolver->setDefaults(array(
@@ -22,12 +27,22 @@ class ColorPickerType extends AbstractType {
 				)
 		));
 	}
-	
+
+	/**
+	 * getParent
+	 *
+	 * @return string
+	 */
 	public function getParent()
 	{
 		return 'text';
 	}
 
+	/**
+	 * getName
+	 *
+	 * @return string
+	 */
 	public function getName() {
 		return 'sfs_admin_field_color_picker';
 	}

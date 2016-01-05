@@ -12,11 +12,34 @@ use Symfony\Component\Form\FormBuilder as BaseFormBuilder;
 
 class FormBuilder extends BaseFormBuilder
 {
+	/**
+	 * @var array
+	 */
 	protected $tabs = array();
+
+	/**
+	 * @var array
+	 */
 	protected $blocks = array();
+
+	/**
+	 * @var string
+	 */
 	protected $currentTab = null;
+
+	/**
+	 * @var string
+	 */
 	protected $currentBlock = null;
 
+	/**
+	 * Adds a new tab to the form
+	 * 
+	 * @param string $name
+	 * @throws \RuntimeException
+	 * 
+	 * @return FormBuilder
+	 */
 	public function addTab($name) {
 		if($this->currentTab)
 			throw new \RuntimeException('You must end the tab before creating a new one');
@@ -29,6 +52,14 @@ class FormBuilder extends BaseFormBuilder
 
 		return $this;
 	}
+
+	/**
+	 * Ends a tab definition
+	 * 
+	 * @throws \RuntimeException
+	 * 
+	 * @return FormBuilder
+	 */
 	public function endTab() {
 		if($this->currentTab === null)
 			throw new \RuntimeException('You cannot end a tab as no one is opened');
@@ -39,10 +70,25 @@ class FormBuilder extends BaseFormBuilder
 	
 		return $this;
 	}
+
+	/**
+	 * getCurrentTab
+	 * 
+	 * @return string
+	 */
 	public function getCurrentTab() {
 		return $this->currentTab;
 	}
 
+	/**
+	 * Adds a new block to the form
+	 * 
+	 * @param string $name
+	 * @param array $classes
+	 * @throws \RuntimeException
+	 * 
+	 * @return FormBuilder
+	 */
 	public function addBlock($name, $classes = array()) {
 		if($this->currentTab === null)
 			throw new \RuntimeException('You must create a tab before opening a block');
@@ -58,6 +104,14 @@ class FormBuilder extends BaseFormBuilder
 
 		return $this;
 	}
+
+	/**
+	 * Ends a block definition
+	 * 
+	 * @throws \RuntimeException
+	 * 
+	 * @return FormBuilder
+	 */
 	public function endBlock() {
 		if($this->currentBlock === null)
 			throw new \RuntimeException('You cannot end a block as no one is opened');
@@ -66,10 +120,19 @@ class FormBuilder extends BaseFormBuilder
 
 		return $this;
 	}
+
+	/**
+	 * getCurrentBlock
+	 * 
+	 * @return string
+	 */
 	public function getCurrentBlock() {
 		return $this->currentBlock;
 	}
 
+    /**
+     * {@inheritdoc}
+     */
     public function add($child, $type = null, array $options = array()) {
     	if($this->currentTab === null)
     		throw new \RuntimeException('You must create a tab before adding fields');

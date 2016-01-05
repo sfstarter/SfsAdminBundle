@@ -39,6 +39,12 @@ class SfsAdminExtension extends Extension implements PrependExtensionInterface
         $loader->load('services.yml');
     }
 
+    /**
+     * Configure the related bundles so that the user doesn't need to write those lines itself
+     * 
+     * @param ContainerBuilder $container
+     * @throws \RuntimeException
+     */
 	public function prepend(ContainerBuilder $container)
 	{
 		// get all bundles

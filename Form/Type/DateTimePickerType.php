@@ -13,6 +13,11 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 
 class DateTimePickerType extends AbstractType {
+	/**
+	 * setDefaultOptions
+	 * 
+	 * @param OptionsResolverInterface $resolver
+	 */
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		$resolver->setDefaults(array(
@@ -23,12 +28,22 @@ class DateTimePickerType extends AbstractType {
 			)
 		));
 	}
-	
+
+	/**
+	 * getParent
+	 *
+	 * @return string
+	 */
 	public function getParent()
 	{
 		return 'datetime';
 	}
 
+	/**
+	 * getName
+	 *
+	 * @return string
+	 */
 	public function getName() {
 		return 'sfs_admin_field_datetime_picker';
 	}

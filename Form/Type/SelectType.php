@@ -15,12 +15,18 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 
 class SelectType extends AbstractType {
+	/**
+	 * @var array
+	 */
 	private $defaultAttrOptions = array(
 		'class' => 'selectpicker show-tick',
 		'data-style' => 'btn-white',
 		'data-live-search' => false
 	);
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		$resolver->setDefaults(array(
@@ -30,17 +36,26 @@ class SelectType extends AbstractType {
 		));
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function buildView(FormView $view, FormInterface $form, array $options)
 	{
 		parent::buildView($view, $form, $options);
 		$view->vars['attr'] = array_merge($this->defaultAttrOptions, $options['attr']);
 	}
-	
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function getParent()
 	{
 		return 'choice';
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function getName() {
 		return 'sfs_admin_field_select';
 	}

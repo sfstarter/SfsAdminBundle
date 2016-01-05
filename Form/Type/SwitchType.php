@@ -15,6 +15,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 
 class SwitchType extends AbstractType {
+	/**
+	 * @var array
+	 */
 	private $defaultSwitchOptions = array(
 			'data-on-text' => 'enabled',
 			'data-off-text' => 'disabled',
@@ -23,6 +26,9 @@ class SwitchType extends AbstractType {
 			'data-off-color' => 'danger'
 	);
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		$resolver->setDefaults(array(
@@ -33,18 +39,27 @@ class SwitchType extends AbstractType {
 		));
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function buildView(FormView $view, FormInterface $form, array $options)
 	{
 		parent::buildView($view, $form, $options);
 
 		$view->vars['switch_colors'] = array_merge($this->defaultSwitchOptions, $options['switch_colors']);
 	}
-	
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function getParent()
 	{
 		return 'checkbox';
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function getName() {
 		return 'sfs_admin_field_switch';
 	}

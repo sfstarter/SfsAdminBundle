@@ -10,7 +10,20 @@ namespace Sfs\AdminBundle\Exporter;
 
 class Exporter implements ExporterInterface
 {
-	public static function getResponse($format = 'csv', $filename = null, $em, $entityClass, $listFields) {
+	/**
+	 * Returns a streamed response depending on the format required : calls a different writer for each format
+	 * 
+	 * @param \Doctrine\ORM\EntityManager $em
+	 * @param string $format
+	 * @param string $filename
+	 * @param string $entityClass
+	 * @param array $listFields
+	 * 
+	 * @throws \RuntimeException
+	 * 
+	 * @return \Symfony\Component\HttpFoundation\StreamedResponse
+	 */
+	public static function getResponse($em, $format = 'csv', $filename = null, $entityClass, $listFields) {
 		if($filename === null)
 			$filename = 'export';
 

@@ -10,15 +10,36 @@
 namespace Sfs\AdminBundle\Twig;
 
 class OfTypeExtension extends \Twig_Extension {
+	
+	/**
+	 * getTests
+	 * 
+	 * @return array
+	 */
 	public function getTests() {
 		return array (
 				'of_type' => new \Twig_Function_Method($this, 'isOfType')
 		);
 	}
+
+	/**
+	 * getFilters
+	 * 
+	 * @return array
+	 */
 	public function getFilters() {
 		return array('get_type' => new \Twig_Filter_Method($this, 'getType'));
 	}
 
+	/**
+	 * isOfType
+	 * 
+	 * @param mixed $var
+	 * @param string $typeTest
+	 * @param string $className
+	 *
+	 * @return bool
+	 */
 	public function isOfType($var, $typeTest=null, $className=null) {
 		switch ($typeTest) {
 			default:
@@ -54,6 +75,13 @@ class OfTypeExtension extends \Twig_Extension {
 		}
 	}
 
+	/**
+	 * getType
+	 * 
+	 * @param mixed $var
+	 * 
+	 * @return string
+	 */
 	public function getType($var) {
 		if(!is_object($var)) {
 			return gettype($var);
@@ -63,6 +91,11 @@ class OfTypeExtension extends \Twig_Extension {
 		}
 	}
 
+	/**
+	 * getName
+	 * 
+	 * @return string
+	 */
 	public function getName() {
 		return 'twig_sfs_admin_of_type';
 	}

@@ -13,13 +13,25 @@ use Sfs\AdminBundle\Core\CoreAdmin;
 
 class AdminListener
 {
+	/**
+	 * @var CoreAdmin
+	 */
 	private $core;
 
+	/**
+	 * 
+	 * @param CoreAdmin $core
+	 */
 	public function __construct(CoreAdmin $core)
 	{
 		$this->core = $core;
 	}
 
+	/**
+	 * onKernelController
+	 * 
+	 * @param FilterControllerEvent $event
+	 */
 	public function onKernelController(FilterControllerEvent $event)
 	{
         $controller = $event->getController();

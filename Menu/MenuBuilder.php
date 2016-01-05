@@ -14,15 +14,33 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class MenuBuilder extends ContainerAware
 {
+	/**
+	 * Contains all admin resources to be displayed on the menu
+	 * 
+	 * @var array
+	 */
 	protected $adminResources;
+
+	/**
+	 * 
+	 * @var FactoryInterface
+	 */
 	private $factory;
-	
+
+	/**
+	 * 
+	 * @param FactoryInterface $factory
+	 */
 	public function __construct(FactoryInterface $factory) {
 		$this->adminResources = array();
 		$this->adminPages = array();
 		$this->factory = $factory;
 	}
-	
+
+	/**
+	 * Register a new admin resource, to be used when the menu is displayed
+	 * @param unknown $attributes
+	 */
 	public function addResource($attributes) {
     	$this->adminResources[] = array(
     			'slug' => $attributes['slug'],
@@ -32,6 +50,13 @@ class MenuBuilder extends ContainerAware
     	);
     }
 
+    /**
+     * sidebarMenu
+     * 
+     * @param RequestStack $requestStack
+     * 
+     * @return Knp\Menu\MenuItem
+     */
 	public function sidebarMenu(RequestStack $requestStack) {
 		$routes = $this->container->get('sfs.admin.core')->getRoutes();
 		$categories = $this->container->getParameter('sfs_admin.menu_categories');
@@ -89,6 +114,13 @@ class MenuBuilder extends ContainerAware
 		return $menu;
 	}
 
+	/**
+	 * breadcrumbMenu
+	 *
+	 * @param RequestStack $requestStack
+	 *
+	 * @return Knp\Menu\MenuItem
+	 */
 	public function breadcrumbMenu(RequestStack $requestStack) {
 		$translator = $this->container->get('translator');
 		$core = $this->container->get('sfs.admin.core');
@@ -125,6 +157,13 @@ class MenuBuilder extends ContainerAware
 		return $menu;
 	}
 
+	/**
+	 * topbarMenu contains the twig file to display the user dropdown
+	 *
+	 * @param RequestStack $requestStack
+	 *
+	 * @return Knp\Menu\MenuItem
+	 */
 	public function topbarMenu(RequestStack $requestStack) {
 		$buttons = $this->container->getParameter('sfs_admin.topbar_buttons');
 
@@ -161,7 +200,11 @@ class MenuBuilder extends ContainerAware
 		return $menu;
 	}
 
-	// Display datas about the user on the topbar menu (avatar, logout ...)
+	/**
+	 * Display datas about the user on the topbar menu (avatar, logout ...)
+	 * 
+	 * @param Knp\Menu\MenuItem
+	 */ 
 	private function displayUserInfos($menu) {
 		$twig = $this->container->get('twig');
 

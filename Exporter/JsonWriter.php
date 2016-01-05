@@ -12,6 +12,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class JsonWriter extends WriterAbstract
 {
+	/**
+	 * Returns a streamed Response with the json content of the exported entity
+	 * 
+	 * @return StreamedResponse $response
+	 */
 	public function export() {
 		$em = $this->em;
 		$entityClass =  $this->entityClass;

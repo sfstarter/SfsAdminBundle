@@ -13,6 +13,12 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class DeleteType extends AbstractType
 {
+	/**
+	 * buildForm
+	 * 
+	 * @param FormBuilderInterface $builder
+	 * @param array $options
+	 */
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder
@@ -24,6 +30,11 @@ class DeleteType extends AbstractType
 			));
 	}
 
+	/**
+	 * getName
+	 * 
+	 * @return string
+	 */
 	public function getName()
 	{
 		return 'admin_delete';

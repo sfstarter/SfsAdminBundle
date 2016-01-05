@@ -14,26 +14,67 @@ use Doctrine\Common\Util\ClassUtils;
 
 class CoreAdmin extends ContainerAware
 {
-	// Array of every admin resources available (should look like array('slug' => array(service, entityClass), 'slug' => array(service, entityClass), ...)
+	/**
+	 * Array of every admin resources available (should look like array('slug' => array(service, entityClass), 'slug' => array(service, entityClass), ...)
+	 * 
+	 * @var array
+	 */
 	protected $admins = array();
-	// Every damn routes (should look like array('slug' => array('action' => array('route', 'action', 'path', 'requirements'))) )
+
+	/**
+	 * Every damn generated routes are registered here (should look like array('slug' => array('action' => array('route', 'action', 'path', 'requirements'))) )
+	 * 
+	 * @var array
+	 */
 	protected $routes = array();
 
-	// Slug of the admin resource
+	/**
+	 * Slug of the current admin resource
+	 * 
+	 * @var string
+	 */
 	private $currentSlug = null;
-	// Action is list, create ...
+
+	/**
+	 * Action of the current view. It can be list, create ...
+	 * 
+	 * @var string
+	 */
 	private $currentAction = null;
 
+	/**
+	 * getCurrentSlug
+	 * 
+	 * @return string $currentSlug
+	 */
 	public function getCurrentSlug() {
 		return $this->currentSlug;
 	}
+	/**
+	 * setCurrentSlug
+	 * 
+	 * @param string $currentSlug
+	 * 
+	 * @return CoreAdmin $this
+	 */
 	public function setCurrentSlug($currentSlug) {
 		$this->currentSlug = $currentSlug;
+
+		return $this;
 	}
+
+	/**
+	 * getCurrentAction
+	 * 
+	 * @return string currentAction
+	 */
 	public function getCurrentAction() {
 		return $this->currentAction;
 	}
-	// Set the current action, fetching the current route
+
+	/** 
+	 * Set the current action, fetching the current route
+	 */
 	public function setCurrentAction() {
 		$request = $this->container->get('request');
 		$route = $request->get('_route');
@@ -42,6 +83,12 @@ class CoreAdmin extends ContainerAware
 		if($action !== null)
 			$this->currentAction = $action;
 	}
+
+	/**
+	 * getCurrentAdmin
+	 * 
+	 * @return array|null
+	 */
 	public function getCurrentAdmin() {
 		if($this->currentSlug !== null)
 			return $this->admins[$this->currentSlug];
@@ -49,6 +96,12 @@ class CoreAdmin extends ContainerAware
 			return null;
 	}
 
+	/**
+	 * Registers the name of an admin service & the attributes of the service
+	 * 
+	 * @param string $admin
+	 * @param array $attributes
+	 */
 	public function addAdmin($admin, $attributes = array()) {
 		$slug = $attributes['slug'];
 		$title = $attributes['title'];
@@ -69,6 +122,15 @@ class CoreAdmin extends ContainerAware
 		$this->generateRoutes($slug);
 	}
 
+	/**
+	 * Add a new route for a specific admin resource
+	 * 
+	 * @param string $slug
+	 * @param string $action
+	 * @param string $path
+	 * @param array $requirements
+	 * @param array $defaults
+	 */
 	public function addRoute($slug, $action, $path = null, $requirements = array(), $defaults = array()) {
 		// We can specify the pattern of the path. Otherwise generate the default one
 		if($path === null) {
@@ -90,6 +152,11 @@ class CoreAdmin extends ContainerAware
 		);
 	}
 
+	/**
+	 * Generate every routes for a specific admin resource
+	 * 
+	 * @param string $slug
+	 */
 	private function generateRoutes($slug) {
 		$this->addRoute($slug, 'list');
 		$this->addRoute($slug, 'create');
@@ -99,16 +166,38 @@ class CoreAdmin extends ContainerAware
 		$this->addRoute($slug, 'export', null, array('format' => '.+'), array('format' => 'csv'));
 	}
 
+	/**
+	 * Get all generated routes
+	 * 
+	 * @return array $routes
+	 */
 	public function getRoutes() {
 		return $this->routes;
 	}
 
+	/**
+	 * Get a route by a specified slug of admin resource, & its action
+	 * 
+	 * @param string $slug
+	 * @param string $action
+	 * @throws \Symfony\Component\Routing\Exception\ResourceNotFoundException
+	 * 
+	 * @return string
+	 */
 	public function getRouteBySlug($slug, $action) {
 		if(!isset($this->routes[$slug][$action]))
-			Throw new \Symfony\Component\Routing\Exception\ResourceNotFoundException('The administration doesn\'t exist, so the route cannot be generated. Please create one.');
+			Throw new \Symfony\Component\Routing\Exception\ResourceNotFoundException('The administration doesn\'t exist, so the route cannot be fetch. Please create one.');
 		return $this->routes[$slug][$action]['route'];
 	}
 
+	/**
+	 * Get a route knowing a specific entity, so we got to find its related admin resource. & the action
+	 * 
+	 * @param mixed $object
+	 * @param string $action
+	 * 
+	 * @return string
+	 */
 	public function getRouteByEntity($object, $action) {
 		$slug = $this->getAdminSlug($object);
 		$route = $this->getRouteBySlug($slug, $action);
@@ -116,6 +205,13 @@ class CoreAdmin extends ContainerAware
 		return $route;
 	}
 
+	/**
+	 * Reverses the engine to get the current action, knowing the current route
+	 * 
+	 * @param string $route
+	 * 
+	 * @return string
+	 */
 	private function getCurrentActionByRoute($route) {
 		$keyAction = array_search($route, array_column($this->routes[$this->getCurrentSlug()], 'route'));
 		foreach($this->routes[$this->getCurrentSlug()] as $key => $action) {
@@ -126,11 +222,22 @@ class CoreAdmin extends ContainerAware
 		return $keyAction;
 	}
 
+	/**
+	 * Get all the registered admin resources
+	 * 
+	 * @return array
+	 */
 	public function getAdmins() {
 		return $this->admins;
 	}
 
-	// Find the admin resource & class for a specific entity
+	/**
+	 * Get the admin resource for a specific entity
+	 * 
+	 * @param mixed $object
+	 * 
+	 * @return string
+	 */ 
 	public function getAdmin($object) {
 		$admins = $this->getAdmins();
 		$class = ClassUtils::getClass($object);
@@ -139,7 +246,15 @@ class CoreAdmin extends ContainerAware
 
 		return $keyAdmin;
 	}
-	// Find the admin slug knowing the object entity
+	/**
+	 * Get the admin slug knowing the object entity
+	 * 
+	 * @param mixed $object
+	 * 
+	 * @throws \Symfony\Component\Routing\Exception\ResourceNotFoundException
+	 * 
+	 * @return string
+	 */
 	public function getAdminSlug($object) {
 		$admins = $this->getAdmins();
 		$class = ClassUtils::getClass($object);
@@ -152,7 +267,15 @@ class CoreAdmin extends ContainerAware
 		Throw new \Symfony\Component\Routing\Exception\ResourceNotFoundException('No administration found for the object of class '. $class .' please create one.');
 	}
 
-	// Generate an admin url for an entity
+	/**
+	 * Generate an admin url for an entity
+	 * 
+	 * @param string $slug
+	 * @param string $action
+	 * @param array $parameters
+	 * 
+	 * @return string $url
+	 */
 	public function getUrl($slug, $action, array $parameters = array()) {
 		$route = $this->getRouteBySlug($slug, $action);
 
@@ -164,6 +287,16 @@ class CoreAdmin extends ContainerAware
 		return $this->generateUrl($route, $parameters);
 	}
 
+	/**
+	 * Generate a url knowing the route & the parameters to associate to it.
+	 * Possibility to set if the url has to be relative or absolute
+	 * 
+	 * @param string $route
+	 * @param array $parameters
+	 * @param const int $referenceType
+	 * 
+	 * @return string $url
+	 */
 	public function generateUrl($route, array $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
 	{
 		return $this->container->get('router')->generate($route, $parameters, $referenceType);

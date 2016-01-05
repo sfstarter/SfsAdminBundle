@@ -30,6 +30,11 @@ class FilterSubscriber extends DoctrineORMSubscriber implements EventSubscriberI
 		);
 	}
 
+	/**
+	 * filterDateTimeTextRange
+	 * 
+	 * @param GetFilterConditionEvent $event
+	 */
 	public function filterDateTimeTextRange(GetFilterConditionEvent $event)
 	{
 		$expr   = $event->getFilterQuery()->getExpressionBuilder();

@@ -14,6 +14,11 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ResourceCompilerPass implements CompilerPassInterface
 {
+	/**
+	 * Configure core with all admin services
+	 * 
+	 * @param ContainerBuilder $container
+	 */
 	public function process(ContainerBuilder $container)
 	{
 		if (!$container->hasDefinition('sfs.admin.routing_loader') || !$container->hasDefinition('sfs.admin.menu_builder')) {

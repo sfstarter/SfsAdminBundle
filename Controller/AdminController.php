@@ -13,21 +13,64 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sfs\AdminBundle\Exporter\Exporter;
+use Sfs\AdminBundle\Form\AbstractAdminType;
+use Sfs\AdminBundle\Form\AbstractFilterType;
 use Sfs\AdminBundle\Form\DeleteType;
 
 abstract class AdminController extends Controller
 {
+	/**
+	 * The slug used to identify the admin resource, plus it serves to generate the url
+	 * 
+	 * @var string
+	 */
 	protected $slug;
+
+	/**
+	 * Title related to the admin resource
+	 * 
+	 * @var string
+	 */
 	protected $title;
+
+	/**
+	 * Class of the related entity, in string type
+	 * 
+	 * @var string
+	 */
 	protected $entityClass;
+
+	/**
+	 * The formType for filters
+	 * 
+	 * @var AbstractFilterType
+	 */
 	protected $filterForm;
 
-	// Used to keep a track of relations and persist them (bonus point for the one who finds a better fix)
+	/**
+	 * Used to keep a track of relations and persist them (bonus point for whom finds a better fix)
+	 * 
+	 * @var array
+	 */
 	private $associations;
+
+	/**
+	 * Used to keep a track of relations and persist them (bonus point for whom finds a better fix)
+	 * 
+	 * @var array
+	 */
 	private $relations;
 
+	/**
+	 * Set the form to be displayed on update view
+	 * 
+	 * @param mixed $object
+	 */
 	abstract protected function setUpdateForm($object);
 
+	/**
+	 * @param string
+	 */
 	public function __construct($entityClass) {
 		$this->entityClass = $entityClass;
 	}
@@ -35,18 +78,23 @@ abstract class AdminController extends Controller
 	/**
 	 * Creates and returns a Form instance from the type of the form (override of the Symfony default)
 	 *
-	 * @param string|FormTypeInterface $type    The built type of the form
+	 * @param string|\Symfony\Component\Form\FormTypeInterface $type    The built type of the form
 	 * @param mixed                    $data    The initial data for the form
 	 * @param array                    $options Options for the form
 	 *
-	 * @return Form
+	 * @return \Symfony\Component\Form\Form
 	 */
 	public function createAdminForm($type, $data = null, array $options = array())
 	{
 		return $this->container->get('sfs_admin.form.factory')->create($type, $data, $options);
 	}
 
-	// Default list array is resumed by it's ID and the __toString value
+	/**
+	 * Sets the fields to be listed
+	 * Default list array is resumed by it's ID and the __toString value
+	 * 
+	 * @return array
+	 */ 
 	public function setListFields() {
 		if(!method_exists($this->entityClass, '__toString')) {
 			throw new \RuntimeException(
@@ -59,6 +107,14 @@ abstract class AdminController extends Controller
 				'__toString' 	=> array('name' => 'Value'),
 		);
 	}
+	
+	/**
+	 * Action called to list the entries
+	 * 
+	 * @param Request $request
+	 * 
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
 	public function listAction(Request $request) {
 		$em = $this->container->get('doctrine')->getManager();
 		$query = $em->getRepository($this->entityClass)->createQueryBuilder('object');
@@ -92,16 +148,29 @@ abstract class AdminController extends Controller
 				'pagination' => $pagination
 		));
 	}
+
+	/**
+	 * Set the filter form, but can't be defined automatically so it is set to null by default
+	 */
 	public function setFilterForm() {
 		$this->filterForm = null;
 	}
 
-	// Default mode the create form is the same as the update one
+	/**
+	 * Set the form to be displayed on create view
+	 * By default the create form is the same as the update one
+	 * 
+	 * @param mixed $object
+	 */
 	public function setCreateForm($object) {
 		return $this->setUpdateForm($object);
 	}
 
-	// Resolves oneToMany relations by keeping them inside an array
+	/**
+	 * Resolves oneToMany relations by keeping them inside an array
+	 * 
+	 * @param mixed $object
+	 */ 
 	private function parseAssociations($object) {
 		$this->associations = $this->getMetadata(get_class($object))->getAssociationMappings();
 
@@ -117,6 +186,12 @@ abstract class AdminController extends Controller
 		}
 	}
 
+	/**
+	 * Persist associations registered in associations array. Useful for oneToMany relations
+	 * 
+	 * @param \Doctrine\ORM\EntityManager $em
+	 * @param mixed $object
+	 */
 	public function persistAssociations($em, $object) {
 		if ($this->associations) {
 			foreach ($this->associations as $field => $mapping) {
@@ -140,10 +215,24 @@ abstract class AdminController extends Controller
 			}
 		}
 	}
-	// Persist function called when sending an update form
+
+	/**
+	 * Persist function called when sending an update form
+	 * 
+	 * @param \Doctrine\ORM\EntityManager $em
+	 * @param mixed $object
+	 */
 	public function persistCreate($em, $object) {
 		$this->persistUpdate($em, $object);
 	}
+
+	/**
+	 * Action called for the create form view
+	 * 
+	 * @param Request $request
+	 * 
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
 	public function createAction(Request $request) {
 		$object = new $this->entityClass();
 		$this->parseAssociations($object);
@@ -172,14 +261,36 @@ abstract class AdminController extends Controller
 		));
 	}
 
+	/**
+	 * Action called to view one object. By default it redirects to the update view
+	 * 
+	 * @param integer $id
+	 * 
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
 	public function readAction($id) {
 		return $this->redirect($this->generateUrl($this->getRoute('update'), array('id' => $id)));
 	}
 
-	// Persist function called when sending an update form
+	/**
+	 * Persist function called when sending an update form
+	 * 
+	 * @param \Doctrine\ORM\EntityManager $em
+	 * @param mixed $object
+	 */
 	public function persistUpdate($em, $object) {
 		$em->persist($object);
 	}
+
+	/**
+	 * Action called to display the update form
+	 * 
+	 * @param integer $id
+	 * @param Request $request
+	 * @throws NotFoundHttpException
+	 * 
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
 	public function updateAction($id, Request $request) {
 		$em = $this->container->get('doctrine')->getManager();
 		$repository = $em->getRepository($this->entityClass);
@@ -210,6 +321,15 @@ abstract class AdminController extends Controller
 		));
 	}
 
+	/**
+	 * Action called to display the warning before final deletion. It generates a form so that the delete doesn't rely on a url
+	 * 
+	 * @param unknown $id
+	 * @param Request $request
+	 * @throws NotFoundHttpException
+	 * 
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
 	public function deleteAction($id, Request $request) {
 		$em = $this->container->get('doctrine')->getManager();
 		$repository = $em->getRepository($this->entityClass);
@@ -237,39 +357,101 @@ abstract class AdminController extends Controller
 		}
 	}
 
+	/**
+	 * Call the related exporter to return a streamed response with the file
+	 * 
+	 * @param string $format
+	 * 
+	 * @return Symfony\Component\HttpFoundation\StreamedResponse
+	 */
 	public function exportAction($format = 'csv') {
 		$entityClass = $this->entityClass;
 		$listFields = $this->setListFields();
 		$em = $this->container->get('doctrine')->getManager();
 
-		return Exporter::getResponse($format, null, $em, $entityClass, $listFields);
+		return Exporter::getResponse($em, $format, null, $entityClass, $listFields);
 	}
 
+	/**
+	 * setSlug
+	 * 
+	 * @param string $slug
+	 * 
+	 * @return AdminController
+	 */
 	public function setSlug($slug) {
 		$this->slug = $slug;
+
+		return $this;
 	}
+
+	/**
+	 * getSlug
+	 *
+	 * @return string $slug
+	 */
 	public function getSlug() {
 		return $this->slug;
 	}
+
+	/**
+	 * setTitle
+	 *
+	 * @param string $title
+	 *
+	 * @return AdminController
+	 */
 	public function setTitle($title) {
 		$this->title = $title;
+
+		return $this;
 	}
+
+	/**
+	 * getTitle
+	 *
+	 * @return string $title
+	 */
 	public function getTitle() {
 		return $this->title;
 	}
 
+	/**
+	 * Get the route of the specified action, for the current Admin Resource
+	 * 
+	 * @param string $action
+	 * 
+	 * @return string $route
+	 */
 	public function getRoute($action) {
 		return $this->getCore()->getRouteBySlug($this->getSlug(), $action);
 	}
 
+	/**
+	 * Get the core of SfsAdmin
+	 * 
+	 * @return Sfs\AdminBundle\Core\CoreAdmin
+	 */
 	public function getCore() {
 		return $this->container->get('sfs.admin.core');
 	}
 
+	/**
+	 * Return the entity class for the current Admin Resource
+	 * 
+	 * @return string $entityClass;
+	 */
 	public function getEntityClass() {
 		return $this->entityClass;
 	}
 
+	/**
+	 * Returns a classMetadata (instance that holds all the object-relational mapping metadata) for a specified entity Class
+	 * 
+	 * @param string $class
+	 * 
+	 * @return \Doctrine\ORM\Mapping\ClassMetadataInfo
+	 */
 	private function getMetadata($class)
 	{
 		$em = $this->container->get('doctrine')->getManager();

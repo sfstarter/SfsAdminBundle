@@ -10,11 +10,21 @@ namespace Sfs\AdminBundle\Form\Type;
 
 
 class SelectListEntityType extends SelectListType {
+	/**
+	 * getParent
+	 * 
+	 * @return string
+	 */
 	public function getParent()
 	{
 		return 'entity';
 	}
 
+	/**
+	 * getName
+	 * 
+	 * @return string
+	 */
 	public function getName() {
 		return 'sfs_admin_field_select_list_entity';
 	}
