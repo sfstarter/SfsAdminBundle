@@ -1,29 +1,30 @@
 sfs:
     admin:
-        page:
-            dashboard: Home
-        crud:
-            create: Create
-            read: Read
-            update: Update
-            list: List
-            delete: Delete
-            filters: Filters
-            actions: Actions
         action:
-            tools: Tools
+            button:
+                back_list: Back to the list
+                save: Save
+                save_and_add: Save & Add
+                save_and_list: Save & Back to the list
             export:
                 csv: Export To CSV
                 json: Export to JSON
-            button:
-                save: Save
-                save_and_list: Save & Back to the list
-                save_and_add: Save & Add
-                back_list: Back to the list
-        message:
-            delete_title: Warning! This action is irreversible
-            delete_message: Are you sure you want to delete the current object ? (ID: %id%)
-            list_total: Found total %count% records
+            tools: Tools
+        crud:
+            actions: Actions
+            create: Create
+            delete: Delete
+            filters: Filters
+            list: List
+            read: Read
+            reset: Reset
+            update: Update
         field:
-            true_value: 'True'
             false_value: 'False'
+            true_value: 'True'
+        message:
+            delete_message: Are you sure you want to delete the current object ? (ID: %id%)
+            delete_title: Warning! This action is irreversible
+            list_total: Found total %count% records
+        page:
+            dashboard: Home

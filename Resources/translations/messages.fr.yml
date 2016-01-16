@@ -1,29 +1,30 @@
 sfs:
     admin:
-        page:
-            dashboard: Accueil
-        crud:
-            create: Créer
-            read: Voir
-            update: Editer
-            list: Liste
-            delete: Supprimer
-            filters: Filtres
-            actions: Actions
         action:
-            tools: Outils
+            button:
+                back_list: Retourner à la liste
+                save: Enregistrer
+                save_and_add: Enregistrer & Créer
+                save_and_list: Enregistrer & Retourner à la liste
             export:
                 csv: Exporter en CSV
                 json: Exporter en JSON
-            button:
-                save: Enregistrer
-                save_and_list: Enregistrer & Retourner à la liste
-                save_and_add: Enregistrer & Créer
-                back_list: Retourner à la liste
-        message:
-            delete_title: Attention! Cette action est irreversible
-            delete_message: Êtes-vous sûr de vouloir supprimer l'objet courant ? (ID: %id%)
-            list_total: Total de %count% enregistrements
+            tools: Outils
+        crud:
+            actions: Actions
+            create: Créer
+            delete: Supprimer
+            filters: Filtres
+            list: Liste
+            read: Voir
+            reset: Réinitialiser
+            update: Editer
         field:
-            true_value: Oui
             false_value: Non
+            true_value: Oui
+        message:
+            delete_message: Êtes-vous sûr de vouloir supprimer l'objet courant ? (ID: %id%)
+            delete_title: Attention! Cette action est irreversible
+            list_total: Total de %count% enregistrements
+        page:
+            dashboard: Accueil

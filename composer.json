@@ -1,7 +1,7 @@
 {
     "name": "sfs/admin-bundle",
     "type": "symfony-bundle",
-    "description": "Symfony SfsAdminBundle",
+    "description": "Symfony2 SfsAdminBundle",
     "keywords": ["sfs", "admin bundle"],
     "license": "MIT",
     "authors": [
@@ -26,8 +26,8 @@
     },
     "autoload": {
         "psr-4": {
-			"Sfs\\AdminBundle\\": ""
+            "Sfs\\AdminBundle\\": ""
 		}
     },
-	"target-dir": ""
+    "target-dir": ""
 }
