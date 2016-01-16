@@ -13,7 +13,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sfs\AdminBundle\Exporter\Exporter;
-use Sfs\AdminBundle\Form\AbstractAdminType;
 use Sfs\AdminBundle\Form\AbstractFilterType;
 use Sfs\AdminBundle\Form\DeleteType;
 
@@ -84,7 +83,7 @@ abstract class AdminController extends Controller
 	 *
 	 * @return \Symfony\Component\Form\Form
 	 */
-	public function createAdminForm($type, $data = null, array $options = array())
+	protected function createAdminForm($type, $data = null, array $options = array())
 	{
 		return $this->container->get('sfs_admin.form.factory')->create($type, $data, $options);
 	}
@@ -95,7 +94,7 @@ abstract class AdminController extends Controller
 	 * 
 	 * @return array
 	 */ 
-	public function setListFields() {
+	protected function setListFields() {
 		if(!method_exists($this->entityClass, '__toString')) {
 			throw new \RuntimeException(
 				'You must define the __toString method related to the entity '. $this->entityClass
@@ -152,7 +151,7 @@ abstract class AdminController extends Controller
 	/**
 	 * Set the filter form, but can't be defined automatically so it is set to null by default
 	 */
-	public function setFilterForm() {
+	protected function setFilterForm() {
 		$this->filterForm = null;
 	}
 
@@ -162,7 +161,7 @@ abstract class AdminController extends Controller
 	 * 
 	 * @param mixed $object
 	 */
-	public function setCreateForm($object) {
+	protected function setCreateForm($object) {
 		return $this->setUpdateForm($object);
 	}
 
@@ -192,10 +191,10 @@ abstract class AdminController extends Controller
 	 * @param \Doctrine\ORM\EntityManager $em
 	 * @param mixed $object
 	 */
-	public function persistAssociations($em, $object) {
+	protected function persistAssociations($em, $object) {
 		if ($this->associations) {
 			foreach ($this->associations as $field => $mapping) {
-				if ($mapping['isOwningSide'] == false) {
+				if ($mapping['isOwningSide'] === false) {
 					if ($owningObjects = $object->{'get' . ucfirst($mapping['fieldName'])}()) {
 						// Set to null the original ones, not contained in the new object
 						foreach ($this->relations[$field] as $owningObject) {
@@ -222,7 +221,7 @@ abstract class AdminController extends Controller
 	 * @param \Doctrine\ORM\EntityManager $em
 	 * @param mixed $object
 	 */
-	public function persistCreate($em, $object) {
+	protected function persistCreate($em, $object) {
 		$this->persistUpdate($em, $object);
 	}
 
@@ -278,7 +277,7 @@ abstract class AdminController extends Controller
 	 * @param \Doctrine\ORM\EntityManager $em
 	 * @param mixed $object
 	 */
-	public function persistUpdate($em, $object) {
+	protected function persistUpdate($em, $object) {
 		$em->persist($object);
 	}
 

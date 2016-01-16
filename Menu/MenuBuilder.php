@@ -8,9 +8,11 @@
 
 namespace Sfs\AdminBundle\Menu;
 
-use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Knp\Menu\FactoryInterface;
+use Knp\Menu\MenuItem;
+use Sfs\AdminBundle\Menu\Topbar\InterfaceTopbarBlock;
 
 class MenuBuilder extends ContainerAware
 {
@@ -20,6 +22,12 @@ class MenuBuilder extends ContainerAware
 	 * @var array
 	 */
 	protected $adminResources;
+
+	/**
+	 * Contains all topbar blocks, by the name of the services, to be displayed in the topbar menu
+	 * @var array
+	 */
+	protected $topbarBlocks;
 
 	/**
 	 * 
@@ -42,13 +50,21 @@ class MenuBuilder extends ContainerAware
 	 * @param unknown $attributes
 	 */
 	public function addResource($attributes) {
-    	$this->adminResources[] = array(
-    			'slug' => $attributes['slug'],
-    			'title' => $attributes['title'],
-    			'category' => $attributes['category'],
-    			'icon' => $attributes['icon']
-    	);
-    }
+		$this->adminResources[] = array(
+			'slug' => $attributes['slug'],
+			'title' => $attributes['title'],
+			'category' => $attributes['category'],
+			'icon' => $attributes['icon']
+		);
+	}
+
+    /**
+     * Register a new topbar block, to be used when the topbar menu is displayed
+     * @param array $attributes
+     */
+	public function addTopbarBlock($service) {
+		$this->topbarBlocks[] = $service;
+	}
 
     /**
      * sidebarMenu
@@ -195,24 +211,29 @@ class MenuBuilder extends ContainerAware
 			}
 		}
 
-		$this->displayUserInfos($menu);
+		$this->displayTopbarBlocks($menu);
 
 		return $menu;
 	}
 
 	/**
-	 * Display datas about the user on the topbar menu (avatar, logout ...)
+	 * Display in the Topbar menu all the blocks services taggged as sfs_admin.menu.topbar
 	 * 
 	 * @param Knp\Menu\MenuItem
-	 */ 
-	private function displayUserInfos($menu) {
-		$twig = $this->container->get('twig');
+	 */
+	private function displayTopbarBlocks(MenuItem $menu) {
+		foreach ($this->topbarBlocks as $service) {
+			$block = $this->container->get($service);
 
-		$htmlContent = $twig->render('SfsAdminBundle:Core:userinfos_topbar.html.twig', array());
-
-		$menu->addChild($htmlContent, array(
-				'attributes'	=> array('class' => 'user-panel'),
-				'extras' 		=> array('safe_label' => true)
-		));
+			// Only consider the true topbar blocks : they must implement InterfaceTopbarBlock
+			if($block instanceof InterfaceTopbarBlock) {
+				$htmlContent = $block->display();
+	
+				$menu->addChild($htmlContent, array(
+						'attributes'	=> array('class' => 'user-panel'),
+						'extras' 		=> array('safe_label' => true)
+				));
+			}
+		}
 	}
 }

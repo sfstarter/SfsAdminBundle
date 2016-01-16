@@ -1,3 +1,8 @@
+###
+### SfsAdminBundle - Symfony2 project
+### (c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+###
+
 services:
 # SFS Admin
     sfs.admin.core:
@@ -15,25 +20,34 @@ services:
         arguments: ["@knp_menu.factory"]
         calls:
             - [setContainer, ["@service_container"]]
+
 # Menus
     sfs.admin.sidebar_menu:
-        class: Knp\Menu\MenuItem # the service definition requires setting the class
+        class: Knp\Menu\MenuItem
         factory: ["@sfs.admin.menu_builder", sidebarMenu]
         arguments: ["@request_stack"]
         tags:
             - { name: knp_menu.menu, alias: sidebar }
     sfs.admin.breadcrumb_menu:
-        class: Knp\Menu\MenuItem # the service definition requires setting the class
+        class: Knp\Menu\MenuItem
         factory: ["@sfs.admin.menu_builder", breadcrumbMenu]
         arguments: ["@request_stack"]
         tags:
             - { name: knp_menu.menu, alias: breadcrumb }
     sfs.admin.topbar_menu:
-        class: Knp\Menu\MenuItem # the service definition requires setting the class
+        class: Knp\Menu\MenuItem
         factory: ["@sfs.admin.menu_builder", topbarMenu]
         arguments: ["@request_stack"]
         tags:
             - { name: knp_menu.menu, alias: topbar }
+
+# Topbar
+    sfs.admin.topbar_menu.user:
+        class: Sfs\AdminBundle\Menu\Topbar\UserBlock
+        arguments:
+            - @twig
+        tags:
+            - { name: sfs_admin.menu.topbar }
 
 # Listeners
     sfs.admin.action_listener:
@@ -42,84 +56,6 @@ services:
             - @sfs.admin.core
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
-
-# Form Types
-    sfs_admin.form.resolved_type_factory:
-        class: Sfs\AdminBundle\Form\Factory\ResolvedFormTypeFactory
-    sfs_admin.form.factory:
-        class: Symfony\Component\Form\FormFactory
-        arguments:
-            - @form.registry
-            - @sfs_admin.form.resolved_type_factory
-
-    sfs_admin.form.type.select:
-        class: Sfs\AdminBundle\Form\Type\SelectType
-        tags:
-            - { name: form.type, alias: sfs_admin_field_select }
-    sfs_admin.form.type.select_entity:
-        class: Sfs\AdminBundle\Form\Type\SelectEntityType
-        tags:
-            - { name: form.type, alias: sfs_admin_field_select_entity }
-    sfs_admin.form.type.tag:
-        class: Sfs\AdminBundle\Form\Type\TagType
-        tags:
-            - { name: form.type, alias: sfs_admin_field_tag }
-    sfs_admin.form.type.tag_entity:
-        class: Sfs\AdminBundle\Form\Type\TagEntityType
-        tags:
-            - { name: form.type, alias: sfs_admin_field_tag_entity }
-    sfs_admin.form.type.select_list:
-        class: Sfs\AdminBundle\Form\Type\SelectListType
-        tags:
-            - { name: form.type, alias: sfs_admin_field_select_list }
-    sfs_admin.form.type.select_list_entity:
-        class: Sfs\AdminBundle\Form\Type\SelectListEntityType
-        tags:
-            - { name: form.type, alias: sfs_admin_field_select_list_entity }
-
-    sfs_admin.form.type.switch:
-        class: Sfs\AdminBundle\Form\Type\SwitchType
-        tags:
-            - { name: form.type, alias: sfs_admin_field_switch }
-    sfs_admin.form.type.slider:
-        class: Sfs\AdminBundle\Form\Type\SliderType
-        tags:
-            - { name: form.type, alias: sfs_admin_field_slider }
-    sfs_admin.form.type.color_picker:
-        class: Sfs\AdminBundle\Form\Type\ColorPickerType
-        tags:
-            - { name: form.type, alias: sfs_admin_field_color_picker }
-    sfs_admin.form.type.datetime_picker:
-        class: Sfs\AdminBundle\Form\Type\DateTimePickerType
-        tags:
-            - { name: form.type, alias: sfs_admin_field_datetime_picker }
-
-# Filters
-    sfs_admin.filter.doctrine_subscriber:
-        class: Sfs\AdminBundle\Listener\FilterSubscriber
-        tags:
-            - { name: kernel.event_subscriber }
-
-    sfs_admin.form.filter.boolean:
-        class: Sfs\AdminBundle\Form\Filter\BooleanFilter
-        tags:
-            - { name: form.type, alias: sfs_admin_filter_boolean }
-    sfs_admin.form.filter.select_entity:
-        class: Sfs\AdminBundle\Form\Filter\SelectEntityFilter
-        tags:
-            - { name: form.type, alias: sfs_admin_filter_select_entity }
-    sfs_admin.form.filter.tag_entity:
-        class: Sfs\AdminBundle\Form\Filter\TagEntityFilter
-        tags:
-            - { name: form.type, alias: sfs_admin_filter_tag_entity }
-    sfs_admin.form.filter.datetime_picker:
-        class: Sfs\AdminBundle\Form\Filter\DateTimePickerFilter
-        tags:
-            - { name: form.type, alias: sfs_admin_filter_datetime_picker }
-    sfs_admin.form.filter.datetime_range:
-        class: Sfs\AdminBundle\Form\Filter\DateTimeRangeFilter
-        tags:
-            - { name: form.type, alias: sfs_admin_filter_datetime_range }
 
 # Twig extensions
     sfs.admin.twig.url_extension:

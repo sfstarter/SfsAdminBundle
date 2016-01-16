@@ -26,10 +26,10 @@ class ResourceCompilerPass implements CompilerPassInterface
 		}
 
 		$core = $container->getDefinition('sfs.admin.core');
-		$sidebarBuilder = $container->getDefinition('sfs.admin.menu_builder');
+		$menuBuilder = $container->getDefinition('sfs.admin.menu_builder');
 
 		/**
-		 * Handle the admin Resources, connected to an entity
+		 * Handles the admin Resources, connected to an entity
 		 */
         $taggedServices = $container->findTaggedServiceIds('sfs_admin.resource');
         foreach ($taggedServices as $id => $tagAttributes) {
@@ -38,8 +38,16 @@ class ResourceCompilerPass implements CompilerPassInterface
 				$container->getDefinition($id)->addMethodCall('setContainer', array(new Reference('service_container')));
 				$container->getDefinition($id)->addMethodCall('setFilterForm');
 				$core->addMethodCall('addAdmin', array($id, $attributes));
-				$sidebarBuilder->addMethodCall('addResource', array($attributes));
+				$menuBuilder->addMethodCall('addResource', array($attributes));
         	}
+		}
+
+		/**
+		 * 
+		 */
+		$taggedServices = $container->findTaggedServiceIds('sfs_admin.menu.topbar');
+		foreach ($taggedServices as $id => $tagAttributes) {
+			$menuBuilder->addMethodCall('addTopbarBlock', array($id));
 		}
 	}
 }
