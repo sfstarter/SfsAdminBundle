@@ -16,7 +16,7 @@ SfsAdmin is an entity-oriented back-office generator. It allows you to generate 
 - Add custom pages easily
 - Only few dependencies
 
-<img src="img/overview.jpg" style="width:100%;" />
+<img src="/img/overview.jpg" style="width:100%;" />
 
 ---
 ## Installation

@@ -8,7 +8,7 @@
 
 namespace Sfs\AdminBundle\Menu\Topbar;
 
-class UserBlock extends AbstractTopbarBlock
+class UserBlock extends TopbarBlockAbstract
 {
 	private $twig;
 

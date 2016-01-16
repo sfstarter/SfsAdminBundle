@@ -8,7 +8,7 @@
 
 namespace Sfs\AdminBundle\Menu\Topbar;
 
-interface InterfaceTopbarBlock
+interface TopbarBlockInterface
 {
 	public function display();
 }

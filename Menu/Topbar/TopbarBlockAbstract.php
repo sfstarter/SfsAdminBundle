@@ -8,7 +8,7 @@
 
 namespace Sfs\AdminBundle\Menu\Topbar;
 
-abstract class AbstractTopbarBlock implements InterfaceTopbarBlock
+abstract class TopbarBlockAbstract implements TopbarBlockInterface
 {
 	private $twig;
 

@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\MenuItem;
-use Sfs\AdminBundle\Menu\Topbar\InterfaceTopbarBlock;
+use Sfs\AdminBundle\Menu\Topbar\TopbarBlockInterface;
 
 class MenuBuilder extends ContainerAware
 {
@@ -226,7 +226,7 @@ class MenuBuilder extends ContainerAware
 			$block = $this->container->get($service);
 
 			// Only consider the true topbar blocks : they must implement InterfaceTopbarBlock
-			if($block instanceof InterfaceTopbarBlock) {
+			if($block instanceof TopbarBlockInterface) {
 				$htmlContent = $block->display();
 	
 				$menu->addChild($htmlContent, array(
