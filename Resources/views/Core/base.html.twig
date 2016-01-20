@@ -32,7 +32,9 @@
 		{% endblock %}
 	
 		<!-- JS -->
-		{% block javascripts_header %} {% endblock %}
+		{% block javascripts_header %}
+			<script src="{{ asset('bundles/sfsadmin/vendors/jquery/dist/jquery.min.js') }}"></script>
+		{% endblock %}
 	</head>
 	<body id="{% block body_id %}{% endblock %}">
 		{% block body %}

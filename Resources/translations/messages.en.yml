@@ -9,6 +9,7 @@ sfs:
             export:
                 csv: Export To CSV
                 json: Export to JSON
+                modal_title: Export configuration for
             tools: Tools
         crud:
             actions: Actions

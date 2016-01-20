@@ -32,10 +32,10 @@
 						</button>
 						<ul class="dropdown-menu pull-right">
 							<li>
-								<a href="{{ admin_url('export', {'format': 'csv'}) }}">{% trans %}sfs.admin.action.export.csv{% endtrans %}</a>
+								<a href="" data-format="csv" data-toggle="modal" data-target="#export-modal">{% trans %}sfs.admin.action.export.csv{% endtrans %}</a>
 							</li>
 							<li>
-								<a href="{{ admin_url('export', {'format': 'json'}) }}">{% trans %}sfs.admin.action.export.json{% endtrans %}</a>
+								<a href="" data-format="json" data-toggle="modal" data-target="#export-modal">{% trans %}sfs.admin.action.export.json{% endtrans %}</a>
 							</li>
 						</ul>
 					</div>
@@ -111,4 +111,6 @@
 			</div>
 		</div>
 	</div>
+
+	{% include 'SfsAdminBundle:CRUD:export_modal.html.twig' %}
 {% endblock %}

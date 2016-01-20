@@ -33,7 +33,7 @@ class CsvWriter extends WriterAbstract
 
 			// Header file
 			foreach($listFields as $key => $field) {
-				$row[] = $field['name'];
+				$row[] = $field;
 			}
 			fputcsv($handle, $row);
 
@@ -42,7 +42,7 @@ class CsvWriter extends WriterAbstract
 				$row = array();
 				// Default export uses the vars defined in setListFields
 				foreach($listFields as $key => $field) {
-					$property = $accessor->getValue($object[0], $key);
+					$property = $accessor->getValue($object[0], $field);
 
 					// Date object must be formatted
 					if(is_object($property) && get_class($property) == 'DateTime') {

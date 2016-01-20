@@ -1,0 +1,67 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+<!-- Colored Header Modal -->
+<div class="modal fade" id="export-modal" tabindex="-1" role="dialog" aria-labelledby="Export modal">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header modal-header-primary">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">{% trans %}sfs.admin.action.export.modal_title{% endtrans %} <span id="file-format" class="text-uppercase"></span></h4>
+			</div>
+			<div class="modal-body">
+				<h4>Select <strong>fields</strong></h4>
+				{{ form_start(exportForm) }}
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>
+								<div class="checkbox">
+									<input id="check_all_export" class="checkbox-inversed batch-checkbox" type="checkbox" value="" checked>
+									<label for="check_all_export"></label>
+									Field
+								</div>
+								</th>
+								<th>Type</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for fieldType in exportForm.fields %}
+								<tr>
+									<td>
+										<div class="checkbox margin-0">
+											{{ form_widget(fieldType) }}
+											<label for="{{ fieldType.vars.id }}">{{ fieldType.vars.label }}</label>
+										</div>
+									</td>
+									<td>{{ fieldType.vars.attr['data-field-type'] }}</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+					{{ form_row(exportForm.download) }}
+				{{ form_end(exportForm) }}
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function() {
+		$('#export-modal').on('show.bs.modal', function(e) {
+			var format = $(e.relatedTarget).data('format');
+	
+			//populate the textbox
+			$(e.currentTarget).find('#file-format').html(format);
+			$(e.currentTarget).find('#admin_export_format').val(format);
+		});
+	});
+</script>

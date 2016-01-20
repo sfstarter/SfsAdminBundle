@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Sfs\AdminBundle\Exporter\Exporter;
 use Sfs\AdminBundle\Form\AbstractFilterType;
+use Sfs\AdminBundle\Form\ExportType;
 use Sfs\AdminBundle\Form\DeleteType;
 
 abstract class AdminController extends Controller
@@ -131,6 +132,13 @@ abstract class AdminController extends Controller
 		else
 			$viewFilterForm = null;
 
+		// Export form
+		$exportForm = $this->createForm(new ExportType(), null, array(
+				'action' => $this->generateUrl($this->getRoute('export')),
+				'fields' => $this->getObjectProperties()
+		));
+		$viewExportForm = $exportForm->createView();
+
 		$paginator  = $this->get('knp_paginator');
 		$pagination = $paginator->paginate(
 				$query, /* query applied */
@@ -143,7 +151,8 @@ abstract class AdminController extends Controller
 
 		return $this->render('SfsAdminBundle:CRUD:list.html.twig', array(
 				'filterForm' => $viewFilterForm,
-				'listFields'	=> $listFields,
+				'exportForm' => $viewExportForm,
+				'listFields' => $listFields,
 				'pagination' => $pagination
 		));
 	}
@@ -357,18 +366,31 @@ abstract class AdminController extends Controller
 	}
 
 	/**
-	 * Call the related exporter to return a streamed response with the file
+	 * Call the exporter to return a streamed response with the file, using the form specifying which fields to export
 	 * 
 	 * @param string $format
 	 * 
 	 * @return Symfony\Component\HttpFoundation\StreamedResponse
 	 */
-	public function exportAction($format = 'csv') {
-		$entityClass = $this->entityClass;
-		$listFields = $this->setListFields();
-		$em = $this->container->get('doctrine')->getManager();
+	public function exportAction(Request $request) {
+		// Export form
+		$exportForm = $this->createForm(new ExportType(), null, array(
+				'fields' => $this->getObjectProperties()
+		));
 
-		return Exporter::getResponse($em, $format, null, $entityClass, $listFields);
+		$exportForm->handleRequest($request);
+		if ($exportForm->isValid()) {
+			$entityClass = $this->entityClass;
+			$listFields = $exportForm->getData()['fields'];
+			if(!empty($listFields)) {
+				$em = $this->container->get('doctrine')->getManager();
+				$format = $exportForm->getData()['format'];
+	
+				return Exporter::getResponse($em, $format, null, $entityClass, $listFields);
+			}
+		}
+
+		return $this->redirect($this->generateUrl($this->getRoute('list')));
 	}
 
 	/**
@@ -455,5 +477,21 @@ abstract class AdminController extends Controller
 	{
 		$em = $this->container->get('doctrine')->getManager();
 		return $em->getMetadataFactory()->getMetadataFor($class);
+	}
+
+	/**
+	 * Get all properties of the current entity
+	 * 
+	 * @return array
+	 */
+	private function getObjectProperties() {
+		$fields = array();
+		$metadatas = $this->getMetadata($this->entityClass);
+
+		foreach($metadatas->fieldMappings as $field) {
+			$fields[] = array('name' => $field['fieldName'], 'fieldType' => $field['type']);
+		}
+
+		return $fields;
 	}
 }
