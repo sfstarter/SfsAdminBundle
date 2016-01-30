@@ -1,0 +1,13 @@
+<div class="margin-8">
+	<canvas id="charts-js-{{ uniqid }}"></canvas>
+
+	<div id="charts-js-legend-{{ uniqid }}" class="charts-legend"></div>
+</div>
+
+<script>
+	$(document).ready(function() {
+		var ctx = $("#charts-js-{{ uniqid }}").get(0).getContext("2d");
+		var chart = new Chart(ctx).Doughnut({{ datas|json_encode()|raw }}, {});
+		$("#charts-js-legend-{{ uniqid }}").html(chart.generateLegend());
+	});
+</script>

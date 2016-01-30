@@ -37,7 +37,7 @@
 									<div class="{{ blockColumnClass }}">
 										<div class="panel {{ blockPanelClass }}">
 											<div class="panel-heading">{{ attribute(form.vars.blocks, block).title }}</div>
-											<div class="panel-body pan">
+											<div class="panel-body">
 												<div class="form-body">
 													{% for field in attribute(form.vars.blocks, block).fields %}
 														{{ form_row(attribute(form.children, field)) }}

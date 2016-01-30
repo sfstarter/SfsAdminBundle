@@ -66,3 +66,5 @@ $(".slider").ionRangeSlider({
 // Datetimepicker
 $('.datetimepicker').datetimepicker({});
 
+//Charts
+Chart.defaults.global.responsive = true;

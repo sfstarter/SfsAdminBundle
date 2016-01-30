@@ -424,3 +424,29 @@ form {
 		color: $brown-color;
 	}
 }
+
+/**
+ *	CHARTS
+ */
+.charts-legend ul {
+	float: right;
+}
+.charts-legend li  {
+	border-radius: 5px;
+	cursor: default;
+	display: block;
+	font-size: 14px;
+	margin-bottom: 4px;
+	padding: 2px 8px 2px 28px;
+	position: relative;
+	transition: background-color 400ms ease-in-out 0s;
+}
+.charts-legend li span {
+	border-radius: 5px;
+	display: block;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 20px;
+}
