@@ -8644,6 +8644,12 @@ input[type="radio"] .styled:checked + label::after {
 .text-bold {
   font-weight: bold !important; }
 
+.no-text-decoration {
+  text-decoration: none; }
+
+a.text-link {
+  color: #333; }
+
 .pointer {
   cursor: pointer; }
 
@@ -8866,7 +8872,7 @@ html, body {
 /**
  * TABLES
  */
-.table thead {
+.table thead a {
   color: #555; }
 
 /**

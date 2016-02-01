@@ -97,6 +97,18 @@ class CoreAdmin extends ContainerAware
 	}
 
 	/**
+	 * getCurrentEntityClass
+	 *
+	 * @return array|null
+	 */
+	public function getCurrentEntityClass() {
+		if($this->currentSlug !== null)
+			return $this->admins[$this->currentSlug]['entityClass'];
+			else
+				return null;
+	}
+
+	/**
 	 * Registers the name of an admin service & the attributes of the service
 	 * 
 	 * @param string $admin

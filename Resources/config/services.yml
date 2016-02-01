@@ -66,6 +66,9 @@ services:
             - { name: twig.extension }
     sfs.admin.twig.of_type:
         class: Sfs\AdminBundle\Twig\OfTypeExtension
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @sfs.admin.core
         tags:
             - { name: twig.extension }
     sfs.adminu.twig.preferences_extension:

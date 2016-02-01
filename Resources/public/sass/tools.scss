@@ -42,6 +42,13 @@
 .text-bold {
 	font-weight: bold !important;
 }
+.no-text-decoration {
+	text-decoration: none;
+}
+
+a.text-link {
+	color: $text-color;
+}
 
 .pointer {
 	cursor: pointer;

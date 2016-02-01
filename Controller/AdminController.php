@@ -139,11 +139,13 @@ abstract class AdminController extends Controller
 		));
 		$viewExportForm = $exportForm->createView();
 
+		// Pagination & sort mechanism
 		$paginator  = $this->get('knp_paginator');
 		$pagination = $paginator->paginate(
 				$query, /* query applied */
 				$request->query->getInt('page', 1)/* page number */,
-				10/* limit per page */
+				10,/* limit per page */
+				array('defaultSortFieldName' => 'object.id', 'defaultSortDirection' => 'asc') /* Default sort */
 		);
 		$pagination->setPageRange(4);
 
