@@ -490,8 +490,15 @@ abstract class AdminController extends Controller
 		$fields = array();
 		$metadatas = $this->getMetadata($this->entityClass);
 
+		// Fields
 		foreach($metadatas->fieldMappings as $field) {
 			$fields[] = array('name' => $field['fieldName'], 'fieldType' => $field['type']);
+		}
+
+		// Associations are merged to get a complete object
+		$associations = $metadatas->getAssociationMappings();
+		foreach($associations as $association) {
+			$fields[] = array('name' => $association['fieldName'], 'fieldType' => 'object');
 		}
 
 		return $fields;
