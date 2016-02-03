@@ -122,6 +122,24 @@ security:
         fos_userbundle:
             id: fos_user.user_manager
 
+	firewalls:
+        adminstration:
+            pattern:            /admin/(.*)
+            switch_user:        true
+            context:            user
+            form_login:
+                provider:       fos_userbundle
+                login_path:     sfs_admin_login
+                use_forward:    false
+                check_path:     sfs_admin_login_check
+                failure_path:   null
+                default_target_path: sfs_admin_dashboard
+            logout:
+                path:   sfs_admin_logout
+                target: sfs_admin_login
+                invalidate_session: false
+            anonymous:          true
+
     access_control:
         ...
         # URL of admin which need to be available to anonymous users
