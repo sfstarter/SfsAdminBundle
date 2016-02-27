@@ -29,6 +29,13 @@
 	{% endspaceless %}
 {% endblock %}
 
+{% block sfs_admin_field_color_picker_widget %}
+	<div class="input-group colorpicker-default" data-format={{ attr['data-format']}}>
+		{{ form_widget(form, {'attr': attr}) }}
+		<span class="input-group-addon"><i></i></span>
+	</div>
+{% endblock %}
+
 {% block sfs_admin_field_datetime_picker_widget %}
 	{% spaceless %}
 		{% if widget == 'single_text' %}

@@ -22,8 +22,7 @@ class ColorPickerType extends AbstractType {
 	{
 		$resolver->setDefaults(array(
 				'attr' => array(
-					'class' => 'colorpicker-default',
-					'data-color-format' => 'hex'
+					'data-format' => 'hex'
 				)
 		));
 	}
