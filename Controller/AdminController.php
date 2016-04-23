@@ -62,6 +62,18 @@ abstract class AdminController extends Controller
 	private $relations;
 
 	/**
+	 * Array of templates for the CRUD of the current admin. Contains the defaults paths, to be override
+	 *
+	 * @var array
+	 */
+	private $templates = array(
+		'list'		=> 'SfsAdminBundle:CRUD:list.html.twig',
+		'create'	=> 'SfsAdminBundle:CRUD:create.html.twig',
+		'update'	=> 'SfsAdminBundle:CRUD:update.html.twig',
+		'delete'	=> 'SfsAdminBundle:CRUD:delete.html.twig'
+	);
+
+	/**
 	 * Set the form to be displayed on update view
 	 * 
 	 * @param mixed $object
@@ -73,6 +85,8 @@ abstract class AdminController extends Controller
 	 */
 	public function __construct($entityClass) {
 		$this->entityClass = $entityClass;
+
+		$this->overrideTemplates();
 	}
 
 	/**
@@ -151,7 +165,7 @@ abstract class AdminController extends Controller
 
 		$listFields = $this->setListFields();
 
-		return $this->render('SfsAdminBundle:CRUD:list.html.twig', array(
+		return $this->render($this->getTemplate('list'), array(
 				'filterForm' => $viewFilterForm,
 				'exportForm' => $viewExportForm,
 				'listFields' => $listFields,
@@ -265,7 +279,7 @@ abstract class AdminController extends Controller
 			}
 		}
 
-		return $this->render('SfsAdminBundle:CRUD:create.html.twig', array(
+		return $this->render($this->getTemplate('create'), array(
 				'form'				=> $form->createView(),
 				'object' 			=> $object
 		));
@@ -323,7 +337,7 @@ abstract class AdminController extends Controller
 	        }
 		}
 
-		return $this->render('SfsAdminBundle:CRUD:update.html.twig', array(
+		return $this->render($this->getTemplate('update'), array(
 				'form'				=> $form->createView(),
 				'object' 			=> $object
 		));
@@ -357,7 +371,7 @@ abstract class AdminController extends Controller
 				return $this->redirect($this->generateUrl($this->getRoute('list')));
 			}
 			else {
-				return $this->render('SfsAdminBundle:CRUD:delete.html.twig', array(
+				return $this->render($this->getTemplate('delete'), array(
 						'form'				=> $form->createView(),
 						'object' 			=> $object
 				));
@@ -499,5 +513,44 @@ abstract class AdminController extends Controller
 		}
 
 		return $fields;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getTemplates() {
+		return $this->templates;
+	}
+
+	/**
+	 * @param $slug
+	 * @return string
+	 */
+	public function getTemplate($slug) {
+		return $this->templates[$slug];
+	}
+
+	/**
+	 *
+	 * @param $slug
+	 * @param $twigPath
+	 * @return $this
+	 */
+	public function setTemplate($slug, $twigPath) {
+		$this->templates[$slug] = $twigPath;
+
+		return $this;
+	}
+
+	/**
+	 * Allows to set & override a specific CRUD template for one admin.
+	 * If it's the main view of an action, the slug parameter should corresponds to the slug of action, to keep code clean
+	 * Called in the construct
+	 *
+	 * @return $this
+	 */
+	protected function overrideTemplates()
+	{
+		return $this;
 	}
 }
