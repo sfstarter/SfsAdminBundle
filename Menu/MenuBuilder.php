@@ -11,7 +11,7 @@ namespace Sfs\AdminBundle\Menu;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Knp\Menu\FactoryInterface;
-use Knp\Menu\MenuItem;
+use Knp\Menu\ItemInterface;
 use Sfs\AdminBundle\Menu\Topbar\TopbarBlockInterface;
 
 class MenuBuilder extends ContainerAware
@@ -66,13 +66,12 @@ class MenuBuilder extends ContainerAware
 		$this->topbarBlocks[] = $service;
 	}
 
-    /**
+	/**
      * sidebarMenu
-     * 
-     * @param RequestStack $requestStack
-     * 
-     * @return Knp\Menu\MenuItem
-     */
+	 *
+	 * @param RequestStack $requestStack
+	 * @return \Knp\Menu\ItemInterface
+	 */
 	public function sidebarMenu(RequestStack $requestStack) {
 		$routes = $this->container->get('sfs.admin.core')->getRoutes();
 		$categories = $this->container->getParameter('sfs_admin.menu_categories');
@@ -135,7 +134,7 @@ class MenuBuilder extends ContainerAware
 	 *
 	 * @param RequestStack $requestStack
 	 *
-	 * @return Knp\Menu\MenuItem
+	 * @return \Knp\Menu\ItemInterface
 	 */
 	public function breadcrumbMenu(RequestStack $requestStack) {
 		$translator = $this->container->get('translator');
@@ -178,7 +177,7 @@ class MenuBuilder extends ContainerAware
 	 *
 	 * @param RequestStack $requestStack
 	 *
-	 * @return Knp\Menu\MenuItem
+	 * @return \Knp\Menu\ItemInterface
 	 */
 	public function topbarMenu(RequestStack $requestStack) {
 		$buttons = $this->container->getParameter('sfs_admin.topbar_buttons');
@@ -218,10 +217,10 @@ class MenuBuilder extends ContainerAware
 
 	/**
 	 * Display in the Topbar menu all the blocks services taggged as sfs_admin.menu.topbar
-	 * 
-	 * @param Knp\Menu\MenuItem
+	 *
+	 * @param ItemInterface $menu
 	 */
-	private function displayTopbarBlocks(MenuItem $menu) {
+	private function displayTopbarBlocks(ItemInterface $menu) {
 		foreach ($this->topbarBlocks as $service) {
 			$block = $this->container->get($service);
 

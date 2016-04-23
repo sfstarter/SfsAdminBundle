@@ -9,6 +9,7 @@
 namespace Sfs\AdminBundle\Core;
 
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Doctrine\Common\Util\ClassUtils;
 
@@ -190,15 +191,14 @@ class CoreAdmin extends ContainerAware
 	/**
 	 * Get a route by a specified slug of admin resource, & its action
 	 * 
-	 * @param string $slug
-	 * @param string $action
-	 * @throws \Symfony\Component\Routing\Exception\ResourceNotFoundException
-	 * 
-	 * @return string
+	 * @param $slug
+	 * @param $action
+	 * @return mixed
+	 * @throws ResourceNotFoundException
 	 */
 	public function getRouteBySlug($slug, $action) {
 		if(!isset($this->routes[$slug][$action]))
-			Throw new \Symfony\Component\Routing\Exception\ResourceNotFoundException('The administration doesn\'t exist, so the route cannot be fetch. Please create one.');
+			Throw new ResourceNotFoundException('The administration doesn\'t exist, so the route cannot be fetch. Please create one.');
 		return $this->routes[$slug][$action]['route'];
 	}
 

@@ -295,11 +295,9 @@ abstract class AdminController extends Controller
 	/**
 	 * Action called to display the update form
 	 * 
-	 * @param integer $id
+	 * @param $id
 	 * @param Request $request
-	 * @throws NotFoundHttpException
-	 * 
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
 	 */
 	public function updateAction($id, Request $request) {
 		$em = $this->container->get('doctrine')->getManager();
@@ -334,7 +332,7 @@ abstract class AdminController extends Controller
 	/**
 	 * Action called to display the warning before final deletion. It generates a form so that the delete doesn't rely on a url
 	 * 
-	 * @param unknown $id
+	 * @param integer $id
 	 * @param Request $request
 	 * @throws NotFoundHttpException
 	 * 
@@ -368,11 +366,10 @@ abstract class AdminController extends Controller
 	}
 
 	/**
-	 * Call the exporter to return a streamed response with the file, using the form specifying which fields to export
+ 	 * Call the exporter to return a streamed response with the file, using the form specifying which fields to export
 	 * 
-	 * @param string $format
-	 * 
-	 * @return Symfony\Component\HttpFoundation\StreamedResponse
+	 * @param Request $request
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\StreamedResponse
 	 */
 	public function exportAction(Request $request) {
 		// Export form
@@ -453,7 +450,7 @@ abstract class AdminController extends Controller
 	/**
 	 * Get the core of SfsAdmin
 	 * 
-	 * @return Sfs\AdminBundle\Core\CoreAdmin
+	 * @return \Sfs\AdminBundle\Core\CoreAdmin
 	 */
 	public function getCore() {
 		return $this->container->get('sfs.admin.core');
@@ -483,7 +480,7 @@ abstract class AdminController extends Controller
 
 	/**
 	 * Get all properties of the current entity
-	 * 
+	 *
 	 * @return array
 	 */
 	private function getObjectProperties() {

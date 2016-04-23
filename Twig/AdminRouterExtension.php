@@ -60,7 +60,7 @@ class AdminRouterExtension extends \Twig_Extension {
 	}
 
 	/**
-	 * Deprecated
+	 * @deprecated 
 	 */
 	public function getAdminRoute($action, $object = null) {
 		if($object !== null) {
