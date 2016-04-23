@@ -8924,6 +8924,10 @@ form.form-horizontal.form-bordered .form-group {
 .select2-dropdown {
   border-radius: 0; }
 
+.select2-container--default .select2-selection--single {
+  height: 32px; }
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 32px; }
 .select2-container--default .select2-selection--single, .select2-container--default .select2-selection--multiple {
   border-radius: 0;
   border-color: #ccc; }

@@ -177,6 +177,7 @@ class CoreAdmin extends ContainerAware
 		$this->addRoute($slug, 'update', null, array('id' => '\d+'));
 		$this->addRoute($slug, 'delete', null, array('id' => '\d+'));
 		$this->addRoute($slug, 'export');
+		$this->addRoute($slug, 'batch');
 	}
 
 	/**

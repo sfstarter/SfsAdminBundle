@@ -14,8 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Sfs\AdminBundle\Exporter\Exporter;
 use Sfs\AdminBundle\Form\AbstractFilterType;
-use Sfs\AdminBundle\Form\ExportType;
+use Sfs\AdminBundle\Form\BatchType;
 use Sfs\AdminBundle\Form\DeleteType;
+use Sfs\AdminBundle\Form\ExportType;
 
 abstract class AdminController extends Controller
 {
@@ -70,7 +71,12 @@ abstract class AdminController extends Controller
 		'list'		=> 'SfsAdminBundle:CRUD:list.html.twig',
 		'create'	=> 'SfsAdminBundle:CRUD:create.html.twig',
 		'update'	=> 'SfsAdminBundle:CRUD:update.html.twig',
-		'delete'	=> 'SfsAdminBundle:CRUD:delete.html.twig'
+		'delete'	=> 'SfsAdminBundle:CRUD:delete.html.twig',
+		'batch'		=> 'SfsAdminBundle:CRUD:batch.html.twig'
+	);
+
+	private $batchActions = array(
+		'delete' => 'sfs.admin.action.batch.delete',
 	);
 
 	/**
@@ -164,10 +170,12 @@ abstract class AdminController extends Controller
 		$pagination->setPageRange(4);
 
 		$listFields = $this->setListFields();
+		$batchActions = $this->getBatchActions();
 
 		return $this->render($this->getTemplate('list'), array(
 				'filterForm' => $viewFilterForm,
 				'exportForm' => $viewExportForm,
+				'batchActions' => $batchActions,
 				'listFields' => $listFields,
 				'pagination' => $pagination
 		));
@@ -407,6 +415,71 @@ abstract class AdminController extends Controller
 	}
 
 	/**
+	 * Receives ids to be manipulated & action from hand written form, from listAction(no CSRF test)
+	 * A BatchType (with CSRF) is filled with those values, and have to be confirmed to do activate the batchAction
+	 *
+	 * @param Request $request
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+	 */
+	public function batchAction(Request $request) {
+		$form = $this->createForm(new BatchType());
+
+		$form->handleRequest($request);
+
+		// If form is valid, then activate the batch action
+		if ($form->isValid()) {
+			$ids = json_decode($form->get('batch_ids')->getData());
+			// Check if the method 'batch'.Action is available
+			$batchMethod = 'batch'. ucfirst($form->get('batch_action')->getData());
+			if(method_exists($this, $batchMethod) && count($ids)) {
+				$this->{$batchMethod}($ids);
+			}
+
+			return $this->redirect($this->generateUrl($this->getRoute('list')));
+		}
+		// Otherwise fill the fields with POST values from listAction
+		else {
+			$ids = json_encode($request->request->get('ids'));
+			$batchAction = $request->request->get('action');
+
+			// If no selection, automatically redirect to listing
+			if(count($request->request->get('ids')) == 0) {
+				return $this->redirect($this->generateUrl($this->getRoute('list')));
+			}
+
+			/**
+			 * Set in hidden fields the type of batch & the ids to be manipulated,
+			 * so that we keep them in the next action
+			 */
+			$form->get('batch_ids')->setData($ids);
+			$form->get('batch_action')->setData($batchAction);
+			return $this->render($this->getTemplate('batch'), array(
+				'form' => $form->createView(),
+				'batchAction' => $batchAction
+			));
+		}
+	}
+
+	/**
+	 * Only called once the user confirmed the batch deletion.
+	 * TODO: The query is inside the Ctrl, should we have a modelRepository with a batchDelete method or something ?
+	 *
+	 * @param array $ids It is the array of ids to be deleted, for the current entity
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
+	protected function batchDelete($ids) {
+		$em = $this->container->get('doctrine')->getManager();
+
+		$query = $em->createQuery('DELETE FROM '. $this->getEntityClass() .' o WHERE o.id IN (:ids)');
+		$query->setParameter('ids', $ids);
+
+		// We could/should do some tests on ids array size and effective number of deletion
+		$numDeletion = $query->execute();
+
+		return $this->redirect($this->generateUrl($this->getRoute('list')));
+	}
+
+	/**
 	 * setSlug
 	 * 
 	 * @param string $slug
@@ -552,5 +625,23 @@ abstract class AdminController extends Controller
 	protected function overrideTemplates()
 	{
 		return $this;
+	}
+
+	/**
+	 * @param array $batchActions
+	 * @return AdminController
+	 */
+	public function setBatchActions($batchActions)
+	{
+		$this->batchActions = $batchActions;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getBatchActions()
+	{
+		return $this->batchActions;
 	}
 }

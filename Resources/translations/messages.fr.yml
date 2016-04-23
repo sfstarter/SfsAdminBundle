@@ -1,6 +1,9 @@
 sfs:
     admin:
         action:
+            batch:
+                confirm: Confirmer
+                delete: Supprimer
             button:
                 back_list: Retourner à la liste
                 save: Enregistrer
@@ -24,6 +27,9 @@ sfs:
             false_value: Non
             true_value: Oui
         message:
+            batch:
+                delete_message: Confirmer l'action de Suppression groupée ?
+                delete_title: Attention! Cette action est irreversible
             delete_message: Êtes-vous sûr de vouloir supprimer l'objet courant ? (ID: %id%)
             delete_title: Attention! Cette action est irreversible
             list_total: Total de %count% enregistrements

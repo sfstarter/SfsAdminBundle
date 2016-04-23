@@ -1,0 +1,23 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+{% extends 'SfsAdminBundle:Core:base.html.twig' %}
+
+{% block content %}
+	<div class="col-lg-12">
+		<h3>{{ ('sfs.admin.message.batch.'~ batchAction ~'_title')|trans }}</h3>
+		<p>{{ ('sfs.admin.message.batch.'~ batchAction ~'_message')|trans }}</p>
+
+		{{ form_start(form) }}
+		{{ form_widget(form.batch_action) }}
+		{{ form_widget(form.batch_ids) }}
+		{{ form_widget(form.confirm) }}
+		<a href="{{ admin_url('list') }}" class="btn btn-info">
+			<i class="fa fa-list"></i> {% trans %}sfs.admin.action.button.back_list{% endtrans %}
+		</a>
+
+		{{ form_end(form) }}
+	</div>
+{% endblock %}

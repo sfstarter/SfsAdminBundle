@@ -1,6 +1,9 @@
 sfs:
     admin:
         action:
+            batch:
+                confirm: Confirm
+                delete: Delete
             button:
                 back_list: Back to the list
                 save: Save
@@ -24,6 +27,9 @@ sfs:
             false_value: 'False'
             true_value: 'True'
         message:
+            batch:
+                delete_message: Do you confirm the batch Delete ?
+                delete_title: Warning! This action is irreversible
             delete_message: Are you sure you want to delete the current object ? (ID: %id%)
             delete_title: Warning! This action is irreversible
             list_total: Found total %count% records

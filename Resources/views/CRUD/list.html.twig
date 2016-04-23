@@ -43,87 +43,103 @@
 			</div>
 
 			<div class="panel-body">
-				<table class="table table-striped table-hover">
-					<!-- LIST HEADER -->
-					<thead>
-						<tr>
-							<th style="width:30px">
-								<div class="checkbox margin-0">
-									<input id="check_all" class="checkbox-inversed batch-checkbox" type="checkbox" value="">
-									<label for="check_all"></label>
-								</div>
-							</th>
-							{% for key, field in listFields %}
-								<th>
-									{% if field.name is defined %}
-										{% set label = field.name %}
-									{% else %}
-										{% set label = key|capitalize %}
-									{% endif %}
-
-									{% if key is not property_is_relation() %}
-										{{ knp_pagination_sortable(pagination, label, 'object.'~key) }}
-									{% else %}
-										 {{ field.name }}
-									{% endif %}
-
-									{% if pagination.isSorted('object.'~key) %}
-										{% if pagination.getDirection() == 'asc' %}
-											<span class="fa fa-sort-asc"></span>
-										{% else %}
-											<span class="fa fa-sort-desc"></span>
-										{% endif %}
-									{% endif %}
-								</th>
-							{% endfor %}
-							<th class="text-right" style="width:90px">{% trans %}sfs.admin.crud.actions{% endtrans %}</th>
-						</tr>
-					</thead>
-
-					<!-- LIST CONTENT -->
-					<tbody>
-						{% for object in pagination %}
+				<form action="{{ admin_url('batch') }}" method="POST" >
+					<table class="table table-striped table-hover">
+						<!-- LIST HEADER -->
+						<thead>
 							<tr>
-								<td>
+								<th style="width:30px">
 									<div class="checkbox margin-0">
-										<input class="checkbox-inversed batch-row-checkbox" type="checkbox" value="">
-										<label></label>
+										<input id="check_all" class="checkbox-inversed batch-checkbox" type="checkbox" value="">
+										<label for="check_all"></label>
 									</div>
-								</td>
-								
+								</th>
 								{% for key, field in listFields %}
-									{% if attribute(object, key) is of_type('bool') %}
-										{% include 'SfsAdminBundle:CRUD:list_field_bool.html.twig' %}
-									{% elseif attribute(object, key) is of_type('class', 'DateTime') %}
-										{% include 'SfsAdminBundle:CRUD:list_field_datetime.html.twig' %}
-									{% elseif attribute(object, key) is of_type('class', "Doctrine\\ORM\\PersistentCollection") %}
-										{% include 'SfsAdminBundle:CRUD:list_field_many.html.twig' %}
-									{% else %}
-										{% include 'SfsAdminBundle:CRUD:list_field_string.html.twig' %}
-									{% endif %}
-								{% endfor %}
+									<th>
+										{% if field.name is defined %}
+											{% set label = field.name %}
+										{% else %}
+											{% set label = key|capitalize %}
+										{% endif %}
 
-								<td class="text-right">
-									<a href="{{ admin_url('update', {'object': object}) }}" data-title="Edit row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-default btn-equal" type="button">
-										<i class="fa fa-pencil"></i>
-									</a>
-									<a href="{{ admin_url('delete', {'object': object}) }}" data-title="Delete row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-danger btn-equal" type="button">
-										<i class="fa fa-trash"></i>
-									</a>
-								</td>
+										{% if key is not property_is_relation() %}
+											{{ knp_pagination_sortable(pagination, label, 'object.'~key) }}
+										{% else %}
+											 {{ field.name }}
+										{% endif %}
+
+										{% if pagination.isSorted('object.'~key) %}
+											{% if pagination.getDirection() == 'asc' %}
+												<span class="fa fa-sort-asc"></span>
+											{% else %}
+												<span class="fa fa-sort-desc"></span>
+											{% endif %}
+										{% endif %}
+									</th>
+								{% endfor %}
+								<th class="text-right" style="width:90px">{% trans %}sfs.admin.crud.actions{% endtrans %}</th>
 							</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-							
-				<div class="row">
-					<div class="col-lg-12 text-right">
-						<div class="pagination-panel">
-							{{ knp_pagination_render(pagination, 'SfsAdminBundle:CRUD:pagination.html.twig') }}
+						</thead>
+
+						<!-- LIST CONTENT -->
+						<tbody>
+							{% for object in pagination %}
+								<tr>
+									<td>
+										<div class="checkbox margin-0">
+											<input class="checkbox-inversed batch-row-checkbox" type="checkbox" name="ids[]" value="{{ object.id }}">
+											<label></label>
+										</div>
+									</td>
+
+									{% for key, field in listFields %}
+										{% if attribute(object, key) is of_type('bool') %}
+											{% include 'SfsAdminBundle:CRUD:list_field_bool.html.twig' %}
+										{% elseif attribute(object, key) is of_type('class', 'DateTime') %}
+											{% include 'SfsAdminBundle:CRUD:list_field_datetime.html.twig' %}
+										{% elseif attribute(object, key) is of_type('class', "Doctrine\\ORM\\PersistentCollection") %}
+											{% include 'SfsAdminBundle:CRUD:list_field_many.html.twig' %}
+										{% else %}
+											{% include 'SfsAdminBundle:CRUD:list_field_string.html.twig' %}
+										{% endif %}
+									{% endfor %}
+
+									<td class="text-right">
+										<a href="{{ admin_url('update', {'object': object}) }}" data-title="Edit row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-default btn-equal" type="button">
+											<i class="fa fa-pencil"></i>
+										</a>
+										<a href="{{ admin_url('delete', {'object': object}) }}" data-title="Delete row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-danger btn-equal" type="button">
+											<i class="fa fa-trash"></i>
+										</a>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+
+					<div class="row">
+						<div class="col-lg-12">
+							<!-- BATCH SELECTOR ACTIONS -->
+							<div class="pull-left">
+								<div class="mt-16">
+									<select id="batch-action" name="action" class="selectpicker form-control">
+										{% for index, action in batchActions %}
+											<option value="{{ index }}">{{ action|trans }}</option>
+										{% endfor %}
+									</select>
+									<button type="submit" class="btn btn-default">{% trans %}sfs.admin.action.batch.confirm{% endtrans %}</button>
+								</div>
+							</div>
+
+							<div class="pull-right">
+								<div class="pagination-panel">
+									{{ knp_pagination_render(pagination, 'SfsAdminBundle:CRUD:pagination.html.twig') }}
+								</div>
+								<p class="">{% trans with {'%count%': pagination.getTotalItemCount} %}sfs.admin.message.list_total{% endtrans %}</p>
+							</div>
 						</div>
-						<p class="">{% trans with {'%count%': pagination.getTotalItemCount} %}sfs.admin.message.list_total{% endtrans %}</p>
 					</div>
-				</div>
+				</form>
 			</div>
 		</div>
 	</div>
