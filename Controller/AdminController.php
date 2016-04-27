@@ -75,8 +75,15 @@ abstract class AdminController extends Controller
 		'batch'		=> 'SfsAdminBundle:CRUD:batch.html.twig'
 	);
 
-	private $batchActions = array(
-		'delete' => 'sfs.admin.action.batch.delete',
+	/**
+	 * Array of batch actions applied on list view. By default only delete is implemented
+	 * The key is directly related to the name of the sf2 action : batch{Key}
+	 *
+	 *
+	 * @var array
+	 */
+	protected $batchActions = array(
+		'delete'
 	);
 
 	/**
@@ -93,6 +100,7 @@ abstract class AdminController extends Controller
 		$this->entityClass = $entityClass;
 
 		$this->setTemplates();
+		$this->setBatchActions();
 	}
 
 	/**
@@ -628,12 +636,12 @@ abstract class AdminController extends Controller
 	}
 
 	/**
-	 * @param array $batchActions
+	 * Allows to set & override batchActions for one admin.
+	 *
 	 * @return AdminController
 	 */
-	public function setBatchActions($batchActions)
+	public function setBatchActions()
 	{
-		$this->batchActions = $batchActions;
 		return $this;
 	}
 
