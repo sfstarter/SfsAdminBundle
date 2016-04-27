@@ -67,7 +67,7 @@ abstract class AdminController extends Controller
 	 *
 	 * @var array
 	 */
-	private $templates = array(
+	protected $templates = array(
 		'list'		=> 'SfsAdminBundle:CRUD:list.html.twig',
 		'create'	=> 'SfsAdminBundle:CRUD:create.html.twig',
 		'update'	=> 'SfsAdminBundle:CRUD:update.html.twig',
@@ -92,7 +92,7 @@ abstract class AdminController extends Controller
 	public function __construct($entityClass) {
 		$this->entityClass = $entityClass;
 
-		$this->overrideTemplates();
+		$this->setTemplates();
 	}
 
 	/**
@@ -616,13 +616,13 @@ abstract class AdminController extends Controller
 	}
 
 	/**
-	 * Allows to set & override a specific CRUD template for one admin.
-	 * If it's the main view of an action, the slug parameter should corresponds to the slug of action, to keep code clean
+	 * Allows to set & override specific CRUD templates for one admin.
+	 * If it's the main view of an action, the index parameter should corresponds to the slug of action, to keep code clean
 	 * Called in the construct
 	 *
 	 * @return $this
 	 */
-	protected function overrideTemplates()
+	protected function setTemplates()
 	{
 		return $this;
 	}
