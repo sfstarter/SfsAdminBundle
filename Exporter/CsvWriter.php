@@ -48,6 +48,10 @@ class CsvWriter extends WriterAbstract
 					if(is_object($property) && get_class($property) == 'DateTime') {
 						$row[] = $property->format('Y-m-d H:i:s');
 					}
+					// Arrays
+					else if(is_array($property)) {
+						$row[] = json_encode($property);
+					}
 					// Same for the 1TM & 1TM & MTM relations
 					else if(is_object($property) && get_class($property) == 'Doctrine\ORM\PersistentCollection') {
 						$value = '';
