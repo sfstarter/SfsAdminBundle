@@ -1,0 +1,4 @@
+Sfs\AdminBundle\Tests\Fixtures\TestBundle\Entity\Page:
+    page_{1..10}:
+        title: <sentence(6, true)>
+        content: <text(500)>

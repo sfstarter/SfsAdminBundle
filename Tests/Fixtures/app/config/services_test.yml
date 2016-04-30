@@ -1,0 +1,13 @@
+services:
+    sfs_admin.page:
+        class: Sfs\AdminBundle\Tests\Fixtures\TestBundle\Admin\PageAdmin
+        tags:
+            - { name: sfs_admin.resource, title: "Pages", slug: "pages", category: "Content", icon: "fa-file-o" }
+        arguments:
+            - Sfs\AdminBundle\Tests\Fixtures\TestBundle\Entity\Page
+    sfs_admin.user:
+        class: Sfs\AdminBundle\Tests\Fixtures\TestBundle\Admin\UserAdmin
+        tags:
+            - { name: sfs_admin.resource, title: "Users", slug: "users", category: "Users", icon: "fa-user" }
+        arguments:
+            - Sfs\AdminBundle\Tests\Fixtures\TestBundle\Entity\User

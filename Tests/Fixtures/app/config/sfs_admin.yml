@@ -1,0 +1,7 @@
+sfs_admin:
+    title_text: SfsAdmin
+    menu_categories:
+        - { name: Content, icon: fa-folder }
+        - { name: Users, icon: fa-user }
+    topbar_buttons:
+        - { title: Google, icon: fa-google, url: http://google.com }

@@ -1,0 +1,7 @@
+Sfs\AdminBundle\Tests\Fixtures\TestBundle\Entity\User:
+    user_{1..10}:
+        username: <username()>
+        email: <email()>
+        password: password
+        enabled: 1
+        roles: [ROLE_USER]

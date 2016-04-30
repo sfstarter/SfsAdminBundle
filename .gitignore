@@ -1,3 +1,19 @@
+# Main Project
 .project
+/.idea
+composer.lock
+/bin
+/vendor
 /Resources/doc/site
 /Resources/public/.sass-cache
+/Resources/public/css/style.css.map
+/Resources/public/css/tools.css.map
+
+# Tests
+Tests/Fixtures/app/cache
+Tests/Fixtures/app/logs
+
+# PHPUnit
+/phpunit.xml
+/clover.xml
+/report

@@ -1,0 +1,44 @@
+security:
+    role_hierarchy:
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+    providers:
+        in_memory:
+            memory:
+                users:
+                    admin: { password: password, roles: 'ROLE_ADMIN' }
+
+    firewalls:
+        administration:
+            http_basic: ~
+            provider: in_memory
+            pattern:            /admin/(.*)
+            switch_user:        true
+            context:            user
+            form_login:
+                provider:       fos_userbundle
+                login_path:     sfs_admin_login
+                use_forward:    false
+                check_path:     sfs_admin_login_check
+                failure_path:   null
+                default_target_path: sfs_admin_dashboard
+            logout:
+                path:   sfs_admin_logout
+                target: sfs_admin_login
+                invalidate_session: false
+            anonymous:          true
+    access_control:
+        # AsseticBundle paths used when using the controller for assets
+        - { path: ^/js/, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/css/, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        # URL of FOSUserBundle which need to be available to anonymous users
+        - { path: ^/admin/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/login-check, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/logout, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        # Secured part of the site
+        # This config requires being logged for the whole site and having the admin role for the admin part.
+        # Change these rules to adapt them to your needs
+        - { path: ^/admin/, role: ROLE_ADMIN }
+
+        - { path: ^/, role: IS_AUTHENTICATED_ANONYMOUSLY }

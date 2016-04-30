@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+        colors                      = "true"
+        convertErrorsToExceptions   = "true"
+        convertNoticesToExceptions  = "true"
+        convertWarningsToExceptions = "true"
+        processIsolation            = "false"
+        stopOnFailure               = "false"
+        syntaxCheck                 = "false"
+        bootstrap="Tests/bootstrap.php" >
+    <php>
+        <server name="KERNEL_DIR" value="./Tests/Fixtures/app" />
+    </php>
+
+    <testsuites>
+        <testsuite name="SfsAdminBundle Test Suite">
+            <directory>./Tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

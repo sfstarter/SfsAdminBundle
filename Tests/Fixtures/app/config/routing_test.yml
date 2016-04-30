@@ -1,0 +1,8 @@
+# SFS routes
+sfs_admin:
+    resource: "@SfsAdminBundle/Resources/config/routing.yml"
+    prefix: /admin
+sfs_admin_resources:
+    resource: .
+    type:     adminRoute
+    prefix: /admin

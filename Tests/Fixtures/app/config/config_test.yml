@@ -1,0 +1,66 @@
+imports:
+    - { resource: parameters_test.yml }
+    - { resource: security_test.yml }
+    - { resource: services_test.yml }
+    - { resource: sfs_admin.yml }
+
+framework:
+    #esi:             ~
+    translator:      { fallback: "%locale%" }
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing_test.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: false
+    validation:      { enable_annotations: true }
+    templating:
+        engines: ['twig']
+        #assets_version: SomeVersionScheme
+    default_locale:  "%locale%"
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    session:
+        storage_id: session.storage.mock_file
+    fragments:       ~
+    http_method_override: true
+    test: ~
+    profiler:
+        collect: false
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+
+web_profiler:
+    toolbar: false
+    intercept_redirects: false
+
+#FOS USER
+fos_user:
+    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    firewall_name: main
+    user_class: Sfs\AdminBundle\Tests\Fixtures\TestBundle\Entity\User
+
+# Doctrine Configuration
+doctrine:
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        default_entity_manager: default
+        entity_managers:
+            default:
+                auto_mapping: true
+    dbal:
+        driver:   "%database_driver%"
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        user:     "%database_user%"
+        password: "%database_password%"
+        charset:  UTF8
+        # if using pdo_sqlite as your database driver, add the path in parameters.yml
+        # e.g. database_path: "%kernel.root_dir%/data/data.db3"
+        # path:     "%database_path%"
+
+liip_functional_test: ~
