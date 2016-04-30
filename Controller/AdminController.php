@@ -208,10 +208,14 @@ abstract class AdminController extends Controller
 
 	/**
 	 * Resolves oneToMany relations by keeping them inside an array
-	 * 
+	 *
 	 * @param mixed $object
-	 */ 
+	 */
 	private function parseAssociations($object) {
+		if(!is_object($object)) {
+			return;
+		}
+
 		$this->associations = $this->getMetadata(get_class($object))->getAssociationMappings();
 
 		if ($this->associations) {
@@ -333,10 +337,11 @@ abstract class AdminController extends Controller
 		$em = $this->container->get('doctrine')->getManager();
 		$repository = $em->getRepository($this->entityClass);
 		$object = $repository->findOneById($id);
-		$this->parseAssociations($object);
 
 		if($object === null)
 			throw new NotFoundHttpException("Can't find the object with the id ". $id ." to edit");
+
+		$this->parseAssociations($object);
 
 		$form = $this->setUpdateForm($object);
 
@@ -569,8 +574,14 @@ abstract class AdminController extends Controller
 	 */
 	private function getMetadata($class)
 	{
-		$em = $this->container->get('doctrine')->getManager();
-		return $em->getMetadataFactory()->getMetadataFor($class);
+		if($class != null) {
+			$em = $this->container->get('doctrine')->getManager();
+
+			return $em->getMetadataFactory()->getMetadataFor($class);
+		}
+		else {
+			return null;
+		}
 	}
 
 	/**
