@@ -1,26 +1,24 @@
 language: php
 php:
-    - '5.4'
-    - '5.5'
-    - '5.6'
-install: composer update --prefer-source
-script: phpunit -c .
+    - 5.6
 services:
     - mysql
-before_install:
-  - cp Tests/Fixtures/app/config/parameters.yml.travis app/config/parameters_test.yml
-  - php Tests/Fixtures/app/console doctrine:database:create --env=test
-  - php Tests/Fixtures/app/console doctrine:schema:create --env=test
+before_script:
+    - composer install
+    - cp Tests/Fixtures/app/config/parameters.yml.travis Tests/Fixtures/app/config/parameters_test.yml
+    - php Tests/Fixtures/app/console doctrine:database:create --env=test
+    - php Tests/Fixtures/app/console doctrine:schema:create --env=test
+script: phpunit -c .
 
 branches:
-# blacklist
-  except:
-# whitelist
-  only:
-    - master
-    - develop
-    - feature/travis
+    # blacklist
+    except:
+    # whitelist
+    only:
+        - master
+        - develop
+        - feature/travis
 
 notifications:
-  email:
-    -  ramine.agoune@solidlynx.com
+    email:
+        -  ramine.agoune@solidlynx.com
