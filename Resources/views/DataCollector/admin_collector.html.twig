@@ -1,0 +1,124 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+	{% set icon %}
+		{# this is the content displayed as a panel in the toolbar #}
+		<span class="icon"><img src="{{ asset('bundles/sfsadmin/img/sfsadmin_logo_light.png') }}" alt=""/></span>
+		<span class="sf-toolbar-value">{{ collector.adminsTotal }}  admins</span>
+	{% endset %}
+
+	{% set text %}
+		{# this is the content displayed when hovering the mouse over the toolbar panel #}
+		<div class="sf-toolbar-info-piece">
+			<b>Total admins resources</b>
+			<span class="sf-toolbar-status sf-toolbar-status-green">{{ collector.adminsTotal }}</span>
+		</div>
+
+		<div class="sf-toolbar-info-piece">
+			<b>Current admin service</b>
+			<span class="sf-toolbar-status {% if not collector.currentAdminService %}sf-toolbar-status-yellow{% endif %}">{{ collector.currentAdminService|default('none') }}</span>
+		</div>
+
+		<div class="sf-toolbar-info-piece">
+			<b>Current admin slug</b>
+			<span class="sf-toolbar-status {% if not collector.currentAdminSlug %}sf-toolbar-status-yellow{% endif %}">{{ collector.currentAdminSlug|default('none') }}</span>
+		</div>
+
+		<div class="sf-toolbar-info-piece">
+			<b>Current action</b>
+			<span class="sf-toolbar-status {% if not collector.currentAction %}sf-toolbar-status-yellow{% endif %}">{{ collector.currentAction|default('none') }}</span>
+		</div>
+
+		<div class="sf-toolbar-info-piece">
+			<b>Current entity class</b>
+			<span class="sf-toolbar-status {% if not collector.currentEntityClass %}sf-toolbar-status-yellow{% endif %}">{{ collector.currentEntityClass|default('none') }}</span>
+		</div>
+	{% endset %}
+
+	{# the 'link' value set to 'false' means that this panel doesn't show a section in the web profiler #}
+	{{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: true }) }}
+{% endblock %}
+
+{% block head %}
+	{{ parent() }}
+
+	<style>
+		.icon img {
+			width: 28px;
+		}
+		.status-odd td, .status-even td {
+			background: transparent none repeat scroll 0 0;
+		}
+		.status-odd {
+			background: rgba(240, 240, 240, 0.3) none repeat scroll 0 0;
+		}
+		.status-even {
+			background: rgba(200, 200, 200, 0.3) none repeat scroll 0 0;
+		}
+	</style>
+{% endblock %}
+
+{% block menu %}
+	{# This left-hand menu appears when using the full-screen profiler. #}
+	<span class="label">
+		<span class="icon">
+			<img src="{{ asset('bundles/sfsadmin/img/sfsadmin_logo_light.png') }}" alt="" />
+		</span>
+        <strong>SfsAdmin</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+	{# Optional, for showing the most details. #}
+	<h2>Administration Resources</h2>
+	<table>
+		<thead>
+			<tr>
+				<th>Admin Slug</th>
+				<th>Admin Service</th>
+				<th>Entity Class</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			{% for slug, admin in collector.admins|sort %}
+				<tr>
+					<td>{{ slug }}</td>
+					<td>{{ admin.service }}</td>
+					<td>{{ admin.entityClass }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<h2>Administration Routes</h2>
+	<table>
+		<thead>
+		<tr>
+			<th>Admin Slug</th>
+			<th>Action</th>
+			<th>Method</th>
+			<th>Route</th>
+			<th>Url</th>
+			<th>Requirements</th>
+			<th>Defaults</th>
+		</tr>
+		</thead>
+
+		<tbody>
+		{% for slug, admin in collector.admins|sort %}
+			{% for action, route in collector.routes[slug] %}
+				<tr class="{% if loop.parent.loop.index is odd %}status-even{% else %}status-odd{% endif %}">
+					<td><b>{{ slug }}</b></td>
+					<td>{{ action}}</td>
+					<td>{{ route.action }}</td>
+					<td>{{ route.route }}</td>
+					<td>{{ route.path }}</td>
+					<td>{{ route.requirements|json_encode() }}</td>
+					<td>{{ route.defaults|json_encode() }}</td>
+				</tr>
+			{% endfor %}
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
