@@ -8,7 +8,7 @@ script: phpunit -c .
 services:
     - mysql
 before_install:
-  - cp Tests/Fixtures/app/config/parameters.yml.travis app/config/parameters_test.yml
+  - cp Tests/Fixtures/app/config/parameters.yml.travis Tests/Fixtures/app/config/parameters_test.yml
   - php Tests/Fixtures/app/console doctrine:database:create --env=test
   - php Tests/Fixtures/app/console doctrine:schema:create --env=test
 
