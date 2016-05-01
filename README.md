@@ -1,5 +1,8 @@
 # SfsAdmin Documentation
 
+[![Build Status](https://travis-ci.org/sfstarter/SfsAdminBundle.svg?branch=develop)](https://travis-ci.org/sfstarter/SfsAdminBundle)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/beb5d2ee-56d8-4801-899e-1a48afac4f46/mini.png)](https://insight.sensiolabs.com/projects/beb5d2ee-56d8-4801-899e-1a48afac4f46)
+
 Administration bundle for Symfony2
 
 ## Overview
