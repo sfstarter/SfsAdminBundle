@@ -40,7 +40,7 @@ class OfTypeExtension extends \Twig_Extension {
 	 */
 	public function getTests() {
 		return array (
-				'property_is_relation' => new \Twig_Function_Method($this, 'PropertyIsRelation'),
+				'property_is_relation' => new \Twig_Function_Method($this, 'propertyIsRelation'),
 				'of_type' => new \Twig_Function_Method($this, 'isOfType')
 		);
 	}
@@ -59,7 +59,7 @@ class OfTypeExtension extends \Twig_Extension {
 	 * Call when we only know the name of property, and not the var itself
 	 *
 	 */
-	public function PropertyIsRelation($propertyName, $entityClass=null) {
+	public function propertyIsRelation($propertyName, $entityClass=null) {
 		if($entityClass === null) {
 			$entityClass = $this->core->getCurrentEntityClass();
 		}

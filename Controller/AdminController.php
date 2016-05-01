@@ -577,7 +577,7 @@ abstract class AdminController extends Controller
 	 */
 	private function getMetadata($class)
 	{
-		if($class != null) {
+		if($class !== null) {
 			$em = $this->container->get('doctrine')->getManager();
 
 			return $em->getMetadataFactory()->getMetadataFor($class);
