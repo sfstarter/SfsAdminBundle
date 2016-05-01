@@ -483,11 +483,14 @@ abstract class AdminController extends Controller
 	protected function batchDelete($ids) {
 		$em = $this->container->get('doctrine')->getManager();
 
-		$query = $em->createQuery('DELETE FROM '. $this->getEntityClass() .' o WHERE o.id IN (:ids)');
-		$query->setParameter('ids', $ids);
+		$qb = $em->createQueryBuilder()
+			->delete($this->getEntityClass(), 'o')
+			->where('o.id IN (:ids)')
+			->setParameter('ids', $ids)
+		;
 
 		// We could/should do some tests on ids array size and effective number of deletion
-		$numDeletion = $query->execute();
+		$numDeletion = $qb->getQuery()->execute();
 
 		return $this->redirect($this->generateUrl($this->getRoute('list')));
 	}
