@@ -12,6 +12,15 @@ before_install:
   - php Tests/Fixtures/app/console doctrine:database:create --env=test
   - php Tests/Fixtures/app/console doctrine:schema:create --env=test
 
+branches:
+# blacklist
+  except:
+# whitelist
+  only:
+    - master
+    - develop
+    - feature/travis
+
 notifications:
   email:
     -  ramine.agoune@solidlynx.com
