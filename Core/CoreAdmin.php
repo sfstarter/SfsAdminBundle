@@ -259,6 +259,24 @@ class CoreAdmin extends ContainerAware
 
 		return $keyAdmin;
 	}
+
+	/**
+	 * Get the admin resource
+	 *
+	 * @param $slug
+	 * @return null|object
+	 */
+	public function getAdminService($slug) {
+		if(isset($this->admins[$slug])) {
+			$service = $this->admins[$slug]['service'];
+
+			return $this->container->get($service);
+		}
+		else {
+			return null;
+		}
+	}
+
 	/**
 	 * Get the admin slug knowing the object entity
 	 * 
@@ -293,7 +311,9 @@ class CoreAdmin extends ContainerAware
 		$route = $this->getRouteBySlug($slug, $action);
 
 		if(isset($parameters['object'])) {
-			$parameters['id'] = $parameters['object']->getId();
+			$slug = $this->getAdminSlug($parameters['object']);
+			$identifier = $this->getAdminService($slug)->getIdentifierProperty();
+			$parameters['id'] = $parameters['object']->{'get'. ucfirst($identifier)}();
 			unset($parameters['object']);
 		}
 		// Only generate a route with parameters if required

@@ -31,11 +31,31 @@ class AdminRouterExtension extends \Twig_Extension {
 	 */
 	public function getFunctions() {
 		return array (
+				'admin_identifier' => new \Twig_Function_Method($this, 'getAdminIdentifier'),
 				'admin_url' => new \Twig_Function_Method($this, 'getAdminUrl'),
 				'admin_route' => new \Twig_Function_Method($this, 'getAdminRoute')
 		);
 	}
 
+	/**
+	 * getAdminIdentifier
+	 *
+	 * @param null $object
+	 * @return string
+	 *
+	 */
+	public function getAdminIdentifier($object = null) {
+		if(isset($object)) {
+			$slug = $this->core->getAdminSlug($object);
+		}
+		else {
+			$slug = $this->core->getCurrentSlug();
+		}
+		$property = $this->core->getAdminService($slug)->getIdentifierProperty();
+		
+		return $property;
+	}
+	
 	/**
 	 * getAdminUrl
 	 * 

@@ -8,6 +8,8 @@
 
 namespace Sfs\AdminBundle\Controller;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -173,7 +175,7 @@ abstract class AdminController extends Controller
 				$query, /* query applied */
 				$request->query->getInt('page', 1)/* page number */,
 				10,/* limit per page */
-				array('defaultSortFieldName' => 'object.id', 'defaultSortDirection' => 'asc') /* Default sort */
+				array('defaultSortFieldName' => 'object.'. $this->getIdentifierProperty(), 'defaultSortDirection' => 'asc') /* Default sort */
 		);
 		$pagination->setPageRange(4);
 
@@ -336,10 +338,10 @@ abstract class AdminController extends Controller
 	public function updateAction($id, Request $request) {
 		$em = $this->container->get('doctrine')->getManager();
 		$repository = $em->getRepository($this->entityClass);
-		$object = $repository->findOneById($id);
+		$object = $repository->find($id);
 
 		if($object === null)
-			throw new NotFoundHttpException("Can't find the object with the id ". $id ." to edit");
+			throw new NotFoundHttpException("Can't find the object with the identifier ". $id ." to edit");
 
 		$this->parseAssociations($object);
 
@@ -376,10 +378,10 @@ abstract class AdminController extends Controller
 	public function deleteAction($id, Request $request) {
 		$em = $this->container->get('doctrine')->getManager();
 		$repository = $em->getRepository($this->entityClass);
-		$object = $repository->findOneById($id);
+		$object = $repository->find($id);
 		
 		if($object === null) {
-			throw new NotFoundHttpException("Can't find the object with the id ". $id ." to delete");
+			throw new NotFoundHttpException("Can't find the object with the identifier ". $id ." to delete");
 		}
 		else {
 			$form = $this->createForm(new DeleteType());
@@ -483,9 +485,15 @@ abstract class AdminController extends Controller
 	protected function batchDelete($ids) {
 		$em = $this->container->get('doctrine')->getManager();
 
-		$qb = $em->createQueryBuilder()
+		/**
+		 * @var  QueryBuilder $qb
+		 */
+		$qb = $em->createQueryBuilder();
+		$qb
 			->delete($this->getEntityClass(), 'o')
-			->where('o.id IN (:ids)')
+			->where(
+				$qb->expr()->in('o.'. $this->getIdentifierProperty(), ':ids')
+			)
 			->setParameter('ids', $ids)
 		;
 
@@ -578,6 +586,9 @@ abstract class AdminController extends Controller
 	private function getMetadata($class)
 	{
 		if($class !== null) {
+			/**
+			 * @var EntityManager $em
+			 */
 			$em = $this->container->get('doctrine')->getManager();
 
 			return $em->getMetadataFactory()->getMetadataFor($class);
@@ -608,6 +619,19 @@ abstract class AdminController extends Controller
 		}
 
 		return $fields;
+	}
+
+	/**
+	 * Useful to get the identifier to use, and not directly the id property which may doesn't exist.
+	 * No need to throw an exception as Doctrine does it for us
+	 *
+	 * @return string
+	 * @throws \Doctrine\ORM\Mapping\MappingException
+	 */
+	public function getIdentifierProperty() {
+		$property = $this->getMetadata($this->getEntityClass())->getSingleIdentifierFieldName();
+
+		return $property;
 	}
 
 	/**
