@@ -116,7 +116,9 @@ abstract class AdminController extends Controller
 	 */
 	protected function createAdminForm($type, $data = null, array $options = array())
 	{
-		return $this->container->get('sfs_admin.form.factory')->create($type, $data, $options);
+		$form = $this->container->get('sfs_admin.form.factory')->create($type, $data, $options);
+
+		return $form;
 	}
 
 	/**
@@ -154,6 +156,7 @@ abstract class AdminController extends Controller
 			$this->filterForm->handleRequest($request);
 			// build the query filter
 			if ($this->filterForm->isValid()) {
+				/** @var \Doctrine\ORM\QueryBuilder $query */
 				$query = $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($this->filterForm, $query);
 			}
 			
@@ -163,7 +166,7 @@ abstract class AdminController extends Controller
 			$viewFilterForm = null;
 
 		// Export form
-		$exportForm = $this->createForm(new ExportType(), null, array(
+		$exportForm = $this->createForm(ExportType::class, null, array(
 				'action' => $this->generateUrl($this->getRoute('export')),
 				'fields' => $this->getObjectProperties()
 		));
@@ -384,7 +387,7 @@ abstract class AdminController extends Controller
 			throw new NotFoundHttpException("Can't find the object with the identifier ". $id ." to delete");
 		}
 		else {
-			$form = $this->createForm(new DeleteType());
+			$form = $this->createForm(DeleteType::class);
 
 			$form->handleRequest($request);
 			if ($form->isValid()) {
@@ -410,7 +413,7 @@ abstract class AdminController extends Controller
 	 */
 	public function exportAction(Request $request) {
 		// Export form
-		$exportForm = $this->createForm(new ExportType(), null, array(
+		$exportForm = $this->createForm(ExportType::class, null, array(
 				'fields' => $this->getObjectProperties()
 		));
 
@@ -437,7 +440,7 @@ abstract class AdminController extends Controller
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
 	 */
 	public function batchAction(Request $request) {
-		$form = $this->createForm(new BatchType());
+		$form = $this->createForm(BatchType::class);
 
 		$form->handleRequest($request);
 
@@ -609,13 +612,13 @@ abstract class AdminController extends Controller
 
 		// Fields
 		foreach($metadatas->fieldMappings as $field) {
-			$fields[] = array('name' => $field['fieldName'], 'fieldType' => $field['type']);
+			$fields[$field['fieldName']] = array('name' => $field['fieldName'], 'fieldType' => $field['type']);
 		}
 
 		// Associations are merged to get a complete object
 		$associations = $metadatas->getAssociationMappings();
 		foreach($associations as $association) {
-			$fields[] = array('name' => $association['fieldName'], 'fieldType' => 'object');
+			$fields[$association['fieldName']] = array('name' => $association['fieldName'], 'fieldType' => 'object');
 		}
 
 		return $fields;

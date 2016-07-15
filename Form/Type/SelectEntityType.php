@@ -8,13 +8,15 @@
 
 namespace Sfs\AdminBundle\Form\Type;
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 class SelectEntityType extends SelectType {
     /**
      * {@inheritdoc}
      */
 	public function getParent()
 	{
-		return 'entity';
+		return EntityType::class;
 	}
 
     /**

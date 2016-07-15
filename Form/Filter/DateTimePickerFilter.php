@@ -8,6 +8,7 @@
 
 namespace Sfs\AdminBundle\Form\Filter;
 
+use Sfs\AdminBundle\Form\Type\DateTimePickerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -32,8 +33,13 @@ class DateTimePickerFilter extends AbstractType
      */
     public function getParent()
     {
-        return 'sfs_admin_field_datetime_picker';
+        return DateTimePickerType::class;
     }
+
+	public function getBlockPrefix()
+	{
+		return 'sfs_admin_filter_datetime_picker';
+	}
 
     /**
      * {@inheritdoc}

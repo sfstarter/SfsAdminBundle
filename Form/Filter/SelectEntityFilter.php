@@ -8,6 +8,7 @@
 
 namespace Sfs\AdminBundle\Form\Filter;
 
+use Sfs\AdminBundle\Form\Type\SelectEntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -32,8 +33,13 @@ class SelectEntityFilter extends AbstractType
      */
     public function getParent()
     {
-        return 'sfs_admin_field_select_entity';
+        return SelectEntityType::class;
     }
+
+	public function getBlockPrefix()
+	{
+		return 'sfs_admin_filter_select_entity';
+	}
 
     /**
      * {@inheritdoc}

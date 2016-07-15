@@ -8,13 +8,16 @@
 
 namespace Sfs\AdminBundle\Core;
 
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Doctrine\Common\Util\ClassUtils;
 
-class CoreAdmin extends ContainerAware
+class CoreAdmin implements ContainerAwareInterface
 {
+	use ContainerAwareTrait;
+
 	/**
 	 * Array of every admin resources available (should look like array('slug' => array(service, entityClass), 'slug' => array(service, entityClass), ...)
 	 * 
@@ -77,8 +80,8 @@ class CoreAdmin extends ContainerAware
 	 * Set the current action, fetching the current route
 	 */
 	public function setCurrentAction() {
-		$request = $this->container->get('request');
-		$route = $request->get('_route');
+		$request = $this->container->get('request_stack');
+		$route = $request->getMasterRequest('_route');
 		
 		$action = $this->getCurrentActionByRoute($route);
 		if($action !== null)

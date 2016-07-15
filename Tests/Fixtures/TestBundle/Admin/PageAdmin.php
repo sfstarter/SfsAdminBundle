@@ -3,6 +3,7 @@
 namespace Sfs\AdminBundle\Tests\Fixtures\TestBundle\Admin;
 
 use Sfs\AdminBundle\Controller\AdminController;
+use Sfs\AdminBundle\Tests\Fixtures\TestBundle\Admin\Form\Type\PageType;
 
 class PageAdmin extends AdminController
 {
@@ -16,7 +17,7 @@ class PageAdmin extends AdminController
 	}
 
 	protected function setUpdateForm($object) {
-		$updateForm = $this->createAdminForm(new Form\Type\PageType(), $object);
+		$updateForm = $this->createAdminForm(PageType::class, $object);
 
 		return $updateForm;
 	}

@@ -14,14 +14,14 @@ services:
         tags:
             - { name: routing.loader }
         arguments:
-            - @sfs.admin.core
+            - "@sfs.admin.core"
     sfs.admin.menu_builder:
         class: Sfs\AdminBundle\Menu\MenuBuilder
         arguments: ["@knp_menu.factory"]
         calls:
             - [setContainer, ["@service_container"]]
 
-# Menus
+## Menus
     sfs.admin.sidebar_menu:
         class: Knp\Menu\MenuItem
         factory: ["@sfs.admin.menu_builder", sidebarMenu]
@@ -41,28 +41,28 @@ services:
         tags:
             - { name: knp_menu.menu, alias: topbar }
 
-# Topbar
+## Topbar
     sfs.admin.topbar_menu.user:
         class: Sfs\AdminBundle\Menu\Topbar\UserBlock
         arguments:
-            - @twig
+            - "@twig"
         tags:
             - { name: sfs_admin.menu.topbar }
 
-# Listeners
+## Listeners
     sfs.admin.action_listener:
         class: Sfs\AdminBundle\Listener\AdminListener
         arguments:
-            - @sfs.admin.core
+            - "@sfs.admin.core"
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
-
-# Collectors
+#
+## Collectors
     sfs.admin.admin_collector:
         class: Sfs\AdminBundle\DataCollector\AdminCollector
         public: false
         arguments:
-            - @sfs.admin.core
+            - "@sfs.admin.core"
         tags:
             -
                 name: data_collector
@@ -73,19 +73,19 @@ services:
     sfs.admin.twig.url_extension:
         class: Sfs\AdminBundle\Twig\AdminRouterExtension
         arguments:
-            - @sfs.admin.core
+            - "@sfs.admin.core"
         tags:
             - { name: twig.extension }
     sfs.admin.twig.of_type:
         class: Sfs\AdminBundle\Twig\OfTypeExtension
         arguments:
-            - @doctrine.orm.entity_manager
-            - @sfs.admin.core
+            - "@doctrine.orm.entity_manager"
+            - "@sfs.admin.core"
         tags:
             - { name: twig.extension }
     sfs.adminu.twig.preferences_extension:
         class: Sfs\AdminBundle\Twig\PreferencesExtension
         arguments:
-            - @service_container
+            - "@service_container"
         tags:
             - { name: twig.extension }

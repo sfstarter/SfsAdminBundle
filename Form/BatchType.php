@@ -9,6 +9,8 @@
 namespace Sfs\AdminBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class BatchType extends AbstractType
@@ -22,9 +24,9 @@ class BatchType extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$builder
-			->add('batch_action', 'hidden')
-			->add('batch_ids', 'hidden')
-			->add('confirm', 'submit', array(
+			->add('batch_action', HiddenType::class)
+			->add('batch_ids', HiddenType::class)
+			->add('confirm', SubmitType::class, array(
 				'attr' => array(
 					'class'	=> 'btn btn-danger'
 				),

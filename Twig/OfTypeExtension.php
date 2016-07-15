@@ -11,6 +11,9 @@ namespace Sfs\AdminBundle\Twig;
 
 use Doctrine\ORM\EntityManager;
 use Sfs\AdminBundle\Core\CoreAdmin;
+use Twig_SimpleFilter;
+use Twig_SimpleFunction;
+use Twig_SimpleTest;
 
 class OfTypeExtension extends \Twig_Extension {
 
@@ -40,8 +43,8 @@ class OfTypeExtension extends \Twig_Extension {
 	 */
 	public function getTests() {
 		return array (
-				'property_is_relation' => new \Twig_Function_Method($this, 'propertyIsRelation'),
-				'of_type' => new \Twig_Function_Method($this, 'isOfType')
+				new Twig_SimpleTest('property_is_relation', array($this, 'propertyIsRelation')),
+				new Twig_SimpleTest('of_type', array($this, 'isOfType'))
 		);
 	}
 
@@ -51,7 +54,9 @@ class OfTypeExtension extends \Twig_Extension {
 	 * @return array
 	 */
 	public function getFilters() {
-		return array('get_type' => new \Twig_Filter_Method($this, 'getType'));
+		return array(
+			new Twig_SimpleFilter('get_type', array($this, 'getType'))
+		);
 	}
 
 	/**

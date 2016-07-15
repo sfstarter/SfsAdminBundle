@@ -9,6 +9,9 @@
 namespace Sfs\AdminBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,22 +26,26 @@ class ExportType extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$fields = array();
-		foreach($options['fields'] as $f) {
+		foreach($options['fields'] as $key => $f) {
 			$fields[$f['name']] = $f['name'];
 		}
 
-		$builder->add('fields', 'choice', array(
+		$builder->add('fields', ChoiceType::class, array(
 			'expanded' => true,
 			'multiple' => true,
 			'choices' => $fields,
 			'choice_attr' => function($val, $key, $index) use ($options) {
-				return array('checked' => true, 'class' => 'batch-row-checkbox', 'data-field-type' => $options['fields'][$key]['fieldType']);
+				return array(
+					'checked' => true,
+					'class' => 'batch-row-checkbox',
+					'data-field-type' => $options['fields'][$key]['fieldType']
+				);
 			}
 		));
 
-		$builder->add('format', 'hidden');
+		$builder->add('format', HiddenType::class);
 		$builder
-			->add('download', 'submit', array(
+			->add('download', SubmitType::class, array(
 					'attr' => array(
 						'class'	=> 'btn btn-primary'
 					),

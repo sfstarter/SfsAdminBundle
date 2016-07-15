@@ -9,6 +9,8 @@
 namespace Sfs\AdminBundle\Form\Type;
 
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 class SelectListEntityType extends SelectListType {
 	/**
 	 * getParent
@@ -17,7 +19,7 @@ class SelectListEntityType extends SelectListType {
 	 */
 	public function getParent()
 	{
-		return 'entity';
+		return EntityType::class;
 	}
 
 	/**

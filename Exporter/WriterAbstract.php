@@ -8,10 +8,13 @@
 
 namespace Sfs\AdminBundle\Exporter;
 
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-abstract class WriterAbstract extends ContainerAware
+abstract class WriterAbstract implements ContainerAwareInterface
 {
+	use ContainerAwareTrait;
+
 	/**
 	 * @var \Doctrine\ORM\EntityManager
 	 */

@@ -9,8 +9,9 @@
 namespace Sfs\AdminBundle\Twig;
 
 use Symfony\Component\DependencyInjection\Container;
+use Twig_Extension_GlobalsInterface;
 
-class PreferencesExtension extends \Twig_Extension
+class PreferencesExtension extends \Twig_Extension implements Twig_Extension_GlobalsInterface
 {
 	/**
 	 * @var Container

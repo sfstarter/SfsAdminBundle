@@ -8,6 +8,7 @@
 
 namespace Sfs\AdminBundle\Form\Filter;
 
+use Lexik\Bundle\FormFilterBundle\Filter\Form\Type\BooleanFilterType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -34,8 +35,13 @@ class BooleanFilter extends AbstractType
      */
     public function getParent()
     {
-        return 'filter_boolean';
+        return BooleanFilterType::class;
     }
+
+	public function getBlockPrefix()
+	{
+		return 'sfs_admin_filter_boolean';
+	}
 
     /**
      * {@inheritdoc}
