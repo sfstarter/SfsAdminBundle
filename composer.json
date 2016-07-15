@@ -30,7 +30,8 @@
         "phpunit/phpunit": "5.3.*",
         "doctrine/doctrine-fixtures-bundle": "2.3.*",
         "liip/functional-test-bundle": "1.6.*",
-        "nelmio/alice": "2.1.*"
+        "nelmio/alice": "2.1.*",
+        "friendsofsymfony/user-bundle": "dev-master"
     },
     "autoload": {
         "psr-4": {

@@ -2,36 +2,36 @@ sfs:
     admin:
         action:
             batch:
-                confirm: Confirm
-                delete: Delete
+                confirm: "Confirm"
+                delete: "Delete"
             button:
-                back_list: Back to the list
-                save: Save
-                save_and_add: Save & Add
-                save_and_list: Save & Back to the list
+                back_list: "Back to the list"
+                save: "Save"
+                save_and_add: "Save & Add"
+                save_and_list: "Save & Back to the list"
             export:
-                csv: Export To CSV
-                json: Export to JSON
-                modal_title: Export configuration for
-            tools: Tools
+                csv: "Export To CSV"
+                json: "Export to JSON"
+                modal_title: "Export configuration for"
+            tools: "Tools"
         crud:
-            actions: Actions
-            create: Create
-            delete: Delete
-            filters: Filters
-            list: List
-            read: Read
-            reset: Reset
-            update: Update
+            actions: "Actions"
+            create: "Create"
+            delete: "Delete"
+            filters: "Filters"
+            list: "List"
+            read: "Read"
+            reset: "Reset"
+            update: "Update"
         field:
             false_value: 'False'
             true_value: 'True'
         message:
             batch:
-                delete_message: Do you confirm the batch Delete ?
-                delete_title: Warning! This action is irreversible
-            delete_message: Are you sure you want to delete the current object ? (ID: %id%)
-            delete_title: Warning! This action is irreversible
-            list_total: Found total %count% records
+                delete_message: "Do you confirm the batch Delete ?"
+                delete_title: "Warning! This action is irreversible"
+            delete_message: "Are you sure you want to delete the current object ? (ID: %id%)"
+            delete_title: "Warning! This action is irreversible"
+            list_total: "Found total %count% records"
         page:
-            dashboard: Home
+            dashboard: "Home"
