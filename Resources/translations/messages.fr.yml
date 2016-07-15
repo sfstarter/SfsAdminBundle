@@ -35,3 +35,10 @@ sfs:
             list_total: "Total de %count% enregistrements"
         page:
             dashboard: "Accueil"
+        security:
+            login: "Connexion"
+            login_title: "Page de connexion"
+            logout: "Déconnexion"
+            password: "Mot de passe"
+            remember_me: "Se souvenir de moi"
+            username: "Utilisateur"

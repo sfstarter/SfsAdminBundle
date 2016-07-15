@@ -35,3 +35,10 @@ sfs:
             list_total: "Found total %count% records"
         page:
             dashboard: "Home"
+        security:
+            login: "Login"
+            login_title: "Login page"
+            logout: "Logout"
+            password: "Password"
+            remember_me: "Remember me"
+            username: "Username"

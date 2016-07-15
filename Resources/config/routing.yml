@@ -19,10 +19,6 @@ sfs_admin_login:
     path:  /login
     defaults: { _controller: SfsAdminBundle:Security:login }
 
-sfs_admin_login_check:
-    path:  /login-check
-    defaults: { _controller: SfsAdminBundle:Security:check }
-
 sfs_admin_logout:
     path:  /logout
     defaults: { _controller: SfsAdminBundle:Security:logout }
