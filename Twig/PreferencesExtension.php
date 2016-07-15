@@ -19,11 +19,9 @@ class PreferencesExtension extends \Twig_Extension implements Twig_Extension_Glo
 	private $container;
 
 	/**
-	 * __construct
-	 * 
 	 * @param Container $container
 	 */
-	public function __construct(Container $container) {
+	public function setContainer(Container $container) {
 		$this->container = $container;
 	}
 
