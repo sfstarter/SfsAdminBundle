@@ -87,5 +87,7 @@ services:
         class: Sfs\AdminBundle\Twig\PreferencesExtension
         arguments:
             - "@service_container"
+        calls:
+            - [setContainer, ["@service_container"]]
         tags:
             - { name: twig.extension }
