@@ -1,7 +1,7 @@
 site_name: Sfs Admin
 site_description: SfsAdmin documentation
 site_author: Ramine AGOUNE
-theme: yeti
+theme: readthedocs
 
 pages:
     - Home: index.md
