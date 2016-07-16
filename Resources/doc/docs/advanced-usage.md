@@ -10,7 +10,7 @@ sfs_admin:
     topbar_buttons:
         - { title: Google, icon: fa-google, url: http://google.com }
 ```
-The array *topbar_buttons* requires three parameters: the *title* of the button, a font-awesome *icon* and a *url* OR a symfony2 *route*. That way you will immediately see that a button Google appeared in the topbar.
+The array *topbar_buttons* requires three parameters: the *title* of the button, a font-awesome *icon* and a *url* OR a Symfony3 *route*. That way you will immediately see that a button Google appeared in the topbar.
 <figure>
 	<img src="/img/topbar_buttons.jpg" style="display: block; margin: auto;" />
 	<figcaption style="text-align: center; font-size: 12px;">Displaying three buttons in topbar menu, aside of the user block</figcaption>
@@ -31,7 +31,7 @@ Tag it with *sfs_admin.menu.topbar*, so that SfsAdminBundle will recognize it as
 <?php
 
 /**
- * SfsAdminBundle - Symfony2 project
+ * SfsAdminBundle - Symfony3 project
  *
  * @author Ramine AGOUNE <ramine.agoune@solidlynx.com>
  */
