@@ -9,6 +9,8 @@
 namespace Sfs\AdminBundle\Form\Type;
 
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
 class TagEntityType extends TagType {
 	/**
 	 * getParent
@@ -17,7 +19,7 @@ class TagEntityType extends TagType {
 	 */
 	public function getParent()
 	{
-		return 'entity';
+		return EntityType::class;
 	}
 
 	/**

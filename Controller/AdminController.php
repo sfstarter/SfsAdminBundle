@@ -8,6 +8,8 @@
 
 namespace Sfs\AdminBundle\Controller;
 
+use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -114,7 +116,9 @@ abstract class AdminController extends Controller
 	 */
 	protected function createAdminForm($type, $data = null, array $options = array())
 	{
-		return $this->container->get('sfs_admin.form.factory')->create($type, $data, $options);
+		$form = $this->container->get('sfs_admin.form.factory')->create($type, $data, $options);
+
+		return $form;
 	}
 
 	/**
@@ -152,6 +156,7 @@ abstract class AdminController extends Controller
 			$this->filterForm->handleRequest($request);
 			// build the query filter
 			if ($this->filterForm->isValid()) {
+				/** @var \Doctrine\ORM\QueryBuilder $query */
 				$query = $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($this->filterForm, $query);
 			}
 			
@@ -161,7 +166,7 @@ abstract class AdminController extends Controller
 			$viewFilterForm = null;
 
 		// Export form
-		$exportForm = $this->createForm(new ExportType(), null, array(
+		$exportForm = $this->createForm(ExportType::class, null, array(
 				'action' => $this->generateUrl($this->getRoute('export')),
 				'fields' => $this->getObjectProperties()
 		));
@@ -173,7 +178,7 @@ abstract class AdminController extends Controller
 				$query, /* query applied */
 				$request->query->getInt('page', 1)/* page number */,
 				10,/* limit per page */
-				array('defaultSortFieldName' => 'object.id', 'defaultSortDirection' => 'asc') /* Default sort */
+				array('defaultSortFieldName' => 'object.'. $this->getIdentifierProperty(), 'defaultSortDirection' => 'asc') /* Default sort */
 		);
 		$pagination->setPageRange(4);
 
@@ -336,10 +341,10 @@ abstract class AdminController extends Controller
 	public function updateAction($id, Request $request) {
 		$em = $this->container->get('doctrine')->getManager();
 		$repository = $em->getRepository($this->entityClass);
-		$object = $repository->findOneById($id);
+		$object = $repository->find($id);
 
 		if($object === null)
-			throw new NotFoundHttpException("Can't find the object with the id ". $id ." to edit");
+			throw new NotFoundHttpException("Can't find the object with the identifier ". $id ." to edit");
 
 		$this->parseAssociations($object);
 
@@ -376,13 +381,13 @@ abstract class AdminController extends Controller
 	public function deleteAction($id, Request $request) {
 		$em = $this->container->get('doctrine')->getManager();
 		$repository = $em->getRepository($this->entityClass);
-		$object = $repository->findOneById($id);
+		$object = $repository->find($id);
 		
 		if($object === null) {
-			throw new NotFoundHttpException("Can't find the object with the id ". $id ." to delete");
+			throw new NotFoundHttpException("Can't find the object with the identifier ". $id ." to delete");
 		}
 		else {
-			$form = $this->createForm(new DeleteType());
+			$form = $this->createForm(DeleteType::class);
 
 			$form->handleRequest($request);
 			if ($form->isValid()) {
@@ -408,7 +413,7 @@ abstract class AdminController extends Controller
 	 */
 	public function exportAction(Request $request) {
 		// Export form
-		$exportForm = $this->createForm(new ExportType(), null, array(
+		$exportForm = $this->createForm(ExportType::class, null, array(
 				'fields' => $this->getObjectProperties()
 		));
 
@@ -435,7 +440,7 @@ abstract class AdminController extends Controller
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
 	 */
 	public function batchAction(Request $request) {
-		$form = $this->createForm(new BatchType());
+		$form = $this->createForm(BatchType::class);
 
 		$form->handleRequest($request);
 
@@ -483,11 +488,20 @@ abstract class AdminController extends Controller
 	protected function batchDelete($ids) {
 		$em = $this->container->get('doctrine')->getManager();
 
-		$query = $em->createQuery('DELETE FROM '. $this->getEntityClass() .' o WHERE o.id IN (:ids)');
-		$query->setParameter('ids', $ids);
+		/**
+		 * @var  QueryBuilder $qb
+		 */
+		$qb = $em->createQueryBuilder();
+		$qb
+			->delete($this->getEntityClass(), 'o')
+			->where(
+				$qb->expr()->in('o.'. $this->getIdentifierProperty(), ':ids')
+			)
+			->setParameter('ids', $ids)
+		;
 
 		// We could/should do some tests on ids array size and effective number of deletion
-		$numDeletion = $query->execute();
+		$numDeletion = $qb->getQuery()->execute();
 
 		return $this->redirect($this->generateUrl($this->getRoute('list')));
 	}
@@ -574,7 +588,10 @@ abstract class AdminController extends Controller
 	 */
 	private function getMetadata($class)
 	{
-		if($class != null) {
+		if($class !== null) {
+			/**
+			 * @var EntityManager $em
+			 */
 			$em = $this->container->get('doctrine')->getManager();
 
 			return $em->getMetadataFactory()->getMetadataFor($class);
@@ -595,16 +612,29 @@ abstract class AdminController extends Controller
 
 		// Fields
 		foreach($metadatas->fieldMappings as $field) {
-			$fields[] = array('name' => $field['fieldName'], 'fieldType' => $field['type']);
+			$fields[$field['fieldName']] = array('name' => $field['fieldName'], 'fieldType' => $field['type']);
 		}
 
 		// Associations are merged to get a complete object
 		$associations = $metadatas->getAssociationMappings();
 		foreach($associations as $association) {
-			$fields[] = array('name' => $association['fieldName'], 'fieldType' => 'object');
+			$fields[$association['fieldName']] = array('name' => $association['fieldName'], 'fieldType' => 'object');
 		}
 
 		return $fields;
+	}
+
+	/**
+	 * Useful to get the identifier to use, and not directly the id property which may doesn't exist.
+	 * No need to throw an exception as Doctrine does it for us
+	 *
+	 * @return string
+	 * @throws \Doctrine\ORM\Mapping\MappingException
+	 */
+	public function getIdentifierProperty() {
+		$property = $this->getMetadata($this->getEntityClass())->getSingleIdentifierFieldName();
+
+		return $property;
 	}
 
 	/**

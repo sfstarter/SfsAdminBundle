@@ -3,6 +3,7 @@
 namespace Sfs\AdminBundle\Tests\Fixtures\TestBundle\Admin;
 
 use Sfs\AdminBundle\Controller\AdminController;
+use Sfs\AdminBundle\Tests\Fixtures\TestBundle\Admin\Form\Type\UserType;
 
 class UserAdmin extends AdminController
 {
@@ -18,7 +19,7 @@ class UserAdmin extends AdminController
 	}
 
 	protected function setUpdateForm($object) {
-		$updateForm = $this->createAdminForm(new Form\Type\UserType(), $object);
+		$updateForm = $this->createAdminForm(UserType::class, $object);
 
 		return $updateForm;
 	}

@@ -76,10 +76,8 @@ class SfsAdminExtension extends Extension implements PrependExtensionInterface
 				break;
 				case 'twig':
 					$config = array(
-							'form' => array(
-									'resources' => array(
-										'SfsAdminBundle:Form:fields.html.twig'
-									)
+							'form_themes' => array(
+									'SfsAdminBundle:Form:fields.html.twig'
 							)
 					);
 					$container->prependExtensionConfig($name, $config);

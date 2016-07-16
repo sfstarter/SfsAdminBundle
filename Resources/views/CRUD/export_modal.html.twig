@@ -58,10 +58,10 @@
 	$(document).ready(function() {
 		$('#export-modal').on('show.bs.modal', function(e) {
 			var format = $(e.relatedTarget).data('format');
-	
+
 			//populate the textbox
 			$(e.currentTarget).find('#file-format').html(format);
-			$(e.currentTarget).find('#admin_export_format').val(format);
+			$(e.currentTarget).find('#export_format').val(format);
 		});
 	});
 </script>

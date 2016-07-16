@@ -8,6 +8,7 @@
 
 namespace Sfs\AdminBundle\Form\Filter;
 
+use Sfs\AdminBundle\Form\Type\TagEntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -32,10 +33,15 @@ class TagEntityFilter extends AbstractType
      */
     public function getParent()
     {
-        return 'sfs_admin_field_tag_entity';
+        return TagEntityType::class;
     }
 
-    /**
+	public function getBlockPrefix()
+	{
+		return 'sfs_admin_filter_tag_entity';
+	}
+
+	/**
      * {@inheritdoc}
      */
     public function getName()

@@ -87,7 +87,7 @@
 								<tr>
 									<td>
 										<div class="checkbox margin-0">
-											<input class="checkbox-inversed batch-row-checkbox" type="checkbox" name="ids[]" value="{{ object.id }}">
+											<input class="checkbox-inversed batch-row-checkbox" type="checkbox" name="ids[]" value="{{ attribute(object, admin_identifier()) }}">
 											<label></label>
 										</div>
 									</td>

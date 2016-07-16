@@ -103,7 +103,7 @@ class AdminControllerTest extends Client
 		$this->assertTrue($this->client->getResponse()->isSuccessful());
 
 		// Test if the form validation redirects to the listAction page
-		$form = $crawler->selectButton('admin_delete[delete]')->form();
+		$form = $crawler->selectButton('delete[delete]')->form();
 		$this->client->submit($form);
 
 		$this->assertTrue($this->client->getResponse()->isRedirect('/admin/pages/list'));
@@ -139,8 +139,8 @@ class AdminControllerTest extends Client
 		$crawler = $this->requestListAction('pages');
 
 		// Submit the modal form
-		$form = $crawler->selectButton('admin_export[download]')->form();
-		$form->setValues(['admin_export[format]' => $format]);
+		$form = $crawler->selectButton('export[download]')->form();
+		$form->setValues(['export[format]' => $format]);
 
 		// Send the form
 		ob_start();

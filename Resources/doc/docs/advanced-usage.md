@@ -10,7 +10,7 @@ sfs_admin:
     topbar_buttons:
         - { title: Google, icon: fa-google, url: http://google.com }
 ```
-The array *topbar_buttons* requires three parameters: the *title* of the button, a font-awesome *icon* and a *url* OR a symfony2 *route*. That way you will immediately see that a button Google appeared in the topbar.
+The array *topbar_buttons* requires three parameters: the *title* of the button, a font-awesome *icon* and a *url* OR a Symfony3 *route*. That way you will immediately see that a button Google appeared in the topbar.
 <figure>
 	<img src="/img/topbar_buttons.jpg" style="display: block; margin: auto;" />
 	<figcaption style="text-align: center; font-size: 12px;">Displaying three buttons in topbar menu, aside of the user block</figcaption>
@@ -31,7 +31,7 @@ Tag it with *sfs_admin.menu.topbar*, so that SfsAdminBundle will recognize it as
 <?php
 
 /**
- * SfsAdminBundle - Symfony2 project
+ * SfsAdminBundle - Symfony3 project
  *
  * @author Ramine AGOUNE <ramine.agoune@solidlynx.com>
  */
@@ -119,11 +119,34 @@ Read the [documentation of Chart.js](http://www.chartjs.org/docs/) for more info
 
 ---
 ## Create pages
-To be written
+Since you set correctly your firewall and refuse access on */admin* (or any other path you setted for you administration) if the user is not logged in, you can create and add any page you want to your back-office.
+To do so, create a Controller and set it's path prefix to */admin*.
+The template used in your returned response shall look like so:
+
+```
+{% extends 'SfsAdminBundle:Core:base.html.twig' %}
+
+{% block content %}
+...
+{% endblock %}
+```
+Complete the *content block* as you wish, and you will benefit all of the UI from SfsAdminBundle. To add links to this page use the topbar mechanisms, or override the MenuBuilder.
+
+A good example of this is the default dashboardAction from *Sfs\AdminBundle\Controller\PageController*, that you definitely should override to create an awesome dashboard page.
 
 ---
 ## Architecture
-To be written
+SfsAdmin is composed of a few main classes:
+
+*Sfs\AdminBundle\DependencyInjection\Compiler\CompilerPass* searches all the services tagged as *sfs_admin.resource* to register them in the *Sfs\AdminBundle\Core\CoreAdmin*'s $admins array.
+
+It creates dynamically the routes in an array, for each resources created. This *CoreAdmin* class keeps track of each routes and entities related to the admin resource.
+It allows you to access to any of your object directy from it through its' methods.
+
+The routes are finally generated from the *CoreAdmin* using the *Sfs\AdminBundle\Routing\RouteAdminLoader* (service *sfs.admin.routing_loader*), called automatically from Symfony because of the tag *routing.loader*.
+
+The *Sfs\AdminBundle\Listener\AdminListener* catches each time a controller is called, so that we know what is the current admin resource. This current admin and the current action are setted in *CoreAdmin*.
+
 
 ---
 ## Complete Configuration

@@ -1,5 +1,5 @@
 # Common Usage
-Integrate SfsAdmin in your own Symfony2 webiste
+Integrate SfsAdmin in your own Symfony3 webiste
 
 ---
 ##Create an admin entity
@@ -10,6 +10,7 @@ Considering you have an entity *Project\DemoBundle\Entity\Page* you want to mana
 namespace Project\DemoBundle\Admin;
 
 use Sfs\AdminBundle\Controller\AdminController;
+use \Project\DemoBundle\Admin\Form\Type\PageType;
 
 class PageAdmin extends AdminController
 {
@@ -25,7 +26,7 @@ class PageAdmin extends AdminController
 	}
 
 	protected function setUpdateForm($object) {
-		$updateForm = $this->createAdminForm(new \Project\DemoBundle\Admin\Form\Type\PageType(), $object);
+		$updateForm = $this->createAdminForm(PageType::class, $object);
 
 		return $updateForm;
 	}
@@ -92,7 +93,7 @@ class PageType extends AbstractAdminType
 	}
 }
 ```
-Build your form just like you would do in Symfony2, with one exception: use the methods *addTab()*, *endTab()*, *addBlock()*, *endBlock()* to contain your fields, as much as you want. It will help the engine to properly design the form.
+Build your form just like you would do in Symfony3, with one exception: use the methods *addTab()*, *endTab()*, *addBlock()*, *endBlock()* to contain your fields, as much as you want. It will help the engine to properly design the form.
 
 ---
 ##Filter form
@@ -100,8 +101,11 @@ SfsAdmin supports natively the bundle [LexikFormFilterBundle](https://github.com
 
 In your Admin Resource, you need to set the filter form class:
 ```
+use \Project\DemoBundle\Admin\Form\Filter\PageFilterType;
+...
+
 	public function setFilterForm() {
-		$this->filterForm = $this->createForm(new \Project\DemoBundle\Admin\Form\Filter\PageFilterType());
+		$this->filterForm = $this->createForm(PageFilterType::class);
 	}
 ```
 
@@ -111,15 +115,19 @@ Now for your form:
 
 namespace Project\DemoBundle\Admin\Form\Filter;
 
+use Lexik\Bundle\FormFilterBundle\Filter\Form\Type\NumberFilterType;
+use Lexik\Bundle\FormFilterBundle\Filter\Form\Type\TextFilterType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Sfs\AdminBundle\Form\AbstractFilterType;
+use Sfs\AdminBundle\Form\Filter\BooleanFilter;
+use Sfs\AdminBundle\Form\Filter\DateTimeRangeFilter;
 
 class TuneFilterType extends AbstractFilterType {
 	public function buildForm(FormBuilderInterface $builder, array $options) {
-		$builder->add('id', 'filter_number');
-		$builder->add('title', 'filter_text');
-		$builder->add('enabled', 'sfs_admin_filter_boolean');
-		$builder->add('updatedAt', 'sfs_admin_filter_datetime_range', array(
+		$builder->add('id', NumberFilterType::class);
+		$builder->add('title', TextFilterType::class);
+		$builder->add('enabled', BooleanFilter::class');
+		$builder->add('updatedAt', DateTimeRangeFilter::class, array(
 			'left_datetime_options' => array(
 					'widget' => 'single_text',
 					'format' => 'dd/MM/yyyy',
@@ -155,70 +163,228 @@ Read the [documentation](https://github.com/lexik/LexikFormFilterBundle/blob/mas
 ---
 ##Form Types
 ###Create & Update FormTypes
-Considering you can use every standard FormTypes Symfony2 provides, SfsAdmin implements some few more to help the UI being user-friendly. Here is the complete list:
+Considering you can use every standard FormTypes Symfony3 provides, SfsAdmin implements some few more to help the UI being user-friendly. Here is the complete list:
 
-- sfs_admin_field_color_picker
+- *Sfs\AdminBundle\Form\Type\ColorPickerType::class*
 
 Allows you to display a color selector, with hexadecimal values or rgba.
 ```
-'attr' => array(
-	'data-color-format' => 'hex'
-)
+$builder->add('colorProperty', ColorPickerType::class, array(
+    'attr' => array(
+        'data-format' => 'hex'
+    )
+));
 ```
 
-- sfs_admin_field_datetime_picker
+---
 
-Displays a datepicker OR a datetimepicker, depending on its configuration:
+- *Sfs\AdminBundle\Form\Type\DateTimePickerType::class*
+
+Displays a datepicker or a datetimepicker, depending on its configuration:
 ```
-'attr' => array(
-	'data-date-locale' => 'en',
-	'data-date-format' => 'YYYY-MM-DD HH:mm:ss'
-)
+$builder->add('datetimeProperty', DateTimePickerType::class, array(
+    'attr' => array(
+        'data-date-locale' => 'en',
+        'data-date-format' => 'YYYY-MM-DD HH:mm:ss'
+    )
+));
 ```
 
-- sfs_admin_field_select
-- sfs_admin_field_select_entity
+---
 
-Just like sfs_admin_field_select except it is related to an entity class.
+- *Sfs\AdminBundle\Form\Type\SelectType::class*
+```
+$builder->add('property', SelectType::class, array(
+    'multiple' => false,
+    'attr' => array(
+		'data-style' => 'btn-white',
+		'data-live-search' => false
+    )
+));
+```
+The *show-tick* class will display ticks aside the selected element(s).
+As this type heritates of *ChoiceType::class*, refer to the [Symfony doc](http://symfony.com/doc/3.1/reference/forms/types/choice.html)
 
-- sfs_admin_field_select_list
-- sfs_admin_field_select_list_entity
+---
 
-Just like sfs_admin_field_select_list except it is related to an entity class.
+- *Sfs\AdminBundle\Form\Type\SelectEntityType::class*
 
-- sfs_admin_field_slider
+Just like *SelectType::class* except it is related to an entity class.
+```
+$builder->add('property', SelectEntityType::class, array(
+    'class' => 'PathToYourEntity',
+    'attr' => array(
+		'data-style' => 'btn-white',
+		'data-live-search' => false
+    )
+));
+```
+As this type heritates of *EntityType::class*, refer to the [Symfony doc](http://symfony.com/doc/3.1/reference/forms/types/entity.html)
+
+---
+
+- *Sfs\AdminBundle\Form\Type\SelectListType::class*
+
+```
+$builder->add('property', SelectListType::class, array(
+    'multiple' => true
+));
+```
+As this type heritates of *ChoiceType::class*, refer to the [Symfony doc](http://symfony.com/doc/3.1/reference/forms/types/choice.html)
+
+---
+
+- *Sfs\AdminBundle\Form\Type\SelectListEntityType::class*
+
+Just like *SelectListType::class* except it is related to an entity class.
+
+```
+$builder->add('property', SelectListEntityType::class, array(
+    'class' => 'PathToYourEntity',
+    'attr' => array(
+		'data-style' => 'btn-white',
+		'data-live-search' => false
+    )
+));
+```
+
+As this type heritates of *EntityType::class*, refer to the [Symfony doc](http://symfony.com/doc/3.1/reference/forms/types/entity.html)
+
+---
+
+- *Sfs\AdminBundle\Form\Type\SliderType::class*
 
 Replaces a simple text input by a slider. Here is the default configuration, that you can override:
 ```
-'attr' => array(
-	'class' => 'slider',
-	'data-step'	=> 1,
-	'data-type' => 'single',
-	'data-min' => 0,
-	'data-max' => 100,
-	'data-disable' => false,
-	'data-postfix' => ''
-)
+$builder->add('integerProperty', SliderType::class, array(
+    'attr' => array(
+        'class' => 'slider',
+        'data-step'	=> 1,
+        'data-type' => 'single',
+        'data-min' => 0,
+        'data-max' => 100,
+        'data-disable' => false,
+        'data-postfix' => ''
+    )
+));
 ```
 Take a look at [IonRangeSlider](http://ionden.com/a/plugins/ion.rangeSlider/en.html) for further informations.
 
-- sfs_admin_field_switch
+---
 
-Displays a simple on/off button, instead of a checkbox. It is basically the same principle, except you can write values inside it.
+- *Sfs\AdminBundle\Form\Type\SwitchType::class*
+
+Displays a simple on/off button, instead of a checkbox. It is basically the same principle, except it has a different design & you can write labels inside it.
 ```
-'attr' => array(
-	'data-on-text' => 'enabled',
-	'data-off-text' => 'disabled',
-	'data-label-text' => 'content',
-	'data-on-color' => 'success',
-	'data-off-color' => 'danger'
-)
+$builder->add('booleanProperty', SwitchType::class, array(
+    'attr' => array(
+        'data-on-text' => 'enabled',
+        'data-off-text' => 'disabled',
+        'data-label-text' => 'content',
+        'data-on-color' => 'success',
+        'data-off-color' => 'danger'
+    )
+));
+```
+---
+
+- *Sfs\AdminBundle\Form\Type\TagType::class*
+```
+$builder->add('property', TagType::class, array());
+```
+As this type heritates of *ChoiceType::class*, refer to the [Symfony doc](http://symfony.com/doc/3.1/reference/forms/types/choice.html)
+
+---
+
+- *Sfs\AdminBundle\Form\Type\TagEntityType::class*
+
+Just like *TagType::class* except it is related to an entity class.
+```
+$builder->add('property', TagEntityType::class, array(
+    'class' => 'PathToYourEntity',
+    'multiple' => true,
+    'required' => false
+));
 ```
 
-- sfs_admin_field_tag
-- sfs_admin_field_tag_entity
+As this type heritates of *EntityType::class*, refer to the [Symfony doc](http://symfony.com/doc/3.1/reference/forms/types/entity.html)
 
-Just like sfs_admin_field_tag except it is related to an entity class.
+---
 
 ###Filter FormTypes
-To be written
+
+LexikFormFilterBundle provides barely all the types you could need. Have a look at its' [documentation](https://github.com/lexik/LexikFormFilterBundle/blob/v5.0.1/Resources/doc/provided-types.md).
+
+SfsAdminBundle provides a few more, to get a better integration in the design & add some functionnality:
+
+- *Sfs\AdminBundle\Form\Filter\BooleanFilter::class*
+
+```
+$builder->add('booleanProperty', BooleanFilter::class);
+```
+
+---
+
+- *Sfs\AdminBundle\Form\Filter\DateTimePickerFilter::class*
+
+```
+$builder->add('dateTimePickerProperty', DateTimePickerFilter::class, array(
+    'attr' => array(
+        'data-date-locale' => 'en',
+        'data-date-format' => 'YYYY-MM-DD HH:mm:ss'
+    )
+));
+```
+
+---
+
+- *Sfs\AdminBundle\Form\Filter\DateTimeRangeFilter::class*
+
+```
+$builder->add('dateTimeRangeProperty', DateTimeRangeFilter::class, array(
+    'left_datetime_options' => array(
+            'widget' => 'single_text',
+            'format' => 'dd/MM/yyyy',
+            'label' => 'From',
+            'attr' => array(
+                    'data-date-locale' => 'fr',
+                    'data-date-format' => 'DD/MM/YYYY'
+            )
+    ),
+    'right_datetime_options' => array(
+            'widget' => 'single_text',
+            'format' => 'dd/MM/yyyy',
+            'label' => 'To',
+            'attr' => array(
+                    'data-date-locale' => 'fr',
+                    'data-date-format' => 'DD/MM/YYYY'
+            )
+    )
+));
+```
+
+---
+
+- *Sfs\AdminBundle\Form\Filter\SelectEntityFilter::class*
+
+```
+$builder->add('entityProperty', SelectEntityFilter::class, array(
+    'class' => 'PathToYourEntity',
+    'attr' => array(
+		'data-style' => 'btn-white',
+		'data-live-search' => false
+    )
+));
+```
+
+---
+
+- *Sfs\AdminBundle\Form\Filter\TagEntityFilter::class*
+
+```
+$builder->add('entityProperty', TagEntityFilter::class, array(
+    'class' => 'PathToYourEntity',
+    'multiple' => true,
+    'required' => false
+));
+```

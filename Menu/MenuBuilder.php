@@ -8,14 +8,17 @@
 
 namespace Sfs\AdminBundle\Menu;
 
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Sfs\AdminBundle\Menu\Topbar\TopbarBlockInterface;
 
-class MenuBuilder extends ContainerAware
+class MenuBuilder implements ContainerAwareInterface
 {
+	use ContainerAwareTrait;
+
 	/**
 	 * Contains all admin resources to be displayed on the menu
 	 * 
@@ -140,7 +143,7 @@ class MenuBuilder extends ContainerAware
 		$translator = $this->container->get('translator');
 		$core = $this->container->get('sfs.admin.core');
 		$currentAdmin = $core->getCurrentAdmin();
-	
+
 		$menu = $this->factory->createItem('breadcrumb', array(
 				'childrenAttributes' => array(
 						'class' => 'breadcrumb pull-right margin-0'
@@ -152,11 +155,11 @@ class MenuBuilder extends ContainerAware
 						'icon' => 'fa-home'
 				)
 		));
-	
+
 		// Two possibilities: currently on an Admin Resource
 		if($currentAdmin !== null) {
 			$admin = $this->container->get($currentAdmin['service']);
-	
+
 			if($core->getCurrentAction() === 'list') {
 				$menu->addChild($admin->getTitle() .' List');
 			}
@@ -166,9 +169,9 @@ class MenuBuilder extends ContainerAware
 		}
 		// Otherwise looking on a custom page
 		else {
-				
+
 		}
-	
+
 		return $menu;
 	}
 
@@ -227,7 +230,7 @@ class MenuBuilder extends ContainerAware
 			// Only consider the true topbar blocks : they must implement InterfaceTopbarBlock
 			if($block instanceof TopbarBlockInterface) {
 				$htmlContent = $block->display();
-	
+
 				$menu->addChild($htmlContent, array(
 						'attributes'	=> array('class' => 'user-panel'),
 						'extras' 		=> array('safe_label' => true)

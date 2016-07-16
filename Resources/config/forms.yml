@@ -4,56 +4,62 @@
 ###
 
 services:
-# Form Types
+#FormFactory
     sfs_admin.form.resolved_type_factory:
         class: Sfs\AdminBundle\Form\Factory\ResolvedFormTypeFactory
+    sfs_admin.form.registry:
+        class: Sfs\AdminBundle\Form\Factory\FormRegistry
+        arguments:
+            - ["@form.extension"]
+            - "@sfs_admin.form.resolved_type_factory"
     sfs_admin.form.factory:
         class: Symfony\Component\Form\FormFactory
         arguments:
-            - @form.registry
-            - @sfs_admin.form.resolved_type_factory
+            - "@sfs_admin.form.registry"
+            - "@sfs_admin.form.resolved_type_factory"
 
+# Form Types
     sfs_admin.form.type.select:
         class: Sfs\AdminBundle\Form\Type\SelectType
         tags:
-            - { name: form.type, alias: sfs_admin_field_select }
+            - { name: form.type }
     sfs_admin.form.type.select_entity:
         class: Sfs\AdminBundle\Form\Type\SelectEntityType
         tags:
-            - { name: form.type, alias: sfs_admin_field_select_entity }
+            - { name: form.type }
     sfs_admin.form.type.tag:
         class: Sfs\AdminBundle\Form\Type\TagType
         tags:
-            - { name: form.type, alias: sfs_admin_field_tag }
+            - { name: form.type }
     sfs_admin.form.type.tag_entity:
         class: Sfs\AdminBundle\Form\Type\TagEntityType
         tags:
-            - { name: form.type, alias: sfs_admin_field_tag_entity }
+            - { name: form.type }
     sfs_admin.form.type.select_list:
         class: Sfs\AdminBundle\Form\Type\SelectListType
         tags:
-            - { name: form.type, alias: sfs_admin_field_select_list }
+            - { name: form.type }
     sfs_admin.form.type.select_list_entity:
         class: Sfs\AdminBundle\Form\Type\SelectListEntityType
         tags:
-            - { name: form.type, alias: sfs_admin_field_select_list_entity }
+            - { name: form.type }
 
     sfs_admin.form.type.switch:
         class: Sfs\AdminBundle\Form\Type\SwitchType
         tags:
-            - { name: form.type, alias: sfs_admin_field_switch }
+            - { name: form.type }
     sfs_admin.form.type.slider:
         class: Sfs\AdminBundle\Form\Type\SliderType
         tags:
-            - { name: form.type, alias: sfs_admin_field_slider }
+            - { name: form.type }
     sfs_admin.form.type.color_picker:
         class: Sfs\AdminBundle\Form\Type\ColorPickerType
         tags:
-            - { name: form.type, alias: sfs_admin_field_color_picker }
+            - { name: form.type }
     sfs_admin.form.type.datetime_picker:
         class: Sfs\AdminBundle\Form\Type\DateTimePickerType
         tags:
-            - { name: form.type, alias: sfs_admin_field_datetime_picker }
+            - { name: form.type }
 
 # Filters
     sfs_admin.filter.doctrine_subscriber:
@@ -64,20 +70,20 @@ services:
     sfs_admin.form.filter.boolean:
         class: Sfs\AdminBundle\Form\Filter\BooleanFilter
         tags:
-            - { name: form.type, alias: sfs_admin_filter_boolean }
+            - { name: form.type }
     sfs_admin.form.filter.select_entity:
         class: Sfs\AdminBundle\Form\Filter\SelectEntityFilter
         tags:
-            - { name: form.type, alias: sfs_admin_filter_select_entity }
+            - { name: form.type }
     sfs_admin.form.filter.tag_entity:
         class: Sfs\AdminBundle\Form\Filter\TagEntityFilter
         tags:
-            - { name: form.type, alias: sfs_admin_filter_tag_entity }
+            - { name: form.type }
     sfs_admin.form.filter.datetime_picker:
         class: Sfs\AdminBundle\Form\Filter\DateTimePickerFilter
         tags:
-            - { name: form.type, alias: sfs_admin_filter_datetime_picker }
+            - { name: form.type }
     sfs_admin.form.filter.datetime_range:
         class: Sfs\AdminBundle\Form\Filter\DateTimeRangeFilter
         tags:
-            - { name: form.type, alias: sfs_admin_filter_datetime_range }
+            - { name: form.type }

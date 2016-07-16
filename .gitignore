@@ -1,6 +1,4 @@
 # Main Project
-.project
-/.idea
 composer.lock
 /bin
 /vendor

@@ -8,6 +8,7 @@
 
 namespace Sfs\AdminBundle\Form\Filter;
 
+use Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateTimeRangeFilterType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -48,8 +49,13 @@ class DateTimeRangeFilter extends AbstractType
      */
     public function getParent()
     {
-        return 'filter_datetime_range';
+        return DateTimeRangeFilterType::class;
     }
+
+	public function getBlockPrefix()
+	{
+		return 'sfs_admin_filter_datetime_range';
+	}
 
     /**
      * {@inheritdoc}

@@ -9,6 +9,7 @@
 namespace Sfs\AdminBundle\Twig;
 
 use Sfs\AdminBundle\Core\CoreAdmin;
+use Twig_SimpleFunction;
 
 class AdminRouterExtension extends \Twig_Extension {
 	/**
@@ -31,11 +32,31 @@ class AdminRouterExtension extends \Twig_Extension {
 	 */
 	public function getFunctions() {
 		return array (
-				'admin_url' => new \Twig_Function_Method($this, 'getAdminUrl'),
-				'admin_route' => new \Twig_Function_Method($this, 'getAdminRoute')
+				new Twig_SimpleFunction('admin_identifier', array($this, 'getAdminIdentifier')),
+				new Twig_SimpleFunction('admin_url', array($this, 'getAdminUrl')),
+				new Twig_SimpleFunction('admin_route', array($this, 'getAdminRoute'))
 		);
 	}
 
+	/**
+	 * getAdminIdentifier
+	 *
+	 * @param null $object
+	 * @return string
+	 *
+	 */
+	public function getAdminIdentifier($object = null) {
+		if(isset($object)) {
+			$slug = $this->core->getAdminSlug($object);
+		}
+		else {
+			$slug = $this->core->getCurrentSlug();
+		}
+		$property = $this->core->getAdminService($slug)->getIdentifierProperty();
+		
+		return $property;
+	}
+	
 	/**
 	 * getAdminUrl
 	 * 

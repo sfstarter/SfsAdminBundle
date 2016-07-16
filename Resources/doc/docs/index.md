@@ -1,6 +1,6 @@
 # SfsAdmin Documentation
 
-Administration bundle for Symfony2
+Administration bundle for Symfony3
 
 ---
 
@@ -9,8 +9,7 @@ SfsAdmin is an entity-oriented back-office generator. It allows you to generate 
 
 - Deploy easily your CRUD system for every entities of your project, with few configuration
 - Doctrine ORM oriented only
-- FOSUserBundle usage (required for now, should be removed in next version to allow the usage of any security system)
-- Usage of native Symfony2 FormTypes for your create/update pages
+- Usage of native Symfony3 FormTypes for your create/update pages
 - Filter mechanisms inside the listing pages: [LexikFormFilterBundle](https://github.com/lexik/LexikFormFilterBundle) does a great job for it, so it is natively supported
 - Export system in JSON & CSV
 - Add custom pages easily
@@ -42,7 +41,6 @@ class AppKernel extends Kernel
     {
         $bundles = array(
             // ...
-			new FOS\UserBundle\FOSUserBundle(),
 			new Knp\Bundle\MenuBundle\KnpMenuBundle(),
 			new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 			new Lexik\Bundle\FormFilterBundle\LexikFormFilterBundle(),
@@ -108,7 +106,8 @@ sfs_admin_resources:
 
 
 ###Security
-SfsAdmin requires for now the usage of FOS/UserBundle (should be removed in next version). It is used to generate easily the login page. The following is only a functional example of *app/config/security.yml*, to show you how to configurate your administration. The login and logout pages must be anonymously accessible.
+SfsAdmin requires no specific user bundle, so that you can run your personal one or the commonly used FOSUser. The login page is setted in the *Controller/SecurityController* class, and can easily be overriden.
+The following is only a functional example of *app/config/security.yml*, to show you how to configurate your administration. The login and logout pages must be anonymously accessible.
 
 Please refer to the [FOSUserBundle documentation](https://symfony.com/doc/1.3.x/bundles/FOSUserBundle/index.html) for advanced configuration.
 ```
@@ -128,16 +127,19 @@ security:
             switch_user:        true
             context:            user
             form_login:
-                provider:       fos_userbundle
                 login_path:     sfs_admin_login
                 use_forward:    false
-                check_path:     sfs_admin_login_check
+                check_path:     sfs_admin_login
                 failure_path:   null
                 default_target_path: sfs_admin_dashboard
             logout:
                 path:   sfs_admin_logout
                 target: sfs_admin_login
                 invalidate_session: false
+            remember_me:
+                secret:   '%secret%'
+                lifetime: 604800
+                path:     /admin
             anonymous:          true
 
     access_control:

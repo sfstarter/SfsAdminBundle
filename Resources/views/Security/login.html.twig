@@ -13,14 +13,14 @@
 	</div>
 
 	<div class="page-form padding-24">
-		<form action="{{ path("sfs_admin_login_check") }}" method="post" class="form">
+		<form action="{{ path("sfs_admin_login") }}" method="post" class="form">
 			<div class="header-content text-center mb-24">
-				<h2 class="mt-0">Log In</h2>
+				<h2 class="mt-0">{% trans %}sfs.admin.security.login_title{% endtrans %}</h2>
 			</div>
 
 			{% if error %}
 				<div class="alert alert-danger">
-						{{ error|trans({}, 'FOSUserBundle') }}
+					{{ error.messageKey|trans(error.messageData, 'security') }}
 				</div>
 			{% endif %}
 
@@ -29,7 +29,7 @@
 					<span class="input-group-addon">
 						<i class="fa fa-user"></i>
 					</span>
-					<input type="text" placeholder="{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}" name="_username" class="form-control" value="{{ last_username }}" required="required">
+					<input type="text" placeholder="{% trans %}sfs.admin.security.username{% endtrans %}" name="_username" class="form-control" value="{{ last_username }}" required="required">
 				</div>
 			</div>
 
@@ -38,7 +38,7 @@
 					<span class="input-group-addon">
 						<i class="fa fa-lock"></i>
 					</span>
-					<input type="password" placeholder="{{ 'security.login.password'|trans({}, 'FOSUserBundle') }}" name="_password" class="form-control" required="required">
+					<input type="password" placeholder="{% trans %}sfs.admin.security.password{% endtrans %}" name="_password" class="form-control" required="required">
 				</div>
 			</div>
 
@@ -46,14 +46,14 @@
 				<div class="checkbox">
 					<input type="checkbox" id="remember_me" name="_remember_me" value="on" />
 					<label for="remember_me">
-						{{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}
+						{% trans %}sfs.admin.security.remember_me{% endtrans %}
 					</label>
 				</div>
 			</div>
 
 			<div class="form-group pull-right">
-				<button type="submit" class="btn btn-default" value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}">
-					Log In <i class="fa fa-chevron-circle-right"></i>
+				<button type="submit" class="btn btn-default" value="Login">
+					{% trans %}sfs.admin.security.login{% endtrans %} <i class="fa fa-chevron-circle-right"></i>
 				</button>
 			</div>
 			<div class="clearfix"></div>
