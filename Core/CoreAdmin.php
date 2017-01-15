@@ -80,9 +80,10 @@ class CoreAdmin implements ContainerAwareInterface
 	 * Set the current action, fetching the current route
 	 */
 	public function setCurrentAction() {
+	    /** @var \Symfony\Component\HttpFoundation\RequestStack $request */
 		$request = $this->container->get('request_stack');
-		$route = $request->getMasterRequest('_route');
-		
+        $route = $request->getMasterRequest()->get('_route');
+
 		$action = $this->getCurrentActionByRoute($route);
 		if($action !== null)
 			$this->currentAction = $action;
