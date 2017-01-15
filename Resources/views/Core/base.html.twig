@@ -61,6 +61,10 @@
 
 					<!--BEGIN CONTENT-->
 					<div class="page-content padding-24 clearfix">
+                        {% block flashbags %}
+							{% include 'SfsAdminBundle:Core:flashbags.html.twig' %}
+                        {% endblock %}
+
 						{% block content %}
 						{% endblock %}
 					</div>

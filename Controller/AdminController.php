@@ -286,6 +286,7 @@ abstract class AdminController extends Controller
 		$object = new $this->entityClass();
 		$this->parseAssociations($object);
 
+		/** @var \Symfony\Component\Form\Form $form */
 		$form = $this->setCreateForm($object);
 
 		$form->handleRequest($request);
@@ -296,6 +297,14 @@ abstract class AdminController extends Controller
 			$this->persistCreate($em, $object);
 			$em->flush();
 
+            $this->addFlash(
+                'success',
+                $this->get('translator')->trans('sfs.admin.message.create_success', array(
+                    '%id%' => $object->getId(),
+                    '%name%' => $object->__toString()
+                ))
+            );
+
 			if (null !== $request->get('btn_save_and_add')) {
 				return $this->redirect($this->generateUrl($this->getRoute('create')));
 			}
@@ -303,6 +312,12 @@ abstract class AdminController extends Controller
 				return $this->redirect($this->generateUrl($this->getRoute('list')));
 			}
 		}
+		else if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash(
+                'error',
+                $this->get('translator')->trans('sfs.admin.message.create_error', array())
+            );
+        }
 
 		return $this->render($this->getTemplate('create'), array(
 				'form'				=> $form->createView(),
@@ -358,10 +373,27 @@ abstract class AdminController extends Controller
 			$this->persistUpdate($em, $object);
 			$em->flush();
 
+            $this->addFlash(
+                'success',
+                $this->get('translator')->trans('sfs.admin.message.update_success', array(
+                    '%id%' => $object->getId(),
+                    '%name%' => $object->__toString()
+                ))
+            );
+
 	        if (null !== $request->get('btn_save_and_list')) {
 				return $this->redirect($this->generateUrl($this->getRoute('list')));
 	        }
 		}
+		else if($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash(
+                'error',
+                $this->get('translator')->trans('sfs.admin.message.update_error', array(
+                    '%id%' => $object->getId(),
+                    '%name%' => $object->__toString()
+                ))
+            );
+        }
 
 		return $this->render($this->getTemplate('update'), array(
 				'form'				=> $form->createView(),
@@ -394,8 +426,25 @@ abstract class AdminController extends Controller
 				$em->remove($object);
 				$em->flush();
 
+                $this->addFlash(
+                    'success',
+                    $this->get('translator')->trans('sfs.admin.message.delete_success', array(
+                        '%id%' => $object->getId(),
+                        '%name%' => $object->__toString()
+                    ))
+                );
+
 				return $this->redirect($this->generateUrl($this->getRoute('list')));
 			}
+			else if($form->isSubmitted() && !$form->isValid()) {
+                $this->addFlash(
+                    'error',
+                    $this->get('translator')->trans('sfs.admin.message.delete_error', array(
+                        '%id%' => $object->getId(),
+                        '%name%' => $object->__toString()
+                    ))
+                );
+            }
 			else {
 				return $this->render($this->getTemplate('delete'), array(
 						'form'				=> $form->createView(),
@@ -502,6 +551,19 @@ abstract class AdminController extends Controller
 
 		// We could/should do some tests on ids array size and effective number of deletion
 		$numDeletion = $qb->getQuery()->execute();
+
+		if($numDeletion > 0) {
+            $this->addFlash(
+                'success',
+                $this->get('translator')->trans('sfs.admin.message.batch.delete_success', array())
+            );
+        }
+        else {
+            $this->addFlash(
+                'error',
+                $this->get('translator')->trans('sfs.admin.message.batch.delete_error', array())
+            );
+        }
 
 		return $this->redirect($this->generateUrl($this->getRoute('list')));
 	}
