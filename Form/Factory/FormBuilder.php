@@ -134,12 +134,14 @@ class FormBuilder extends BaseFormBuilder
      * {@inheritdoc}
      */
     public function add($child, $type = null, array $options = array()) {
-    	if($this->currentTab === null)
-    		throw new \RuntimeException('You must create a tab before adding fields');
-		if($this->currentBlock === null)
-			throw new \RuntimeException('You must create a block before adding fields');
+        if(is_subclass_of($this->getType()->getInnerType(), 'Sfs\AdminBundle\Form\AbstractAdminType')) {
+            if ($this->currentTab === null)
+                throw new \RuntimeException('You must create a tab before adding fields');
+            if ($this->currentBlock === null)
+                throw new \RuntimeException('You must create a block before adding fields');
 
-    	$this->getType()->getInnerType()->addFieldToBlock($this->currentBlock, $child);
+            $this->getType()->getInnerType()->addFieldToBlock($this->currentBlock, $child);
+        }
 
     	return parent::add($child, $type, $options);
     }
