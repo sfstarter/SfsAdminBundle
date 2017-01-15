@@ -27,13 +27,19 @@
 			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/vendors/ionrangeslider/css/ion.rangeSlider.css') }}" type="text/css">
 			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/vendors/ionrangeslider/css/ion.rangeSlider.skinFlat.css') }}" type="text/css">
 
-			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/css/tools.css') }}" type="text/css">
-			<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/css/style.css') }}" type="text/css">
+			{# Override me for your custom theme css #}
+			{% block theme_stylesheets %}
+				<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/css/tools.css') }}" type="text/css">
+				<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/css/style.css') }}" type="text/css">
+			{% endblock %}
 		{% endblock %}
 	
 		<!-- JS -->
 		{% block javascripts_header %}
 			<script src="{{ asset('bundles/sfsadmin/vendors/jquery/dist/jquery.min.js') }}"></script>
+            {# Override me for your custom theme js #}
+        	{% block theme_javascripts %}
+			{% endblock %}
 		{% endblock %}
 	</head>
 	<body id="{% block body_id %}{% endblock %}">

@@ -1,70 +1,70 @@
 /**
  * PATHS RESOLVE
  */
-$icon-font-path: "../vendors/bootstrap-sass/assets/fonts/bootstrap/";
-$fa-font-path:        "../vendors/font-awesome/fonts/";
+$icon-font-path: "../vendors/bootstrap-sass/assets/fonts/bootstrap/" !default;
+$fa-font-path: "../vendors/font-awesome/fonts/" !default;
 
 /**
  * MAIN COLORS
  */
-$primary-color-1: #333;
-$primary-color-2: #555;
-$secondary-color-1: #fff;
-$secondary-color-2: #ddd;
-$brand-primary: #ee9e35;
-$text-color: $primary-color-1;
+$primary-color-1: #333 !default;
+$primary-color-2: #555 !default;
+$secondary-color-1: #fff !default;
+$secondary-color-2: #ddd !default;
+$brand-primary: #ee9e35 !default;
+$text-color: $primary-color-1 !default;
 
-$brown-color: #4d4842;
-$blue-color: #4d79b0;
-$red-color: #e46a6a;
-$green-color: #7ad385;
-$yellow-color: #ede97a;
+$brown-color: #4d4842 !default;
+$blue-color: #4d79b0 !default;
+$red-color: #e46a6a !default;
+$green-color: #7ad385 !default;
+$yellow-color: #ede97a !default;
 
-$font-family-sans-serif: 'Open Sans', 'Roboto';
-$font-size-base: 13px;
+$font-family-sans-serif: 'Open Sans', 'Roboto' !default;
+$font-size-base: 13px !default;
 
-$primary-background: #f2f2f2;
-$secondary-background: #ffffff;
-$sidebar-background: #322f2b;
-$sidebar-background-level: #24221f;
-$body-bg: $primary-background;
-$inversed-background: $primary-color-1;
+$primary-background: #f2f2f2 !default;
+$secondary-background: #ffffff !default;
+$sidebar-background: #322f2b !default;
+$sidebar-background-level: #24221f !default;
+$body-bg: $primary-background !default;
+$inversed-background: $primary-color-1 !default;
 
 /**
  * BORDERS
  */
-$border-radius-base: 0;
+$border-radius-base: 0 !default;
 
 /**
  * SIDE MENU
  */
-$sidemenu-width: 220px;
-$sidebar-background-hover: #4d4842;
+$sidemenu-width: 220px !default;
+$sidebar-background-hover: #4d4842 !default;
 
 /**
  * NAVBAR
  */
-$navbar-default-color: $primary-color-1;
-$navbar-default-bg: $secondary-background;
-$navbar-link-color-1: #fff;
-$navbar-link-color-2: #f2f2f2;
-$navbar-border-radius: 0;
-$navbar-margin-bottom: 0;
+$navbar-default-color: $primary-color-1 !default;
+$navbar-default-bg: $secondary-background !default;
+$navbar-link-color-1: #fff !default;
+$navbar-link-color-2: #f2f2f2 !default;
+$navbar-border-radius: 0 !default;
+$navbar-margin-bottom: 0 !default;
 
 /**
  * PANELS
  */
-$panel-border-radius: 0;
-$panel-default-heading-bg: #fff;
+$panel-border-radius: 0 !default;
+$panel-default-heading-bg: #fff !default;
 
 /**
  * BUTTONS
  */
-$btn-border-radius-base: 0;
-$btn-border-radius-large: 0;
-$btn-border-radius-small: 0;
+$btn-border-radius-base: 0 !default;
+$btn-border-radius-large: 0 !default;
+$btn-border-radius-small: 0 !default;
 
 /**
  * FORMS
  */
-$input-border-focus: $brand-primary;
+$input-border-focus: $brand-primary !default;
