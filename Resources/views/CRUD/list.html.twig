@@ -93,11 +93,11 @@
 									</td>
 
 									{% for key, field in listFields %}
-										{% if attribute(object, key) is of_type('bool') %}
+										{% if admin_get_property(object, key) is of_type('bool') %}
 											{% include 'SfsAdminBundle:CRUD:list_field_bool.html.twig' %}
-										{% elseif attribute(object, key) is of_type('class', 'DateTime') %}
+										{% elseif admin_get_property(object, key) is of_type('class', 'DateTime') %}
 											{% include 'SfsAdminBundle:CRUD:list_field_datetime.html.twig' %}
-										{% elseif attribute(object, key) is of_type('class', "Doctrine\\ORM\\PersistentCollection") %}
+										{% elseif admin_get_property(object, key) is of_type('class', "Doctrine\\ORM\\PersistentCollection") %}
 											{% include 'SfsAdminBundle:CRUD:list_field_many.html.twig' %}
 										{% else %}
 											{% include 'SfsAdminBundle:CRUD:list_field_string.html.twig' %}
