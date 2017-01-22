@@ -37,11 +37,19 @@ class PropertyAccessExtension extends \Twig_Extension {
 	 * @return null|mixed
 	 */
 	public function getProperty($object, $property) {
+		$value = null;
+
 		if(!$object) {
-			return null;
+			return $value;
 		}
 		$accessor = PropertyAccess::createPropertyAccessor();
-		$value = $accessor->getValue($object, $property);
+
+		if($object) {
+			try {
+				$value = $accessor->getValue($object, $property);
+			} catch (\Exception $e) {
+			}
+		}
 
 		return $value;
 	}
