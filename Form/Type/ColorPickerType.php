@@ -10,16 +10,16 @@ namespace Sfs\AdminBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
 class ColorPickerType extends AbstractType {
 	/**
-	 * setDefaultOptions
-	 * 
-	 * @param OptionsResolverInterface $resolver
+	 * configureOptions
+	 *
+	 * @param OptionsResolver $resolver
 	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults(array(
 				'attr' => array(
@@ -39,11 +39,9 @@ class ColorPickerType extends AbstractType {
 	}
 
 	/**
-	 * getName
-	 *
-	 * @return string
+	 * {@inheritdoc}
 	 */
-	public function getName() {
+	public function getBlockPrefix() {
 		return 'sfs_admin_field_color_picker';
 	}
 }

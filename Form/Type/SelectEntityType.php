@@ -19,10 +19,10 @@ class SelectEntityType extends SelectType {
 		return EntityType::class;
 	}
 
-    /**
-     * {@inheritdoc}
-     */
-	public function getName() {
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getBlockPrefix() {
 		return 'sfs_admin_field_select_entity';
 	}
 }

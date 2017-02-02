@@ -12,7 +12,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
 class SelectListType extends AbstractType {
@@ -20,10 +20,12 @@ class SelectListType extends AbstractType {
 		'class' => 'select-list',
 	);
 
-    /**
-     * {@inheritdoc}
-     */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	/**
+	 * configureOptions
+	 *
+	 * @param OptionsResolver $resolver
+	 */
+	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults(array(
 				'expanded' => false,
@@ -49,10 +51,10 @@ class SelectListType extends AbstractType {
 		return ChoiceType::class;
 	}
 
-    /**
-     * {@inheritdoc}
-     */
-	public function getName() {
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getBlockPrefix() {
 		return 'sfs_admin_field_select_list';
 	}
 }

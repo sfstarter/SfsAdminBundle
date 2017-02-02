@@ -10,17 +10,17 @@ namespace Sfs\AdminBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
 class DateTimePickerType extends AbstractType {
 	/**
-	 * setDefaultOptions
+	 * configureOptions
 	 * 
-	 * @param OptionsResolverInterface $resolver
+	 * @param OptionsResolver $resolver
 	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
+	public function configureOptions(OptionsResolver $resolver)
+{
 		$resolver->setDefaults(array(
 			'widget' => 'single_text',
 			'attr' => array(
@@ -41,11 +41,9 @@ class DateTimePickerType extends AbstractType {
 	}
 
 	/**
-	 * getName
-	 *
-	 * @return string
+	 * {@inheritdoc}
 	 */
-	public function getName() {
+	public function getBlockPrefix() {
 		return 'sfs_admin_field_datetime_picker';
 	}
 }

@@ -23,11 +23,9 @@ class SelectListEntityType extends SelectListType {
 	}
 
 	/**
-	 * getName
-	 * 
-	 * @return string
+	 * {@inheritdoc}
 	 */
-	public function getName() {
+	public function getBlockPrefix() {
 		return 'sfs_admin_field_select_list_entity';
 	}
 }
