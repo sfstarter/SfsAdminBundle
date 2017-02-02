@@ -1,0 +1,11 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+<td>
+	{% for element in admin_get_property(object, key) %}
+		{{ element }}
+		{% if not loop.last %}, {% endif %}
+	{% endfor %}
+</td>

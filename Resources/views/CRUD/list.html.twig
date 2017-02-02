@@ -101,6 +101,10 @@
 											{% include 'SfsAdminBundle:CRUD:list_field_datetime.html.twig' %}
 										{% elseif admin_get_property(object, key) is of_type('class', "Doctrine\\ORM\\PersistentCollection") %}
 											{% include 'SfsAdminBundle:CRUD:list_field_many.html.twig' %}
+										{% elseif admin_get_property(object, key) is of_type('class', "Doctrine\\Common\\Collections\\ArrayCollection") %}
+											{% include 'SfsAdminBundle:CRUD:list_field_arraycollection.html.twig' %}
+										{% elseif admin_get_property(object, key) is iterable %}
+											{% include 'SfsAdminBundle:CRUD:list_field_array.html.twig' %}
 										{% else %}
 											{% include 'SfsAdminBundle:CRUD:list_field_string.html.twig' %}
 										{% endif %}
