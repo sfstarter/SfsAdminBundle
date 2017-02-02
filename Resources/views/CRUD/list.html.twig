@@ -93,7 +93,9 @@
 									</td>
 
 									{% for key, field in listFields %}
-										{% if admin_get_property(object, key) is of_type('bool') %}
+										{% if field['template'] is defined %}
+											{% include field['template'] %}
+										{% elseif admin_get_property(object, key) is of_type('bool') %}
 											{% include 'SfsAdminBundle:CRUD:list_field_bool.html.twig' %}
 										{% elseif admin_get_property(object, key) is of_type('class', 'DateTime') %}
 											{% include 'SfsAdminBundle:CRUD:list_field_datetime.html.twig' %}
