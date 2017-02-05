@@ -54,7 +54,9 @@
 				</div>
 			</div>
 
-			{% include 'SfsAdminBundle:CRUD:create_buttons.html.twig' %}
+			{% block create_actions %}
+				{% include 'SfsAdminBundle:CRUD:create_buttons.html.twig' %}
+			{% endblock %}
 		</div>
 	{{ form_end(form) }}
 {% endblock %}

@@ -54,7 +54,9 @@
 				</div>
 			</div>
 
-			{% include 'SfsAdminBundle:CRUD:update_buttons.html.twig' %}
+			{% block update_actions %}
+				{% include 'SfsAdminBundle:CRUD:update_buttons.html.twig' %}
+			{% endblock %}
 		</div>
 	{{ form_end(form) }}
 {% endblock %}
