@@ -10,5 +10,7 @@ namespace Sfs\AdminBundle\Menu\Topbar;
 
 interface TopbarBlockInterface
 {
+	public function setAttributes();
+	public function getAttributes();
 	public function display();
 }

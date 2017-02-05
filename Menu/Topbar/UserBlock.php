@@ -10,10 +10,10 @@ namespace Sfs\AdminBundle\Menu\Topbar;
 
 class UserBlock extends TopbarBlockAbstract
 {
-	private $twig;
-
-	public function __construct($twig) {
-		$this->twig = $twig;
+	public function setAttributes() {
+		$this->attributes = array(
+			'class' => 'dropdown navbar-profile',
+		);
 	}
 
 	public function display() {
