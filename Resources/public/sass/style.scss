@@ -235,7 +235,7 @@ html, body {
 }
 
 #login-page {
-	background-image: url(../img/bg_brown.jpg);
+	background-image: url('#{$img-admin-path}bg_brown.jpg');
 	background-size: cover;
 
 	.login-header {

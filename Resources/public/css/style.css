@@ -8811,7 +8811,7 @@ html, body {
   transform: rotate(90deg); }
 
 #login-page {
-  background-image: url(../img/bg_brown.jpg);
+  background-image: url("../img/bg_brown.jpg");
   background-size: cover; }
   #login-page .login-header {
     color: #fff;
