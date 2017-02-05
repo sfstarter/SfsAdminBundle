@@ -4,7 +4,11 @@
 #}
 
 <div class="text-right mt-24">
-	<button class="btn btn-success" name="btn_save_and_list" type="submit"><i class="fa fa-save"></i> {% trans %}sfs.admin.action.button.save_and_list{% endtrans %}</button>
+	{% if admin_has_action('list') %}
+		<button class="btn btn-success" name="btn_save_and_list" type="submit"><i class="fa fa-save"></i> {% trans %}sfs.admin.action.button.save_and_list{% endtrans %}</button>
+	{% endif %}
 	<button class="btn btn-success" name="btn_save_and_add" type="submit"><i class="fa fa-save"></i> {% trans %}sfs.admin.action.button.save_and_add{% endtrans %}</button>
-	<a href="{{ admin_url('list') }}" class="btn btn-info"><i class="fa fa-list"></i> {% trans %}sfs.admin.action.button.back_list{% endtrans %}</a>
+	{% if admin_has_action('list') %}
+		<a href="{{ admin_url('list') }}" class="btn btn-info"><i class="fa fa-list"></i> {% trans %}sfs.admin.action.button.back_list{% endtrans %}</a>
+	{% endif %}
 </div>

@@ -8,6 +8,7 @@
 
 namespace Sfs\AdminBundle\Twig;
 
+use Sfs\AdminBundle\Controller\AdminController;
 use Sfs\AdminBundle\Core\CoreAdmin;
 use Twig_SimpleFunction;
 
@@ -32,10 +33,33 @@ class AdminRouterExtension extends \Twig_Extension {
 	 */
 	public function getFunctions() {
 		return array (
+				new Twig_SimpleFunction('admin_has_action', array($this, 'adminHasAction')),
 				new Twig_SimpleFunction('admin_identifier', array($this, 'getAdminIdentifier')),
+				new Twig_SimpleFunction('admin_route', array($this, 'getAdminRoute')),
 				new Twig_SimpleFunction('admin_url', array($this, 'getAdminUrl')),
-				new Twig_SimpleFunction('admin_route', array($this, 'getAdminRoute'))
 		);
+	}
+
+	/**
+	 * @param string $action
+	 * @param null $object
+	 * @return bool
+	 */
+	public function adminHasAction($action, $object = null) {
+		if(isset($object)) {
+			$slug = $this->core->getAdminSlug($object);
+		}
+		else {
+			$slug = $this->core->getCurrentSlug();
+		}
+
+		$adminService = $this->core->getAdminService($slug);
+		if(in_array($action, $adminService->getActions())) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -56,13 +80,23 @@ class AdminRouterExtension extends \Twig_Extension {
 		
 		return $property;
 	}
-	
+
+	/**
+	 * @deprecated
+	 */
+	public function getAdminRoute($action, $object = null) {
+		if($object !== null) {
+			$url = $this->core->getRouteByEntity($object, $action);
+			return $url;
+		}
+	}
+
 	/**
 	 * getAdminUrl
-	 * 
+	 *
 	 * @param string $action
 	 * @param array $parameters
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getAdminUrl($action, array $parameters = array()) {
@@ -77,16 +111,6 @@ class AdminRouterExtension extends \Twig_Extension {
 				$url = $this->core->getUrl($slug, $action, $parameters);
 				return $url;
 			}
-		}
-	}
-
-	/**
-	 * @deprecated 
-	 */
-	public function getAdminRoute($action, $object = null) {
-		if($object !== null) {
-			$url = $this->core->getRouteByEntity($object, $action);
-			return $url;
 		}
 	}
 

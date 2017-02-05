@@ -8,6 +8,7 @@
 
 namespace Sfs\AdminBundle\Core;
 
+use Sfs\AdminBundle\Controller\AdminController;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -136,12 +137,12 @@ class CoreAdmin implements ContainerAwareInterface
 		$resourceAdmin->setSlug($slug);
 		$resourceAdmin->setTitle($title);
 		// Generate the specific routes for this admin (only some array informations)
-		$this->generateRoutes($slug);
+		$this->generateRoutes($resourceAdmin, $slug);
 	}
 
 	/**
 	 * Add a new route for a specific admin resource
-	 * 
+	 *
 	 * @param string $slug
 	 * @param string $action
 	 * @param string $path
@@ -171,17 +172,25 @@ class CoreAdmin implements ContainerAwareInterface
 
 	/**
 	 * Generate every routes for a specific admin resource
-	 * 
+	 *
+	 * @param AdminController $resourceAdmin
 	 * @param string $slug
 	 */
-	private function generateRoutes($slug) {
-		$this->addRoute($slug, 'list');
-		$this->addRoute($slug, 'create');
-		$this->addRoute($slug, 'read', null, array('id' => '\d+'));
-		$this->addRoute($slug, 'update', null, array('id' => '\d+'));
-		$this->addRoute($slug, 'delete', null, array('id' => '\d+'));
-		$this->addRoute($slug, 'export');
-		$this->addRoute($slug, 'batch');
+	private function generateRoutes($resourceAdmin, $slug) {
+		if(in_array('list', $resourceAdmin->getActions()))
+			$this->addRoute($slug, 'list');
+		if(in_array('create', $resourceAdmin->getActions()))
+			$this->addRoute($slug, 'create');
+		if(in_array('read', $resourceAdmin->getActions()))
+			$this->addRoute($slug, 'read', null, array('id' => '\d+'));
+		if(in_array('update', $resourceAdmin->getActions()))
+			$this->addRoute($slug, 'update', null, array('id' => '\d+'));
+		if(in_array('delete', $resourceAdmin->getActions()))
+			$this->addRoute($slug, 'delete', null, array('id' => '\d+'));
+		if(in_array('export', $resourceAdmin->getActions()))
+			$this->addRoute($slug, 'export');
+		if(in_array('batch', $resourceAdmin->getActions()))
+			$this->addRoute($slug, 'batch');
 	}
 
 	/**
@@ -203,7 +212,7 @@ class CoreAdmin implements ContainerAwareInterface
 	 */
 	public function getRouteBySlug($slug, $action) {
 		if(!isset($this->routes[$slug][$action]))
-			Throw new ResourceNotFoundException('The administration doesn\'t exist, so the route cannot be fetch. Please create one.');
+			return null;
 		return $this->routes[$slug][$action]['route'];
 	}
 
@@ -336,6 +345,11 @@ class CoreAdmin implements ContainerAwareInterface
 	 */
 	public function generateUrl($route, array $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
 	{
-		return $this->container->get('router')->generate($route, $parameters, $referenceType);
+		if($route !== null) {
+			return $this->container->get('router')->generate($route, $parameters, $referenceType);
+		}
+		else {
+			return null;
+		}
 	}
 }

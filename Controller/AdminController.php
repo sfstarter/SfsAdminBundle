@@ -78,6 +78,20 @@ abstract class AdminController extends Controller
 	);
 
 	/**
+	 * Array of accessible actions for current admin: only the routes inside this array will be configured & generated
+	 *
+	 * @var array
+	 */
+	protected $actions = array(
+		'list',
+		'create',
+		'update',
+		'delete',
+		'export',
+		'batch'
+	);
+
+	/**
 	 * Array of batch actions applied on list view. By default only delete is implemented
 	 * The key is directly related to the name of the sf2 action : batch{Key}
 	 *
@@ -102,6 +116,7 @@ abstract class AdminController extends Controller
 		$this->entityClass = $entityClass;
 
 		$this->setTemplates();
+		$this->setActions();
 		$this->setBatchActions();
 	}
 
@@ -216,7 +231,7 @@ abstract class AdminController extends Controller
 	 *
 	 * @param mixed $object
 	 */
-	private function parseAssociations($object) {
+	protected function parseAssociations($object) {
 		if(!is_object($object)) {
 			return;
 		}
@@ -754,5 +769,23 @@ abstract class AdminController extends Controller
 	public function getBatchActions()
 	{
 		return $this->batchActions;
+	}
+
+	/**
+	 * Allows to set & override generated routes & actions for one admin.
+	 *
+	 * @return AdminController
+	 */
+	public function setActions()
+	{
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getActions()
+	{
+		return $this->actions;
 	}
 }
