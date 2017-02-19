@@ -8992,4 +8992,10 @@ form.form-horizontal.form-bordered .form-group {
   top: 0;
   width: 20px; }
 
+/**
+ * FILTERS
+ */
+#filters .select2-container--default {
+  width: 100% !important; }
+
 /*# sourceMappingURL=style.css.map */
