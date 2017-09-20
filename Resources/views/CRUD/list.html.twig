@@ -114,18 +114,20 @@
 										{% endif %}
 									{% endfor %}
 
-									<td class="text-right">
-										{% if admin_has_action('update') %}
-											<a href="{{ admin_url('update', {'object': object}) }}" data-title="Edit row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-default btn-equal" type="button">
-												<i class="fa fa-pencil"></i>
-											</a>
-										{% endif %}
-										{% if admin_has_action('delete') %}
-											<a href="{{ admin_url('delete', {'object': object}) }}" data-title="Delete row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-danger btn-equal" type="button">
-												<i class="fa fa-trash"></i>
-											</a>
-										{% endif %}
-									</td>
+									{% block list_actions %}
+										<td class="text-right">
+											{% if admin_has_action('update') %}
+												<a href="{{ admin_url('update', {'object': object}) }}" data-title="Edit row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-default btn-equal" type="button">
+													<i class="fa fa-pencil"></i>
+												</a>
+											{% endif %}
+											{% if admin_has_action('delete') %}
+												<a href="{{ admin_url('delete', {'object': object}) }}" data-title="Delete row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-danger btn-equal" type="button">
+													<i class="fa fa-trash"></i>
+												</a>
+											{% endif %}
+										</td>
+									{% endblock %}
 								</tr>
 							{% endfor %}
 						</tbody>
