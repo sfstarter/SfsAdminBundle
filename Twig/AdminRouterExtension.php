@@ -81,11 +81,17 @@ class AdminRouterExtension extends \Twig_Extension {
 		return $property;
 	}
 
-	/**
-	 * @deprecated
-	 */
+    /**
+     * @param $action
+     * @param null $object
+     * @return string
+     */
 	public function getAdminRoute($action, $object = null) {
-		if($object !== null) {
+	    if($object !== null && is_string($object)) {
+	        $object = new $object;
+        }
+
+        if($object !== null && is_object($object)) {
 			$url = $this->core->getRouteByEntity($object, $action);
 			return $url;
 		}
