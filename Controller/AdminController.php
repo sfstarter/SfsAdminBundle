@@ -79,6 +79,7 @@ abstract class AdminController extends Controller
 		'create'	                => 'SfsAdminBundle:CRUD:create.html.twig',
 		'create_ajax'	            => 'SfsAdminBundle:CRUD:create_ajax.html.twig',
 		'update'	                => 'SfsAdminBundle:CRUD:update.html.twig',
+		'update_ajax'	            => 'SfsAdminBundle:CRUD:update_ajax.html.twig',
 		'delete'	                => 'SfsAdminBundle:CRUD:delete.html.twig',
 		'delete_ajax'	            => 'SfsAdminBundle:CRUD:delete_ajax.html.twig',
 		'delete_relation_ajax'      => 'SfsAdminBundle:CRUD:delete_relation_ajax.html.twig',
@@ -561,9 +562,18 @@ abstract class AdminController extends Controller
                 ))
             );
 
-	        if (null !== $request->get('btn_save_and_list')) {
-				return $this->redirect($this->generateUrl($this->getRoute('list')));
-	        }
+            // Ajax call
+            if($request->isXmlHttpRequest()) {
+                return new JsonResponse(array(
+                    'result' => 'success',
+                    'message' => 'Updated'
+                ));
+            }
+            else {
+                if (null !== $request->get('btn_save_and_list')) {
+                    return $this->redirect($this->generateUrl($this->getRoute('list')));
+                }
+            }
 		}
 		else if($form->isSubmitted() && !$form->isValid()) {
             $this->addFlash(
@@ -575,10 +585,18 @@ abstract class AdminController extends Controller
             );
         }
 
-		return $this->render($this->getTemplate('update'), array(
-				'form'				=> $form->createView(),
-				'object' 			=> $object
-		));
+        if($request->isXmlHttpRequest()) {
+            return $this->render($this->getTemplate('update_ajax'), array(
+                'form' => $form->createView(),
+                'object' => $object
+            ));
+        }
+        else {
+            return $this->render($this->getTemplate('update'), array(
+                'form' => $form->createView(),
+                'object' => $object
+            ));
+        }
 	}
 
 	/**

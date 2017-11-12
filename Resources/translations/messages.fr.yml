@@ -39,6 +39,7 @@ sfs:
                 remove_message: "Cette action supprimera la relation entre <i>%current%</i> et <i>%target%</i>. L'objet <i>%target%</i> sera conservé"
                 remove_success: "La relation avec l'entrée %name% (ID: %id%) a été supprimé avec succès"
                 remove_title: "Confirmer la suppression de la relation ?"
+                update_title: "Editer"
             create_error: "Impossible de créer l'entrée, le formulaire contient des erreurs"
             create_success: "L'entrée %name% (ID: %id%) a été créé avec succès"
             delete_error: "Impossible de supprimer l'entrée %name% (ID: %id%)"
