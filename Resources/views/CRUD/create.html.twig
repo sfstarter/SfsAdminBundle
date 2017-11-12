@@ -6,6 +6,8 @@
 {% extends 'SfsAdminBundle:Core:base.html.twig' %}
 
 {% block content %}
+	{% set formId = random() %}
+
 	{{ form_start(form, { 'attr': {'class': 'form-horizontal form-seperated dashed'} }) }}
 		{{ form_errors(form) }}
 		
@@ -19,7 +21,7 @@
 					<ul class="nav nav-tabs pull-right" role="tablist">
 						{% for key, tab in form.vars.tabs %}
 							<li class="{% if loop.index == 1 %}active{% endif %}" role="presentation">
-								<a href="#admin-tab-{{ key }}" role="tab" data-toggle="tab">{{ tab.title }}</a>
+								<a href="#admin-tab-{{ key }}-{{ formId }}" role="tab" data-toggle="tab">{{ tab.title }}</a>
 							</li>
 						{% endfor %}
 					</ul>
@@ -28,7 +30,7 @@
 				<!-- Tab panes -->
 				<div class="tab-content">
 					{% for key, tab in form.vars.tabs %}
-						<div id="admin-tab-{{ key }}" class="tab-pane fade row {% if loop.index == 1 %}in active{% endif %}" role="tabpanel">
+						<div id="admin-tab-{{ key }}-{{ formId }}" class="tab-pane fade row {% if loop.index == 1 %}in active{% endif %}" role="tabpanel">
 							{% for block in tab.blocks %}
 								{% set blockColumnClass = attribute(form.vars.blocks, block).classes.column | default('col-md-12') %}
 								{% set blockPanelClass = attribute(form.vars.blocks, block).classes.panel | default('panel-primary') %}
