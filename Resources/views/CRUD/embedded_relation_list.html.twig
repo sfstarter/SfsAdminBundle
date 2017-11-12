@@ -1,0 +1,107 @@
+{% block list %}
+
+	<table class="table table-bordered table-hover">
+		<!-- LIST HEADER -->
+		<thead>
+		<tr>
+			{% for key, field in listFields %}
+				<th>
+					{% if field.name is defined %}
+						{% set label = field.name %}
+					{% else %}
+						{% set label = key|capitalize %}
+					{% endif %}
+
+					{% if key is not property_is_relation() %}
+						{{ knp_pagination_sortable(pagination, label, 'object.'~key) }}
+					{% else %}
+						{{ field.name }}
+					{% endif %}
+
+					{% if pagination.isSorted('object.'~key) %}
+						{% if pagination.getDirection() == 'asc' %}
+							<span class="fa fa-sort-asc"></span>
+						{% else %}
+							<span class="fa fa-sort-desc"></span>
+						{% endif %}
+					{% endif %}
+				</th>
+			{% endfor %}
+			<th class="" style="width:90px">{% trans %}sfs.admin.crud.actions{% endtrans %}</th>
+		</tr>
+		</thead>
+
+		<!-- LIST CONTENT -->
+		<tbody>
+		{% for object in pagination %}
+			<tr>
+				{% for key, field in listFields %}
+					{% if field['template'] is defined %}
+						{% include field['template'] %}
+					{% elseif admin_get_property(object, key) is of_type('bool') %}
+						{% include 'SfsAdminBundle:CRUD:list_field_bool.html.twig' %}
+					{% elseif admin_get_property(object, key) is of_type('class', 'DateTime') %}
+						{% include 'SfsAdminBundle:CRUD:list_field_datetime.html.twig' %}
+					{% elseif admin_get_property(object, key) is of_type('class', "Doctrine\\ORM\\PersistentCollection") %}
+						{% include 'SfsAdminBundle:CRUD:list_field_many.html.twig' %}
+					{% elseif admin_get_property(object, key) is of_type('class', "Doctrine\\Common\\Collections\\ArrayCollection") %}
+						{% include 'SfsAdminBundle:CRUD:list_field_arraycollection.html.twig' %}
+					{% elseif admin_get_property(object, key) is iterable %}
+						{% include 'SfsAdminBundle:CRUD:list_field_array.html.twig' %}
+					{% else %}
+						{% include 'SfsAdminBundle:CRUD:list_field_string.html.twig' %}
+					{% endif %}
+				{% endfor %}
+
+				{% block list_actions %}
+					<td class="text-right">
+						{% if admin_has_action('update') %}
+							<a href="{{ admin_url('update', {'object': object}) }}" target="_blank" data-title="Edit row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-default btn-equal" type="button">
+								<i class="fa fa-pencil"></i>
+							</a>
+						{% endif %}
+						{% if admin_has_action('delete_relation') and isNullable %}
+							<a href="" data-ajax-url="{{ url(admin_route('delete_relation', entityClass), {'id': object.id, 'property': relationProperty,'relationId': relationId}) }}" data-title="{% trans %}sfs.admin.message.embedded_relation.remove_title{% endtrans %}" data-toggle="ajax-modal" class="btn btn-xs btn-danger btn-equal" type="button">
+								<i class="fa fa-remove"></i>
+							</a>
+						{% endif %}
+						{% if admin_has_action('delete') %}
+							<a href="" data-ajax-url="{{ admin_url('delete', {'object': object}) }}" data-title="{% trans %}sfs.admin.message.delete_title{% endtrans %}" data-toggle="ajax-modal" class="btn btn-xs btn-danger btn-equal" type="button">
+								<i class="fa fa-trash"></i>
+							</a>
+						{% endif %}
+					</td>
+				{% endblock %}
+			</tr>
+		{% endfor %}
+		</tbody>
+
+		<!-- LIST FOOTER -->
+		<tfoot>
+		<tr>
+			<td colspan='10'>
+				<div class="btn-group" role="group" aria-label="...">
+					<a href="" data-ajax-url="{{ admin_url('create') }}" data-title="{% trans %}BLOP{% endtrans %}" data-modal-type="modal-lg" data-toggle="ajax-modal" class="btn btn-default btn-rounded btn-outlined" role="button">
+						<i class="fa fa-plus-circle"></i> Créer
+					</a>
+
+					<select role="button">
+						<option>1</option>
+						<option>2</option>
+					</select>
+					<a href="" role="button" class="btn btn-default">
+						<i class="fa fa-plus-search"></i> Ajouter existant
+					</a>
+				</div>
+
+				<div class="pull-right">
+					<div class="pagination-panel">
+						{{ knp_pagination_render(pagination, 'SfsAdminBundle:CRUD:pagination.html.twig') }}
+					</div>
+					<p class="">{% trans with {'%count%': pagination.getTotalItemCount} %}sfs.admin.message.list_total{% endtrans %}</p>
+				</div>
+			</td>
+		</tr>
+		</tfoot>
+	</table>
+{% endblock %}

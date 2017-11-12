@@ -11,6 +11,9 @@ namespace Sfs\AdminBundle\Controller;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,6 +22,7 @@ use Sfs\AdminBundle\Form\AbstractFilterType;
 use Sfs\AdminBundle\Form\BatchType;
 use Sfs\AdminBundle\Form\DeleteType;
 use Sfs\AdminBundle\Form\ExportType;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 abstract class AdminController extends Controller
 {
@@ -70,11 +74,15 @@ abstract class AdminController extends Controller
 	 * @var array
 	 */
 	protected $templates = array(
-		'list'		=> 'SfsAdminBundle:CRUD:list.html.twig',
-		'create'	=> 'SfsAdminBundle:CRUD:create.html.twig',
-		'update'	=> 'SfsAdminBundle:CRUD:update.html.twig',
-		'delete'	=> 'SfsAdminBundle:CRUD:delete.html.twig',
-		'batch'		=> 'SfsAdminBundle:CRUD:batch.html.twig'
+		'list'		                => 'SfsAdminBundle:CRUD:list.html.twig',
+		'embedded_relation_list'	=> 'SfsAdminBundle:CRUD:embedded_relation_list.html.twig',
+		'create'	                => 'SfsAdminBundle:CRUD:create.html.twig',
+		'create_ajax'	            => 'SfsAdminBundle:CRUD:create_ajax.html.twig',
+		'update'	                => 'SfsAdminBundle:CRUD:update.html.twig',
+		'delete'	                => 'SfsAdminBundle:CRUD:delete.html.twig',
+		'delete_ajax'	            => 'SfsAdminBundle:CRUD:delete_ajax.html.twig',
+		'delete_relation_ajax'      => 'SfsAdminBundle:CRUD:delete_relation_ajax.html.twig',
+		'batch'		                => 'SfsAdminBundle:CRUD:batch.html.twig'
 	);
 
 	/**
@@ -84,9 +92,11 @@ abstract class AdminController extends Controller
 	 */
 	protected $actions = array(
 		'list',
+		'embedded_relation_list',
 		'create',
 		'update',
 		'delete',
+		'delete_relation',
 		'export',
 		'batch'
 	);
@@ -105,7 +115,7 @@ abstract class AdminController extends Controller
 	/**
 	 * Set the form to be displayed on update view
 	 * 
-	 * @param mixed $object
+	 * @param Form $object
 	 */
 	abstract protected function setUpdateForm($object);
 
@@ -154,16 +164,17 @@ abstract class AdminController extends Controller
 				'__toString' 	=> array('name' => 'Value'),
 		);
 	}
-	
+
 	/**
 	 * Action called to list the entries
-	 * 
+	 *
 	 * @param Request $request
-	 * 
+	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function listAction(Request $request) {
 		$em = $this->container->get('doctrine')->getManager();
+        /** @var QueryBuilder $query */
 		$query = $em->getRepository($this->entityClass)->createQueryBuilder('object');
 
 		// Filter form
@@ -174,7 +185,7 @@ abstract class AdminController extends Controller
 				/** @var \Doctrine\ORM\QueryBuilder $query */
 				$query = $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($this->filterForm, $query);
 			}
-			
+
 			$viewFilterForm = $this->filterForm->createView();
 		}
 		else
@@ -209,7 +220,145 @@ abstract class AdminController extends Controller
 		));
 	}
 
-	/**
+    /**
+     * Called on TableEntityType to display the list, with elements filtered for the current element
+     * This action is very similar to the listAction,
+     *      but we keep it separated to do specific logic here later
+     *
+     * @param string $property
+     * @param int $relationId
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+	public function embeddedRelationListAction($property, $relationId, Request $request) {
+        // TODO : check here if the object has the property, to avoid crashing
+
+        $em = $this->container->get('doctrine')->getManager();
+        /** @var QueryBuilder $query */
+        $query = $em->getRepository($this->entityClass)->createQueryBuilder('object');
+
+        // relationId is false on create pages, so we have to handle this case
+        if($relationId !== null)
+            $query->where('object.'. $property .'= '. $relationId);
+        // The queryBuilder does not handle a 'where FALSE' so we fake it
+        else
+            $query->where('object.id = FALSE');
+
+        // Filter form is disabled, for now at least
+        $viewFilterForm = null;
+
+        // Pagination & sort mechanism
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query, /* query applied */
+            $request->query->getInt('page', 1)/* page number */,
+            10,/* limit per page */
+            array('defaultSortFieldName' => 'object.'. $this->getIdentifierProperty(), 'defaultSortDirection' => 'asc') /* Default sort */
+        );
+        $pagination->setPageRange(3);
+
+        $listFields = $this->setListFields();
+        // Remove the current object as it is unnecessary since they all relate to it
+        // TODO : this is not correct and won't necessary work (or worst will remove wanted column !!)
+        unset($listFields[$property]);
+
+        return $this->render($this->getTemplate('embedded_relation_list'), array(
+            'listFields' => $listFields,
+            'relationProperty' => $property,
+            'entityClass' => $this->getEntityClass(),
+            'relationId' => $relationId,
+            'pagination' => $pagination,
+            'isNullable' => $this->isPropertyNullable($property)
+        ));
+    }
+
+    /**
+     * @param int $id
+     * @param string $property
+     * @param int $relationId (not used for now, but might be useful later)
+     * @param Request $request
+     * @return Response
+     */
+    public function deleteRelationAction($id, $property, $relationId, Request $request) {
+        $em = $this->container->get('doctrine')->getManager();
+        $repository = $em->getRepository($this->entityClass);
+        $object = $repository->find($id);
+
+        if($object === null) {
+            throw new NotFoundHttpException("Can't find the object with the identifier ". $id ." to delete");
+        }
+
+        // To delete a relation, let's use the same form as for a hard delete
+        $form = $this->createForm(DeleteType::class, null, array(
+            'action' => $this->generateUrl($this->getRoute('delete_relation'), array(
+                'id' => $id,
+                'property' => $property,
+                'relationId' => $relationId
+            ))
+        ));
+
+        $form->handleRequest($request);
+        // Compute the form if valid, otherwise just (re)send the template
+        if ($form->isValid()) {
+
+            $accessor = PropertyAccess::createPropertyAccessor();
+            if ($accessor->isWritable($object, $property)) {
+                // Check if the relation can be nullable, otherwise we can't remove it
+                if ($this->isPropertyNullable($property)) {
+                    $accessor->setValue($object, $property, null);
+
+                    $em->persist($object);
+                    $em->flush();
+
+                    $this->addFlash(
+                        'success',
+                        $this->get('translator')->trans('sfs.admin.message.embedded_relation.remove_success', array(
+                            '%id%' => $object->getId(),
+                            '%name%' => $object->__toString()
+                        ))
+                    );
+                }
+                else {
+                    $this->addFlash(
+                        'error',
+                        $this->get('translator')->trans('sfs.admin.message.embedded_relation.remove_error', array(
+                            '%id%' => $object->getId(),
+                            '%name%' => $object->__toString()
+                        ))
+                    );
+                }
+            }
+            else {
+                $this->addFlash(
+                    'error',
+                    $this->get('translator')->trans('sfs.admin.message.embedded_relation.remove_error', array(
+                        '%id%' => $object->getId(),
+                        '%name%' => $object->__toString()
+                    ))
+                );
+            }
+
+            return $this->redirect($request->headers->get('referer'));
+        }
+        // This case handles CSRF errors & co
+        else if($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash(
+                'error',
+                $this->get('translator')->trans('sfs.admin.message.embedded_relation.remove_error', array(
+                    '%id%' => $object->getId(),
+                    '%name%' => $object->__toString()
+                ))
+            );
+        }
+
+        return $this->render($this->getTemplate('delete_relation_ajax'), array(
+            'form' => $form->createView(),
+            'object' => $object,
+            'property' => $property
+        ));
+    }
+
+    /**
 	 * Set the filter form, but can't be defined automatically so it is set to null by default
 	 */
 	protected function setFilterForm() {
@@ -320,12 +469,20 @@ abstract class AdminController extends Controller
                 ))
             );
 
-			if (null !== $request->get('btn_save_and_add')) {
-				return $this->redirect($this->generateUrl($this->getRoute('create')));
-			}
-			else {
-				return $this->redirect($this->generateUrl($this->getRoute('list')));
-			}
+            // Ajax call
+            if($request->isXmlHttpRequest()) {
+                return new JsonResponse(array(
+                    'result' => 'success',
+                    'message' => 'Created'
+                ));
+            }
+            else {
+                if (null !== $request->get('btn_save_and_add')) {
+                    return $this->redirect($this->generateUrl($this->getRoute('create')));
+                } else {
+                    return $this->redirect($this->generateUrl($this->getRoute('list')));
+                }
+            }
 		}
 		else if ($form->isSubmitted() && !$form->isValid()) {
             $this->addFlash(
@@ -334,10 +491,18 @@ abstract class AdminController extends Controller
             );
         }
 
-		return $this->render($this->getTemplate('create'), array(
-				'form'				=> $form->createView(),
-				'object' 			=> $object
-		));
+        if($request->isXmlHttpRequest()) {
+            return $this->render($this->getTemplate('create_ajax'), array(
+                'form' => $form->createView(),
+                'object' => $object
+            ));
+        }
+        else {
+            return $this->render($this->getTemplate('create'), array(
+                'form'				=> $form->createView(),
+                'object' 			=> $object
+            ));
+        }
 	}
 
 	/**
@@ -434,7 +599,9 @@ abstract class AdminController extends Controller
 			throw new NotFoundHttpException("Can't find the object with the identifier ". $id ." to delete");
 		}
 		else {
-			$form = $this->createForm(DeleteType::class);
+			$form = $this->createForm(DeleteType::class, null, array(
+                'action' => $this->generateUrl($this->getRoute('delete'), array('id' => $id))
+            ));
 
 			$form->handleRequest($request);
 			if ($form->isValid()) {
@@ -449,8 +616,17 @@ abstract class AdminController extends Controller
                     ))
                 );
 
-				return $this->redirect($this->generateUrl($this->getRoute('list')));
-			}
+                // Ajax calls
+                if($request->isXmlHttpRequest()) {
+                    return new JsonResponse(array(
+                        'result' => 'success',
+                        'message' => 'Deleted'
+                    ));
+                }
+                else {
+                    return $this->redirect($this->generateUrl($this->getRoute('list')));
+                }
+            }
 			else if($form->isSubmitted() && !$form->isValid()) {
                 $this->addFlash(
                     'error',
@@ -460,12 +636,20 @@ abstract class AdminController extends Controller
                     ))
                 );
             }
-			else {
-				return $this->render($this->getTemplate('delete'), array(
-						'form'				=> $form->createView(),
-						'object' 			=> $object
-				));
-			}
+
+            // Ajax calls
+            if($request->isXmlHttpRequest()) {
+                return $this->render($this->getTemplate('delete_ajax'), array(
+                    'form' => $form->createView(),
+                    'object' => $object
+                ));
+            }
+            else {
+                return $this->render($this->getTemplate('delete'), array(
+                    'form' => $form->createView(),
+                    'object' => $object
+                ));
+            }
 		}
 	}
 
@@ -700,6 +884,15 @@ abstract class AdminController extends Controller
 
 		return $fields;
 	}
+
+    /**
+     * @param string $property
+     * @return bool
+     */
+    private function isPropertyNullable($property) {
+	    $metadatas = $this->getMetadata($this->entityClass);
+        return $metadatas->getAssociationMapping($property)['joinColumns']['0']['nullable'];
+    }
 
 	/**
 	 * Useful to get the identifier to use, and not directly the id property which may doesn't exist.
