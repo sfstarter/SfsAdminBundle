@@ -61,6 +61,7 @@ class RouteAdminLoader extends Loader
 		        $defaults = array(
 		            '_controller' => $adminResources[$slug]['service'] .':'. $action['action'],
 		        );
+		        $defaults = array_merge($defaults, $action['defaults']);
 				$route = new Route($path, $defaults, $action['requirements']);
 		        $routeName = $action['route'];
 
