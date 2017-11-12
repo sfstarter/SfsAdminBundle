@@ -13,7 +13,7 @@
 		<title>Administration | Dashboard</title>
 
 	    <link rel="icon" href="{{ asset('favicon.ico') }}">
-	
+
 	    <!-- CSS -->
 		{% block stylesheets %}
 			<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,300,400italic,600' rel='stylesheet' type='text/css'>
@@ -33,7 +33,7 @@
 				<link rel="stylesheet" href="{{ asset('bundles/sfsadmin/css/style.css') }}" type="text/css">
 			{% endblock %}
 		{% endblock %}
-	
+
 		<!-- JS -->
 		{% block javascripts_header %}
 			<script src="{{ asset('bundles/sfsadmin/vendors/jquery/dist/jquery.min.js') }}"></script>
@@ -48,7 +48,7 @@
 				{% block sidebar %}
 					{% include 'SfsAdminBundle:Core:sidebar.html.twig' %}
 				{% endblock %}
-		
+
 				<!-- TOP MENU -->
 				<div>
 					<header id="menu-top" >
@@ -58,7 +58,7 @@
 						{% block breadcrumb %}
 							{% include 'SfsAdminBundle:Core:breadcrumb.html.twig' %}
 						{% endblock %}
-			
+
 						{% block footer %}
 							{% include 'SfsAdminBundle:Core:footer.html.twig' %}
 						{% endblock %}
@@ -76,9 +76,11 @@
 					</div>
 					<!--END CONTENT-->
 				</div>
-			</div>		    
+			</div>
+
+			{% include 'SfsAdminBundle:Core:ajax_modal.html.twig' %}
 		{% endblock %}
-	
+
 		<!-- JS -->
 		{% block javascripts_footer %}
 			<script src="{{ asset('bundles/sfsadmin/vendors/bootstrap-sass/assets/javascripts/bootstrap.min.js') }}"></script>
