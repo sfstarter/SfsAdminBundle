@@ -22,6 +22,7 @@ use Sfs\AdminBundle\Form\AbstractFilterType;
 use Sfs\AdminBundle\Form\BatchType;
 use Sfs\AdminBundle\Form\DeleteType;
 use Sfs\AdminBundle\Form\ExportType;
+use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 abstract class AdminController extends Controller
@@ -294,11 +295,15 @@ abstract class AdminController extends Controller
      *
      * @param string $property
      * @param int $relationId
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-	public function embeddedRelationListAction($property, $relationId, Request $request) {
+	public function embeddedRelationListAction($property, $relationId) {
+	    $request = $this->get('request_stack')->getMasterRequest();
         // TODO : check here if the object has the property, to avoid crashing
+        $accessor = PropertyAccess::createPropertyAccessor();
+        if(!isset($this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property])) {
+            throw new NoSuchPropertyException("The current object ". $this->getEntityClass() ." has no property named ". $property);
+        }
 
         $em = $this->container->get('doctrine')->getManager();
         /** @var QueryBuilder $query */
@@ -318,9 +323,14 @@ abstract class AdminController extends Controller
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query, /* query applied */
-            $request->query->getInt('page', 1)/* page number */,
+            $request->query->getInt($property .'Page', 1)/* page number */,
             10,/* limit per page */
-            array('defaultSortFieldName' => 'object.'. $this->getIdentifierProperty(), 'defaultSortDirection' => 'asc') /* Default sort */
+            array(
+                'sortFieldParameterName' => $property .'Sort',
+                'sortDirectionParameterName' => $property .'Direction',
+                'pageParameterName' => $property .'Page',
+                'defaultSortFieldName' => 'object.'. $this->getIdentifierProperty(),
+                'defaultSortDirection' => 'asc') /* Default sort */
         );
         $pagination->setPageRange(3);
 
