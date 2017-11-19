@@ -35,6 +35,9 @@ sfs:
                 delete_success: "L'ensemble des entrées ont été supprimé avec succès"
                 delete_title: "Attention! Cette action est irreversible"
             embedded_relation:
+                add_error: "Impossible d'associer l'objet %target%"
+                add_existing: "L'objet est déjà associé à %target%"
+                add_success: "L'association entre %current% et %target% a été enregistré avec succès"
                 remove_error: "Impossible de supprimer la relation entre les objets, celle ci étant requise"
                 remove_message: "Cette action supprimera la relation entre <i>%current%</i> et <i>%target%</i>. L'objet <i>%target%</i> sera conservé"
                 remove_success: "La relation avec l'entrée %name% (ID: %id%) a été supprimé avec succès"

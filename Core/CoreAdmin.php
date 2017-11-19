@@ -149,6 +149,8 @@ class CoreAdmin implements ContainerAwareInterface
 	 * @param array $requirements
 	 * @param array $defaults
 	 */
+
+
 	public function addRoute($slug, $action, $path = null, $requirements = array(), $defaults = array()) {
 		// We can specify the pattern of the path. Otherwise generate the default one
 		if($path === null) {
@@ -182,6 +184,10 @@ class CoreAdmin implements ContainerAwareInterface
 	private function generateRoutes($resourceAdmin, $slug) {
 		if(in_array('list', $resourceAdmin->getActions()))
 			$this->addRoute($slug, 'list');
+        if(in_array('list_ajax', $resourceAdmin->getActions()))
+            $this->addRoute($slug, 'list_ajax');
+        if(in_array('add_relation', $resourceAdmin->getActions()))
+            $this->addRoute($slug, 'add_relation', null, array('id' => '\d+', 'property' => '[a-zA-Z_]+', 'relationId' => '\d+'));
         if(in_array('embedded_relation_list', $resourceAdmin->getActions()))
             $this->addRoute($slug, 'embedded_relation_list', null, array('property' => '[a-zA-Z_]+', 'relationId' => '\d+'), array('relationId' => null));
 		if(in_array('create', $resourceAdmin->getActions()))

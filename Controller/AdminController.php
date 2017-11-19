@@ -93,6 +93,8 @@ abstract class AdminController extends Controller
 	 */
 	protected $actions = array(
 		'list',
+		'list_ajax',
+		'add_relation',
 		'embedded_relation_list',
 		'create',
 		'update',
@@ -222,6 +224,70 @@ abstract class AdminController extends Controller
 	}
 
     /**
+     * The returned format is given by select2 documentation
+     * In case another plugin is used, this action should probably need to be overridden
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function listAjaxAction(Request $request) {
+        $em = $this->container->get('doctrine')->getManager();
+        /** @var \Doctrine\ORM\QueryBuilder $query */
+        $query = $em->getRepository($this->entityClass)->createQueryBuilder('object');
+
+        $search = $request->get('term');
+        $page = $request->get('page', 1);
+        $elementsPerPage = 10;
+
+        $results = $this->queryAjax($query, $search, $page, $elementsPerPage);
+
+        // Pagination calculation
+        {
+            $query->select('count(object)')
+            ->setFirstResult(0);
+            $countResult = $query->getQuery()->getSingleScalarResult();
+            $isPagination = ((($page - 1) * $elementsPerPage) < $countResult) ? true : false;
+        }
+
+        $list = array_map(function($element) {
+            return array(
+                'id' => $element->getId(),
+                'text' => $element->__toString()
+            );
+        }, $results);
+
+        return new JsonResponse(array(
+            "results" => $list,
+            "pagination" => array("more" => $isPagination)
+        ));
+    }
+
+    /**
+     * @param \Doctrine\ORM\QueryBuilder $query
+     * @param string $search
+     * @param int $page
+     * @param int $elementsPerPage
+     * @return array
+     */
+    protected function queryAjax($query, $search, $page, $elementsPerPage) {
+        if($search !== null) {
+            $query
+                ->where('object.' . $this->getIdentifierProperty() . ' = :search')
+                ->setMaxResults($elementsPerPage)
+                ->setFirstResult(($page - 1) * $elementsPerPage)
+                ->orderBy('object.'. $this->getIdentifierProperty())
+                ->setParameter('search', $search);
+        }
+        // The queryBuilder does not handle a 'where FALSE' so we fake it
+        else
+            $query->where('object.id = FALSE');
+
+        $results = $query->getQuery()->getSQL()->getResult();
+
+        return $results;
+    }
+
+    /**
      * Called on TableEntityType to display the list, with elements filtered for the current element
      * This action is very similar to the listAction,
      *      but we keep it separated to do specific logic here later
@@ -260,8 +326,16 @@ abstract class AdminController extends Controller
 
         $listFields = $this->setListFields();
         // Remove the current object as it is unnecessary since they all relate to it
-        // TODO : this is not correct and won't necessary work (or worst will remove wanted column !!)
-        unset($listFields[$property]);
+        $listFields = array_filter($listFields, function($key) use ($property) {
+            // If the property is exactly the same as the key (meaning the __toString is used)
+            if($key === $property) {
+                return false;
+            }
+            // Otherwise remove the column if it has the pattern "property.var"
+            else {
+                return !(strpos($key, $property .'.') === 0);
+            }
+        }, ARRAY_FILTER_USE_KEY);
 
         return $this->render($this->getTemplate('embedded_relation_list'), array(
             'listFields' => $listFields,
@@ -271,6 +345,60 @@ abstract class AdminController extends Controller
             'pagination' => $pagination,
             'isNullable' => $this->isPropertyNullable($property)
         ));
+    }
+
+    public function addRelationAction($id, $property, $relationId, Request $request) {
+        $em = $this->container->get('doctrine')->getManager();
+        $repository = $em->getRepository($this->entityClass);
+        $object = $repository->find($id);
+
+        $relationClass = $this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property]['targetEntity'];
+        $repository = $em->getRepository($relationClass);
+        $relationObject = $repository->find($relationId);
+
+        // Check wether one of the objects doesn't exist
+        if($object === null) {
+            throw new NotFoundHttpException("Can't find the object with the identifier ". $id);
+        }
+        if($relationObject === null) {
+            throw new NotFoundHttpException("Can't find the object with the identifier ". $relationId);
+        }
+
+        // Check if the relation already exist & no update required
+        $accessor = PropertyAccess::createPropertyAccessor();
+        if($accessor->getValue($object, $property) === $relationObject) {
+            $this->addFlash(
+                'error',
+                $this->get('translator')->trans('sfs.admin.message.embedded_relation.add_existing', array(
+                    '%target%' => $object->__toString(),
+                ))
+            );
+        }
+        // If everything ok, let's set the value
+        else if ($accessor->isWritable($object, $property)) {
+            $accessor->setValue($object, $property, $relationObject);
+
+            $em->persist($object);
+            $em->flush();
+
+            $this->addFlash(
+                'success',
+                $this->get('translator')->trans('sfs.admin.message.embedded_relation.add_success', array(
+                    '%current%' => $object->__toString(),
+                    '%target%' => $relationObject->__toString()
+                ))
+            );
+        }
+        else {
+            $this->addFlash(
+                'error',
+                $this->get('translator')->trans('sfs.admin.message.embedded_relation.add_error', array(
+                    '%target%' => $object->__toString(),
+                ))
+            );
+        }
+
+        return $this->redirect($request->headers->get('referer'));
     }
 
     /**

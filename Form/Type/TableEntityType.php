@@ -37,7 +37,8 @@ class TableEntityType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'attr' => $this->defaultAttrOptions
+            'attr' => $this->defaultAttrOptions,
+            'ajax_route' => null
         ));
 
         $resolver->setRequired('class');
@@ -50,6 +51,7 @@ class TableEntityType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         parent::buildView($view, $form, $options);
+        $view->vars['ajax_route'] = $options['ajax_route'];
         $view->vars['attr'] = array_merge($this->defaultAttrOptions, $options['attr']);
         $view->vars['class'] = $options['class'];
         $view->vars['property'] = $options['property'];

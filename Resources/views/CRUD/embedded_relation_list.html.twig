@@ -79,29 +79,66 @@
 		<!-- LIST FOOTER -->
 		<tfoot>
 		<tr>
-			<td colspan='10'>
-				<div class="btn-group" role="group" aria-label="...">
-					<a href="" data-ajax-url="{{ admin_url('create') }}" data-title="{% trans %}BLOP{% endtrans %}" data-modal-type="modal-lg" data-toggle="ajax-modal" class="btn btn-default btn-rounded btn-outlined" role="button">
+			<td colspan='1000'>
+				<div class="btn-group mt-8" role="group" aria-label="...">
+					<a href="" data-ajax-url="{{ admin_url('create') }}" data-title="{% trans %}sfs.admin.crud.create{% endtrans %}" data-modal-type="modal-lg" data-toggle="ajax-modal" class="btn btn-default btn-rounded btn-outlined" role="button">
 						<i class="fa fa-plus-circle"></i> Créer
 					</a>
 
-					<select role="button">
-						<option>1</option>
-						<option>2</option>
-					</select>
-					<a href="" role="button" class="btn btn-default">
-						<i class="fa fa-plus-search"></i> Ajouter existant
-					</a>
+					<div id="relation-search-ajax-{{ relationProperty }}" class="relation-search-ajax" style="display: none;">
+						<select id="relation-search-ajax-select-{{ relationProperty }}"></select>
+						<button id="relation-search-ajax-button-{{ relationProperty }}" type="button" class="btn btn-default">
+							<i class="fa fa-plus-search"></i> Ajouter existant
+						</button>
+					</div>
 				</div>
 
-				<div class="pull-right">
+				<div class="pull-right text-right">
 					<div class="pagination-panel">
 						{{ knp_pagination_render(pagination, 'SfsAdminBundle:CRUD:pagination.html.twig') }}
 					</div>
-					<p class="">{% trans with {'%count%': pagination.getTotalItemCount} %}sfs.admin.message.list_total{% endtrans %}</p>
+					<p class="mb-0">{% trans with {'%count%': pagination.getTotalItemCount} %}sfs.admin.message.list_total{% endtrans %}</p>
 				</div>
 			</td>
 		</tr>
 		</tfoot>
 	</table>
+
+	{# Ajax select to add an existant element #}
+	<script>
+		$(document).ready(function() {
+		    if(ajax_route_{{ relationProperty }} !== null) {
+		        $('#relation-search-ajax-{{ relationProperty }}').show();
+                $('#relation-search-ajax-select-{{ relationProperty }}').select2({
+                    ajax: {
+                        url: ajax_route_{{ relationProperty }},
+                        dataType: 'json'
+                        // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+                    },
+                    minimumInputLength: 3,
+                });
+            }
+            else {
+                $('#relation-search-ajax-{{ relationProperty }}').hide();
+			}
+
+			{# Generate route #}
+            var url = "{{ admin_url('add_relation', {'id': 0, 'property': relationProperty, 'relationId': relationId }) }}";
+			$('#relation-search-ajax-button-{{ relationProperty }}').on('click', function() {
+                var selection = $('#relation-search-ajax-select-{{ relationProperty }}').select2('data');
+
+				if(selection !== null && selection.length !== 0) {
+                    var ajaxUrl = url.replace(0, selection[0]['id']);
+
+                    $.ajax({
+                        type: "GET",
+                        url: ajaxUrl,
+                        success: function (data) {
+                            location.reload();
+                        }
+                    });
+                }
+			});
+		});
+	</script>
 {% endblock %}
