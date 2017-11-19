@@ -27,34 +27,34 @@
 
 				<!-- Tab panes -->
 				<div class="tab-content">
-					<div role="tabpanel" class="tab-pane active" id="inbox">
-						{% for key, tab in form.vars.tabs %}
-							<div id="admin-tab-{{ key }}" class="tab-pane fade row {% if loop.index == 1 %}in active{% endif %}" role="tabpanel">
-								{% for block in tab.blocks %}
-									{% set blockColumnClass = attribute(form.vars.blocks, block).classes.column | default('col-md-12') %}
-									{% set blockPanelClass = attribute(form.vars.blocks, block).classes.panel | default('panel-primary') %}
-		
-									<div class="{{ blockColumnClass }}">
-										<div class="panel {{ blockPanelClass }}">
-											<div class="panel-heading">{{ attribute(form.vars.blocks, block).title }}</div>
-											<div class="panel-body">
-												<div class="form-body">
-													{% for field in attribute(form.vars.blocks, block).fields %}
-														{{ form_row(attribute(form.children, field)) }}
-													{% endfor %}
-												</div>
+					{% for key, tab in form.vars.tabs %}
+						<div id="admin-tab-{{ key }}" class="tab-pane fade row {% if loop.index == 1 %}in active{% endif %}" role="tabpanel">
+							{% for block in tab.blocks %}
+								{% set blockColumnClass = attribute(form.vars.blocks, block).classes.column | default('col-md-12') %}
+								{% set blockPanelClass = attribute(form.vars.blocks, block).classes.panel | default('panel-primary') %}
+
+								<div class="{{ blockColumnClass }}">
+									<div class="panel {{ blockPanelClass }}">
+										<div class="panel-heading">{{ attribute(form.vars.blocks, block).title }}</div>
+										<div class="panel-body">
+											<div class="form-body">
+												{% for field in attribute(form.vars.blocks, block).fields %}
+													{{ form_row(attribute(form.children, field)) }}
+												{% endfor %}
 											</div>
 										</div>
 									</div>
-								{% endfor %}
-							</div>
-						{% endfor %}
-						{{ form_rest(form) }}
-					</div>
+								</div>
+							{% endfor %}
+						</div>
+					{% endfor %}
+					{{ form_rest(form) }}
 				</div>
 			</div>
 
-			{% include 'SfsAdminBundle:CRUD:update_buttons.html.twig' %}
+			{% block update_actions %}
+				{% include 'SfsAdminBundle:CRUD:update_buttons.html.twig' %}
+			{% endblock %}
 		</div>
 	{{ form_end(form) }}
 {% endblock %}

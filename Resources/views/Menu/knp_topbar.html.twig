@@ -87,6 +87,8 @@
     <li{{ knp_menu.attributes(attributes) }}>
         {%- if item.uri is not empty and (not matcher.isCurrent(item) or options.currentAsLink) %}
 	        {{ block('linkElement') }}
+		{% elseif item.extras.noSpan is defined and item.extras.noSpan == true %}
+			{{ block('noSpanElement') }}
         {%- else %}
 	        {{ block('spanElement') }}
         {%- endif %}
@@ -124,5 +126,11 @@
 	{% import _self as knp_menu %}
 	<span{{ knp_menu.attributes(item.labelAttributes) }}>{{ block('label') }}</span>
 {% endblock %}
+
+{% block noSpanElement %}
+	{% import _self as knp_menu %}
+	{{ block('label') }}
+{% endblock %}
+
 
 {% block label %}{% if options.allow_safe_labels and item.getExtra('safe_label', false) %}{{ item.label|raw }}{% else %}{{ item.label }}{% endif %}{% endblock %}

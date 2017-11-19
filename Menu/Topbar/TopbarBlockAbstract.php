@@ -10,10 +10,25 @@ namespace Sfs\AdminBundle\Menu\Topbar;
 
 abstract class TopbarBlockAbstract implements TopbarBlockInterface
 {
-	private $twig;
+	protected $twig;
+
+	protected $attributes = array();
 
 	public function __construct($twig) {
 		$this->twig = $twig;
+
+		$this->setAttributes();
+	}
+
+	public function setAttributes() {
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAttributes()
+	{
+		return $this->attributes;
 	}
 
 	abstract public function display();

@@ -8811,7 +8811,7 @@ html, body {
   transform: rotate(90deg); }
 
 #login-page {
-  background-image: url(../img/bg_brown.jpg);
+  background-image: url("../img/bg_brown.jpg");
   background-size: cover; }
   #login-page .login-header {
     color: #fff;
@@ -8991,5 +8991,11 @@ form.form-horizontal.form-bordered .form-group {
   position: absolute;
   top: 0;
   width: 20px; }
+
+/**
+ * FILTERS
+ */
+#filters .select2-container--default {
+  width: 100% !important; }
 
 /*# sourceMappingURL=style.css.map */

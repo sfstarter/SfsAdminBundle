@@ -1,0 +1,30 @@
+<div class="col-lg-12">
+    <!-- Default flash bags from Sf -->
+    {% for flash_message in app.session.flashBag.get('notice') %}
+        <div class="alert alert-info" role="alert">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            {{ flash_message }}
+        </div>
+    {% endfor %}
+    <!-- Flash bags for warnings -->
+    {% for flash_message in app.session.flashBag.get('warning') %}
+        <div class="alert alert-warning" role="alert">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            {{ flash_message }}
+        </div>
+    {% endfor %}
+    <!-- Flash bags for error -->
+    {% for flash_message in app.session.flashBag.get('error') %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fa fa-ban" aria-hidden="true"></i>
+            {{ flash_message }}
+        </div>
+    {% endfor %}
+    <!-- Flash bags for success -->
+    {% for flash_message in app.session.flashBag.get('success') %}
+        <div class="alert alert-success" role="alert">
+            <i class="fa fa-check-circle" aria-hidden="true"></i>
+            {{ flash_message }}
+        </div>
+    {% endfor %}
+</div>

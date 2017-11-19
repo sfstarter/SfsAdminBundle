@@ -219,7 +219,7 @@ class MenuBuilder implements ContainerAwareInterface
 	}
 
 	/**
-	 * Display in the Topbar menu all the blocks services taggged as sfs_admin.menu.topbar
+	 * Display in the Topbar menu all the blocks services tagged as sfs_admin.menu.topbar
 	 *
 	 * @param ItemInterface $menu
 	 */
@@ -232,8 +232,11 @@ class MenuBuilder implements ContainerAwareInterface
 				$htmlContent = $block->display();
 
 				$menu->addChild($htmlContent, array(
-						'attributes'	=> array('class' => 'user-panel'),
-						'extras' 		=> array('safe_label' => true)
+						'attributes'	=> $block->getAttributes(),
+						'extras' 		=> array(
+							'noSpan' 		=> true,
+							'safe_label' => true
+						)
 				));
 			}
 		}

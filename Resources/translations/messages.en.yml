@@ -28,11 +28,19 @@ sfs:
             true_value: 'True'
         message:
             batch:
+                delete_error: ""
                 delete_message: "Do you confirm the batch Delete ?"
+                delete_success: "L'ensemble des entrées ont été supprimé avec succès"
                 delete_title: "Warning! This action is irreversible"
+            create_error: "Impossible de créer l'entrée, le formulaire contient des erreurs"
+            create_success: "L'entrée %name% (ID: %id%) a été créé avec succès"
+            delete_error: "Impossible de supprimer l'entrée %name% (ID: %id%)"
             delete_message: "Are you sure you want to delete the current object ? (ID: %id%)"
+            delete_success: "L'entrée %name% (ID: %id%) a été supprimé avec succès"
             delete_title: "Warning! This action is irreversible"
             list_total: "Found total %count% records"
+            update_error: "Could not update the entry, the form contains error"
+            update_success: "L'entrée %name% (ID: %id%) a été modifié avec succès"
         page:
             dashboard: "Home"
         security:

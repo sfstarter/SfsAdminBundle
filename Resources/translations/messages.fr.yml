@@ -28,11 +28,19 @@ sfs:
             true_value: "Oui"
         message:
             batch:
+                delete_error: "Aucune entrée n'a pu être supprimé"
                 delete_message: "Confirmer l'action de Suppression groupée ?"
+                delete_success: "L'ensemble des entrées ont été supprimé avec succès"
                 delete_title: "Attention! Cette action est irreversible"
+            create_error: "Impossible de créer l'entrée, le formulaire contient des erreurs"
+            create_success: "L'entrée %name% (ID: %id%) a été créé avec succès"
+            delete_error: "Impossible de supprimer l'entrée %name% (ID: %id%)"
             delete_message: "Êtes-vous sûr de vouloir supprimer l'objet courant ? (ID: %id%)"
+            delete_success: "L'entrée %name% (ID: %id%) a été supprimé avec succès"
             delete_title: "Attention! Cette action est irreversible"
             list_total: "Total de %count% enregistrements"
+            update_error: "Impossible de modifier l'entrée, le formulaire contient des erreurs"
+            update_success: "L'entrée %name% (ID: %id%) a été modifié avec succès"
         page:
             dashboard: "Accueil"
         security:

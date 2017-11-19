@@ -23,11 +23,9 @@ class TagEntityType extends TagType {
 	}
 
 	/**
-	 * getName
-	 * 
-	 * @return string
+	 * {@inheritdoc}
 	 */
-	public function getName() {
+	public function getBlockPrefix() {
 		return 'sfs_admin_field_tag_entity';
 	}
 }

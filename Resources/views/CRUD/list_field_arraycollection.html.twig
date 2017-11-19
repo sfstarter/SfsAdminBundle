@@ -5,13 +5,7 @@
 
 <td>
 	{% for element in admin_get_property(object, key) %}
-		{% if field.relation is defined and field.relation %}
-			<a target="_blank" href="{{ admin_url('read', {'object': element}) }}">
-				{{ element }}
-			</a>
-		{% else %}
-			{{ element }}
-		{% endif %}
+		{{ element }}
 		{% if not loop.last %}, {% endif %}
 	{% endfor %}
 </td>

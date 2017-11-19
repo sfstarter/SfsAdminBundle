@@ -12,7 +12,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
 /**
@@ -35,9 +35,11 @@ class SliderType extends AbstractType {
 	);
 
 	/**
-	 * {@inheritdoc}
+	 * configureOptions
+	 *
+	 * @param OptionsResolver $resolver
 	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults(array(
 				'attr' => $this->defaultAttrOptions
@@ -64,7 +66,7 @@ class SliderType extends AbstractType {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getName() {
+	public function getBlockPrefix() {
 		return 'sfs_admin_field_slider';
 	}
 }

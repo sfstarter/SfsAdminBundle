@@ -29,6 +29,7 @@ class OfTypeExtension extends \Twig_Extension {
 
 	/**
 	 *
+	 * @param EntityManager $entityManager
 	 * @param CoreAdmin $core
 	 */
 	public function __construct(EntityManager $entityManager, CoreAdmin $core) {

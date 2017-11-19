@@ -42,6 +42,10 @@ fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     user_class: Sfs\AdminBundle\Tests\Fixtures\TestBundle\Entity\User
+    # Now the following array is required
+    from_email:
+        address: "john.doe@sfs.admin"
+        sender_name: "John DOE"
 
 # Doctrine Configuration
 doctrine:

@@ -91,3 +91,7 @@ services:
             - [setContainer, ["@service_container"]]
         tags:
             - { name: twig.extension }
+    sfs.adminu.twig.property_access_extension:
+        class: Sfs\AdminBundle\Twig\PropertyAccessExtension
+        tags:
+            - { name: twig.extension }

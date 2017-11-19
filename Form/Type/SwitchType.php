@@ -12,7 +12,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
 class SwitchType extends AbstractType {
@@ -28,9 +28,11 @@ class SwitchType extends AbstractType {
 	);
 
 	/**
-	 * {@inheritdoc}
+	 * configureOptions
+	 *
+	 * @param OptionsResolver $resolver
 	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults(array(
 				'attr' => array(
@@ -61,7 +63,7 @@ class SwitchType extends AbstractType {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getName() {
+	public function getBlockPrefix() {
 		return 'sfs_admin_field_switch';
 	}
 }

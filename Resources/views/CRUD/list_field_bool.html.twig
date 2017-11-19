@@ -4,7 +4,7 @@
 #}
 
 <td>
-	{%  if attribute(object, key) %}
+	{%  if admin_get_property(object, key) %}
 		<span class="label label-success">{% trans %}sfs.admin.field.true_value{% endtrans %}</span>
 	{% else %}
 		<span class="label label-danger">{% trans %}sfs.admin.field.false_value{% endtrans %}</span>
