@@ -5,10 +5,24 @@
 
 <td>
 	{% if field.relation is defined and field.relation %}
-		{% set relatedObject = admin_get_property(object, key) %}
-		<a target="_blank" href="{{ admin_url('read', {'object': relatedObject}) }}">
-			{{ relatedObject }}
-		</a>
+		{% set value = admin_get_property(object, key) %}
+		{% if field.relation is same as(true) %}
+			{% set relatedObject = admin_get_property(object, key) %}
+		{% else %}
+			{% set relatedObject = admin_get_property(object, field.relation) %}
+		{% endif %}
+
+		{% if admin_has_action('read') %}
+			<a target="_blank" href="{{ admin_url('read', {'object': relatedObject}) }}">
+				{{ value }}
+			</a>
+		{% elseif admin_has_action('update') %}
+			<a target="_blank" href="{{ admin_url('update', {'object': relatedObject}) }}">
+				{{ value }}
+			</a>
+		{% else %}
+			{{ admin_get_property(object, key) }}
+		{% endif %}
 	{% else %}
 		{{ admin_get_property(object, key) }}
 	{% endif %}
