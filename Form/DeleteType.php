@@ -24,10 +24,11 @@ class DeleteType extends AbstractType
 	{
 		$builder
 			->add('delete', SubmitType::class, array(
-					'attr' => array(
-						'class'	=> 'btn btn-danger'
-					),
-					'icon' => 'trash'
+                'attr' => array(
+                    'class'	=> 'btn btn-danger'
+                ),
+                'label' => 'sfs.admin.crud.delete',
+                'icon' => 'trash'
 			));
 	}
 

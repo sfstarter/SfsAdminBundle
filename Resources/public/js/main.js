@@ -18,6 +18,29 @@ $(function () {
 	$('[data-toggle="tooltip"]').tooltip();
 });
 
+// Ajax on modal bootstrap
+$('[data-toggle="ajax-modal"]').on('click', function (e) {
+    e.preventDefault();
+
+    var url = $(this).data('ajax-url');
+    var title = $(this).data('title');
+    var modalType = $(this).data('modal-type');
+
+    $.ajax({
+		url: url,
+	}).success(function(data) {
+		// Modal size
+        $('#modal-ajax .modal-dialog').removeClass('modal-lg');
+        $('#modal-ajax .modal-dialog').removeClass('modal-sm');
+		if(modalType)
+        	$('#modal-ajax .modal-dialog').addClass(modalType);
+
+		$('#modal-ajax .modal-title').html(title);
+		$('#modal-ajax .modal-body').html(data);
+        $('#modal-ajax').modal({show: true});
+	});
+});
+
 // Batch checkbox
 $(".batch-checkbox").click(function(e) {
 	element = $(e.target);

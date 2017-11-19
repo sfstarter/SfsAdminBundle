@@ -371,6 +371,16 @@ form {
 		background-color: $brand-primary;
 	}
 }
+
+.relation-search-ajax {
+	display: inline-block;
+	position: relative;
+
+	select {
+		width: 200px;
+	}
+}
+
 /**
  * SELECT2
  */

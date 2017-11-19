@@ -206,3 +206,21 @@
         {% endif %}
     {% endspaceless %}
 {% endblock checkbox_widget %}
+
+{% block sfs_admin_field_table_entity_widget %}
+	<div id="table-entity-{{ form.vars.id }}">
+		{% if form.parent.vars.data.id is not null %}
+			{{ render(url(admin_route('embedded_relation_list', form.vars.class), {'property': form.vars.property,'relationId': form.parent.vars.data.id})) }}
+		{% else %}
+			{{ render(url(admin_route('embedded_relation_list', form.vars.class), {'property': form.vars.property })) }}
+		{% endif %}
+	</div>
+
+	<script>
+		{% if form.vars.ajax_route is not null %}
+			var ajax_route_{{ form.vars.property }} = "{{ path(form.vars.ajax_route) }}";
+		{% else %}
+        	var ajax_route_{{ form.vars.property }} = null;
+		{% endif %}
+	</script>
+{% endblock %}

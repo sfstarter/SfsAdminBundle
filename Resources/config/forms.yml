@@ -61,6 +61,11 @@ services:
         tags:
             - { name: form.type }
 
+    sfs_admin.form.type.table_entity:
+        class: Sfs\AdminBundle\Form\Type\TableEntityType
+        tags:
+            - { name: form.type }
+
 # Filters
     sfs_admin.filter.doctrine_subscriber:
         class: Sfs\AdminBundle\Listener\FilterSubscriber
