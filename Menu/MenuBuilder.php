@@ -146,7 +146,7 @@ class MenuBuilder implements ContainerAwareInterface
 
 		$menu = $this->factory->createItem('breadcrumb', array(
 				'childrenAttributes' => array(
-						'class' => 'breadcrumb pull-right margin-0'
+						'class' => 'breadcrumb pull-left mt-8 mb-8'
 				)
 		));
 		$menu->addChild($translator->trans('sfs.admin.page.dashboard'), array(
@@ -218,7 +218,49 @@ class MenuBuilder implements ContainerAwareInterface
 		return $menu;
 	}
 
-	/**
+    /**
+     * subbarMenu contains available actions contextualised on current page
+     *
+     *
+     * @param RequestStack $requestStack
+     *
+     * @return \Knp\Menu\ItemInterface
+     */
+    public function subbarMenu(RequestStack $requestStack) {
+        $buttons = $this->container->getParameter('sfs_admin.topbar_buttons');
+
+        $menu = $this->factory->createItem('subbar', array(
+            'childrenAttributes' => array(
+                'class' => 'nav navbar-nav'
+            )
+        ));
+
+        foreach($buttons as $button) {
+            if($button['route']) {
+                $menu->addChild($button['title'], array(
+                    'route' 	=> $button['route'],
+                    'attributes' => array(
+                        'icon' => $button['icon']
+                    )
+                ));
+            }
+            else if($button['url']) {
+                $menu->addChild($button['title'], array(
+                    'uri' 	=> $button['url'],
+                    'attributes' => array(
+                        'icon' => $button['icon']
+                    ),
+                    'linkAttributes' => array(
+                        'target' => '_blank'
+                    )
+                ));
+            }
+        }
+
+        return $menu;
+    }
+
+    /**
 	 * Display in the Topbar menu all the blocks services tagged as sfs_admin.menu.topbar
 	 *
 	 * @param ItemInterface $menu

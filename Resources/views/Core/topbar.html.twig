@@ -12,19 +12,14 @@
 					<i class="fa fa-bars fa-lg"></i>
 				</a>
 			</li>
-			<li>
-				<a href="{{ path('sfs_admin_root') }}" class="">
-					<span id="topbar-title-site">
-						{% if sfs_admin_preferences.title_logo != null %}
-							<img class="logo-image" src="{{ asset(sfs_admin_preferences.title_logo) }}">
-						{% else %}
-							<span class="logo-text">{{ sfs_admin_preferences.title_text }}</span>
-						{% endif %}
-					</span>
-					<i class="fa fa-home fa-lg"></i>
-				</a>
-			</li>
 		</ul>
+		{% block breadcrumb_list %}
+			{{ knp_menu_render('breadcrumb', {'template': 'SfsAdminBundle:Menu:knp_breadcrumb.html.twig', 'allow_safe_labels': true}) }}
+		{% endblock %}
+
+		{% block breadcrumb_page_title %}
+			{% include 'SfsAdminBundle:Core:page_title.html.twig' %}
+		{% endblock %}
 
 		{{ knp_menu_render('topbar', {'template': 'SfsAdminBundle:Menu:knp_topbar.html.twig', 'allow_safe_labels': true }) }}
 	</nav>

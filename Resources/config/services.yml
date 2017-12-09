@@ -40,6 +40,12 @@ services:
         arguments: ["@request_stack"]
         tags:
             - { name: knp_menu.menu, alias: topbar }
+    sfs.admin.subbar_menu:
+        class: Knp\Menu\MenuItem
+        factory: ["@sfs.admin.menu_builder", subbarMenu]
+        arguments: ["@request_stack"]
+        tags:
+            - { name: knp_menu.menu, alias: subbar }
 
 ## Topbar
     sfs.admin.topbar_menu.user:

@@ -10,7 +10,7 @@ $(document).ready(function() {
 // Aside menu toggle to the left
 $("#menu-toggle").click(function(e) {
 	e.preventDefault();
-	$("#wrapper, #topbar-title-site").toggleClass("menu-toggled");
+	$("#wrapper").toggleClass("menu-toggled");
 });
 
 // Activate bootstrap tooltips
