@@ -13,11 +13,11 @@
 		{% endif %}
 
 		{% if admin_has_action('read') %}
-			<a target="_blank" href="{{ admin_url('read', {'object': relatedObject}) }}">
+			<a href="{{ admin_url('read', {'object': relatedObject}) }}">
 				{{ value }}
 			</a>
 		{% elseif admin_has_action('update') %}
-			<a target="_blank" href="{{ admin_url('update', {'object': relatedObject}) }}">
+			<a href="{{ admin_url('update', {'object': relatedObject}) }}">
 				{{ value }}
 			</a>
 		{% else %}

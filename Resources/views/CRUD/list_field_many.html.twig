@@ -9,7 +9,7 @@
 			<tr>
 				<td class="no-border" style="width: 100%;">
 					{% if field.relation is defined and field.relation %}
-						<a target="_blank" href="{{ admin_url('read', {'object': element}) }}">
+						<a href="{{ admin_url('read', {'object': element}) }}">
 							{{ element }}
 						</a>
 					{% else %}
