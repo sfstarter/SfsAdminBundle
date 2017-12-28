@@ -67,7 +67,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('title')->isRequired()->end()
                         ->scalarNode('route')->defaultNull()->end()
                         ->scalarNode('url')->defaultNull()->end()
-                        ->scalarNode('icon')->isRequired()->end()
+                        ->scalarNode('icon')->defaultNull()->end()
                         ->scalarNode('show_label')->defaultFalse()->end()
                     ->end()
                 ->end()

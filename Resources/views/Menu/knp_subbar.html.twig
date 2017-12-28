@@ -112,16 +112,16 @@
 		{% if item.level == 1 %}
 			{% if item.attribute('icon') is not empty  %}
     			<i class="fa {{ item.attribute('icon') }}"></i>
-				{% if item.attribute('showLabel') %}
-					{{ block('label') }}
-				{% endif %}
+			{% endif %}
+			{% if item.attribute('showLabel') %}
+				{{ block('label') }}
 			{% endif %}
 		{% else %}
 			{% if item.attribute('icon') is not empty  %}
     			<i class="fa {{ item.attribute('icon') }}"></i>
-				{% if item.attribute('showLabel') %}
-					{{ block('label') }}
-				{% endif %}
+			{% endif %}
+			{% if item.attribute('showLabel') %}
+				{{ block('label') }}
 			{% endif %}
 		{% endif %}
 	</a>
