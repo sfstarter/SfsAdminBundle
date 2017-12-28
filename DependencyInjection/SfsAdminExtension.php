@@ -32,6 +32,7 @@ class SfsAdminExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('sfs_admin.menu_categories', $config['menu_categories']);
         $container->setParameter('sfs_admin.pages', $config['pages']);
         $container->setParameter('sfs_admin.topbar_buttons', $config['topbar_buttons']);
+        $container->setParameter('sfs_admin.subbar_buttons', $config['subbar_buttons']);
         $container->setParameter('sfs_admin.title_text', $config['title_text']);
         $container->setParameter('sfs_admin.title_logo', $config['title_logo']);
 

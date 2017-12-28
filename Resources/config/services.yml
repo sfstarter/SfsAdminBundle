@@ -28,12 +28,6 @@ services:
         arguments: ["@request_stack"]
         tags:
             - { name: knp_menu.menu, alias: sidebar }
-    sfs.admin.breadcrumb_menu:
-        class: Knp\Menu\MenuItem
-        factory: ["@sfs.admin.menu_builder", breadcrumbMenu]
-        arguments: ["@request_stack"]
-        tags:
-            - { name: knp_menu.menu, alias: breadcrumb }
     sfs.admin.topbar_menu:
         class: Knp\Menu\MenuItem
         factory: ["@sfs.admin.menu_builder", topbarMenu]

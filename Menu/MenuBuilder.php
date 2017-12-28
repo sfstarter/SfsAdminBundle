@@ -133,49 +133,6 @@ class MenuBuilder implements ContainerAwareInterface
 	}
 
 	/**
-	 * breadcrumbMenu
-	 *
-	 * @param RequestStack $requestStack
-	 *
-	 * @return \Knp\Menu\ItemInterface
-	 */
-	public function breadcrumbMenu(RequestStack $requestStack) {
-		$translator = $this->container->get('translator');
-		$core = $this->container->get('sfs.admin.core');
-		$currentAdmin = $core->getCurrentAdmin();
-
-		$menu = $this->factory->createItem('breadcrumb', array(
-				'childrenAttributes' => array(
-						'class' => 'breadcrumb pull-left mt-8 mb-8'
-				)
-		));
-		$menu->addChild($translator->trans('sfs.admin.page.dashboard'), array(
-				'route' => 'sfs_admin_dashboard',
-				'attributes' => array(
-						'icon' => 'fa-home'
-				)
-		));
-
-		// Two possibilities: currently on an Admin Resource
-		if($currentAdmin !== null) {
-			$admin = $this->container->get($currentAdmin['service']);
-
-			if($core->getCurrentAction() === 'list') {
-				$menu->addChild($admin->getTitle() .' List');
-			}
-			else {
-				$menu->addChild($admin->getTitle() .' List', array('route' => $core->getRouteBySlug($admin->getSlug(), 'list')));
-			}
-		}
-		// Otherwise looking on a custom page
-		else {
-
-		}
-
-		return $menu;
-	}
-
-	/**
 	 * topbarMenu contains the twig file to display the user dropdown
 	 *
 	 * @param RequestStack $requestStack
@@ -227,7 +184,7 @@ class MenuBuilder implements ContainerAwareInterface
      * @return \Knp\Menu\ItemInterface
      */
     public function subbarMenu(RequestStack $requestStack) {
-        $buttons = $this->container->getParameter('sfs_admin.topbar_buttons');
+        $buttons = $this->container->getParameter('sfs_admin.subbar_buttons');
 
         $menu = $this->factory->createItem('subbar', array(
             'childrenAttributes' => array(
@@ -240,7 +197,8 @@ class MenuBuilder implements ContainerAwareInterface
                 $menu->addChild($button['title'], array(
                     'route' 	=> $button['route'],
                     'attributes' => array(
-                        'icon' => $button['icon']
+                        'icon' => $button['icon'],
+                        'showLabel' => $button['show_label']
                     )
                 ));
             }
@@ -248,7 +206,8 @@ class MenuBuilder implements ContainerAwareInterface
                 $menu->addChild($button['title'], array(
                     'uri' 	=> $button['url'],
                     'attributes' => array(
-                        'icon' => $button['icon']
+                        'icon' => $button['icon'],
+                        'showLabel' => $button['show_label']
                     ),
                     'linkAttributes' => array(
                         'target' => '_blank'

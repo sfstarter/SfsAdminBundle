@@ -6,6 +6,8 @@
 {% extends 'SfsAdminBundle:Core:base.html.twig' %}
 
 {% block content %}
+	{{ parent() }}
+
 <div class="col-lg-12">
 	<h3>{% trans %}sfs.admin.message.delete_title{% endtrans %}</h3>
 	<p>{% trans with {'%target%': object} %}sfs.admin.message.delete_message{% endtrans %}</p>

@@ -14,11 +14,12 @@
 			</li>
 		</ul>
 		{% block breadcrumb_list %}
-			{{ knp_menu_render('breadcrumb', {'template': 'SfsAdminBundle:Menu:knp_breadcrumb.html.twig', 'allow_safe_labels': true}) }}
-		{% endblock %}
-
-		{% block breadcrumb_page_title %}
-			{% include 'SfsAdminBundle:Core:page_title.html.twig' %}
+			{% if object is not defined %}
+				{% set breadcrumbMenu = knp_menu_get('SfsAdminBundle:BreadcrumbMenu:breadcrumbMenu', [], {'currentObject': null}) %}
+			{% else %}
+				{% set breadcrumbMenu = knp_menu_get('SfsAdminBundle:BreadcrumbMenu:breadcrumbMenu', [], {'currentObject': object}) %}
+			{% endif %}
+			{{ knp_menu_render(breadcrumbMenu, {'template': 'SfsAdminBundle:Menu:knp_breadcrumb.html.twig', 'allow_safe_labels': true}) }}
 		{% endblock %}
 
 		{{ knp_menu_render('topbar', {'template': 'SfsAdminBundle:Menu:knp_topbar.html.twig', 'allow_safe_labels': true }) }}

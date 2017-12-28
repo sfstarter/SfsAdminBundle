@@ -6,6 +6,7 @@
 {% extends 'SfsAdminBundle:Core:base.html.twig' %}
 
 {% block content %}
+	{{ parent() }}
 	{% set formId = random() %}
 
 	{{ form_start(form, { 'attr': {'class': 'form-horizontal form-seperated dashed'} }) }}

@@ -111,12 +111,17 @@
 	<a href="{{ item.uri }}"{{ knp_menu.attributes(item.linkAttributes) }} title="{{ block('label') }}" data-placement="bottom" data-toggle="tooltip">
 		{% if item.level == 1 %}
 			{% if item.attribute('icon') is not empty  %}
-    			<i class="fa {{ item.attribute('icon') }}">
-				</i>
+    			<i class="fa {{ item.attribute('icon') }}"></i>
+				{% if item.attribute('showLabel') %}
+					{{ block('label') }}
+				{% endif %}
 			{% endif %}
 		{% else %}
 			{% if item.attribute('icon') is not empty  %}
-    			<i class="fa {{ item.attribute('icon') }}"></i> 
+    			<i class="fa {{ item.attribute('icon') }}"></i>
+				{% if item.attribute('showLabel') %}
+					{{ block('label') }}
+				{% endif %}
 			{% endif %}
 		{% endif %}
 	</a>
