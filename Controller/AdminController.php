@@ -1071,7 +1071,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 * 
 	 * @return \Doctrine\ORM\Mapping\ClassMetadataInfo
 	 */
-	private function getMetadata($class)
+	protected function getMetadata($class)
 	{
 		if($class !== null) {
 			/**
@@ -1091,7 +1091,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 *
 	 * @return array
 	 */
-	private function getObjectProperties() {
+    protected function getObjectProperties() {
 		$fields = array();
 		$metadatas = $this->getMetadata($this->entityClass);
 
@@ -1113,7 +1113,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
      * @param string $property
      * @return bool
      */
-    private function isPropertyNullable($property) {
+    protected function isPropertyNullable($property) {
 	    $metadatas = $this->getMetadata($this->entityClass);
         return $metadatas->getAssociationMapping($property)['joinColumns']['0']['nullable'];
     }
