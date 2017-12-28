@@ -8866,6 +8866,16 @@ html, body {
 .table thead a {
   color: #555; }
 
+.subtable tr {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd; }
+
+.subtable tr:first-child {
+  border-top: 0; }
+
+.subtable tr:last-child {
+  border-bottom: 0; }
+
 /**
  * FORMS
  */

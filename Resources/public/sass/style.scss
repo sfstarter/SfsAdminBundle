@@ -318,6 +318,16 @@ html, body {
 .table thead a {
 	color: $primary-color-2;
 }
+.subtable tr {
+	border-top: 1px solid $table-border-color;
+	border-bottom: 1px solid $table-border-color;
+}
+.subtable tr:first-child {
+	border-top: 0;
+}
+.subtable tr:last-child {
+	border-bottom: 0;
+}
 
 /**
  * FORMS

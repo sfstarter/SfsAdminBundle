@@ -3,15 +3,29 @@
 	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
 #}
 
-<td>
-	{% for element in admin_get_property(object, key) %}
-		{% if field.relation is defined and field.relation %}
-			<a target="_blank" href="{{ admin_url('read', {'object': element}) }}">
-				{{ element }}
-			</a>
-		{% else %}
-			{{ element }}
-		{% endif %}
-		{% if not loop.last %}, {% endif %}
-	{% endfor %}
+<td class="padding-0">
+	<table class="subtable table table-striped mb-0">
+		{% for element in admin_get_property(object, key) %}
+			<tr>
+				<td class="no-border" style="width: 100%;">
+					{% if field.relation is defined and field.relation %}
+						<a target="_blank" href="{{ admin_url('read', {'object': element}) }}">
+							{{ element }}
+						</a>
+					{% else %}
+						{{ element }}
+					{% endif %}
+				</td>
+				<td class="no-border">
+					{% if field.relation is defined and field.relation %}
+						{% if admin_has_action('update') %}
+							<a href="{{ admin_url('update', {'object': element}) }}" data-title="Edit row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-default btn-equal" type="button">
+								<i class="fa fa-pencil"></i>
+							</a>
+						{% endif %}
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
 </td>
