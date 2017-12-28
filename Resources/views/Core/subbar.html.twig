@@ -6,7 +6,10 @@
 <!--BEGIN SUBBAR-->
 <div class="sub-bar clearfix">
 	<div class="pull-left">
-		{{ knp_menu_render('subbar', {'template': 'SfsAdminBundle:Menu:knp_subbar.html.twig', 'allow_safe_labels': true }) }}
+		{% if object is defined %}
+			{% set subbarMenu = knp_menu_get('SfsAdminBundle:SubBarMenu:subBarMenu', [], {'currentObject': object}) %}
+			{{ knp_menu_render(subbarMenu, {'template': 'SfsAdminBundle:Menu:knp_subbar.html.twig', 'allow_safe_labels': true}) }}
+		{% endif %}
 	</div>
 </div>
 <!--END SUBBAR-->

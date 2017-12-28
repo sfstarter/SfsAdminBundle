@@ -66,7 +66,9 @@ class BreadcrumbMenu implements ContainerAwareInterface
                     'You must define the __toString method related to the entity '. $this->getCurrentEntityClass()
                 );
             }
+            $currentLabel = $translator->trans('sfs.admin.action.label.'. $core->getCurrentAction());
             $menu->addChild($currentObject->__toString());
+            $menu->addChild($currentLabel);
         }
 
         return $menu;

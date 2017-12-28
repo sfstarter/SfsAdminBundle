@@ -16,6 +16,9 @@ sfs:
                 csv: "Exporter en CSV"
                 json: "Exporter en JSON"
                 modal_title: "Configuration d'export en"
+            label:
+                delete: "Supprimer"
+                update: "Modifier"
             tools: "Outils"
         crud:
             actions: "Actions"

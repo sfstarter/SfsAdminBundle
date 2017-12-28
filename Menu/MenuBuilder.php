@@ -176,50 +176,6 @@ class MenuBuilder implements ContainerAwareInterface
 	}
 
     /**
-     * subbarMenu contains available actions contextualised on current page
-     *
-     *
-     * @param RequestStack $requestStack
-     *
-     * @return \Knp\Menu\ItemInterface
-     */
-    public function subbarMenu(RequestStack $requestStack) {
-        $buttons = $this->container->getParameter('sfs_admin.subbar_buttons');
-
-        $menu = $this->factory->createItem('subbar', array(
-            'childrenAttributes' => array(
-                'class' => 'nav navbar-nav'
-            )
-        ));
-
-        foreach($buttons as $button) {
-            if($button['route']) {
-                $menu->addChild($button['title'], array(
-                    'route' 	=> $button['route'],
-                    'attributes' => array(
-                        'icon' => $button['icon'],
-                        'showLabel' => $button['show_label']
-                    )
-                ));
-            }
-            else if($button['url']) {
-                $menu->addChild($button['title'], array(
-                    'uri' 	=> $button['url'],
-                    'attributes' => array(
-                        'icon' => $button['icon'],
-                        'showLabel' => $button['show_label']
-                    ),
-                    'linkAttributes' => array(
-                        'target' => '_blank'
-                    )
-                ));
-            }
-        }
-
-        return $menu;
-    }
-
-    /**
 	 * Display in the Topbar menu all the blocks services tagged as sfs_admin.menu.topbar
 	 *
 	 * @param ItemInterface $menu

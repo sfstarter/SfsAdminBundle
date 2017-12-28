@@ -33,14 +33,94 @@ class AdminRouterExtension extends \Twig_Extension {
 	 */
 	public function getFunctions() {
 		return array (
-				new Twig_SimpleFunction('admin_has_action', array($this, 'adminHasAction')),
-				new Twig_SimpleFunction('admin_identifier', array($this, 'getAdminIdentifier')),
+				new Twig_SimpleFunction('admin_get_actions', array($this, 'adminGetActions')),
+				new Twig_SimpleFunction('admin_get_entry_actions', array($this, 'adminGetEntryActions')),
+                new Twig_SimpleFunction('admin_get_global_actions', array($this, 'adminGetGlobalActions')),
+                new Twig_SimpleFunction('admin_get_current_action', array($this, 'adminGetCurrentAction')),
+                new Twig_SimpleFunction('admin_has_action', array($this, 'adminHasAction')),
+                new Twig_SimpleFunction('admin_identifier', array($this, 'getAdminIdentifier')),
 				new Twig_SimpleFunction('admin_route', array($this, 'getAdminRoute')),
 				new Twig_SimpleFunction('admin_url', array($this, 'getAdminUrl')),
 		);
 	}
 
-	/**
+    /**
+     * @param null $object
+     * @return array
+     * @throws \Symfony\Component\Routing\Exception\ResourceNotFoundException
+     */
+    public function adminGetActions($object = null) {
+        if(isset($object)) {
+            $slug = $this->core->getAdminSlug($object);
+        }
+        else {
+            $slug = $this->core->getCurrentSlug();
+        }
+
+        $adminService = $this->core->getAdminService($slug);
+
+        if(null !== $adminService) {
+            return $adminService->getActions();
+        }
+        else {
+            return array();
+        }
+    }
+
+    /**
+     * @param null $object
+     * @return array
+     * @throws \Symfony\Component\Routing\Exception\ResourceNotFoundException
+     */
+    public function adminGetEntryActions($object = null) {
+        if(isset($object)) {
+            $slug = $this->core->getAdminSlug($object);
+        }
+        else {
+            $slug = $this->core->getCurrentSlug();
+        }
+
+        $adminService = $this->core->getAdminService($slug);
+
+        if(null !== $adminService) {
+            return $adminService->getEntryActions();
+        }
+        else {
+            return array();
+        }
+    }
+
+    /**
+     * @param null $object
+     * @return array
+     * @throws \Symfony\Component\Routing\Exception\ResourceNotFoundException
+     */
+    public function adminGetGlobalActions($object = null) {
+        if(isset($object)) {
+            $slug = $this->core->getAdminSlug($object);
+        }
+        else {
+            $slug = $this->core->getCurrentSlug();
+        }
+
+        $adminService = $this->core->getAdminService($slug);
+
+        if(null !== $adminService) {
+            return $adminService->getGlobalActions();
+        }
+        else {
+            return array();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function adminGetCurrentAction() {
+        return $this->core->getCurrentAction();
+    }
+
+    /**
 	 * @param string $action
 	 * @param null $object
 	 * @return bool
