@@ -15,7 +15,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="filters" class="panel-body collapse">
+	<div id="filters" class="panel-body collapse {% if filterForm.vars.submitted %}in{% endif %}">
 		<form method="get" class="form-horizontal">
 			<div class="form-body">
 		    	{{ form_rest(filterForm) }}
