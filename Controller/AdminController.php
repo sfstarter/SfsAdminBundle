@@ -10,6 +10,7 @@ namespace Sfs\AdminBundle\Controller;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManager;
+use Knp\Component\Pager\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -203,14 +204,8 @@ abstract class AdminController extends Controller
 		$viewExportForm = $exportForm->createView();
 
 		// Pagination & sort mechanism
-		$paginator  = $this->get('knp_paginator');
-		$pagination = $paginator->paginate(
-				$query, /* query applied */
-				$request->query->getInt('page', 1)/* page number */,
-				10,/* limit per page */
-				array('defaultSortFieldName' => 'object.'. $this->getIdentifierProperty(), 'defaultSortDirection' => 'asc') /* Default sort */
-		);
-		$pagination->setPageRange(4);
+		$paginator = $this->get('knp_paginator');
+		$pagination = $this->getListQuery($request, $paginator, $query);
 
 		$listFields = $this->setListFields();
 		$batchActions = $this->getBatchActions();
@@ -223,6 +218,28 @@ abstract class AdminController extends Controller
 				'pagination' => $pagination
 		));
 	}
+
+    /**
+     * Overridable method for lists
+     * A way to work is to add conditions to the queryBuilder, and to call the parent::getListQuery method
+     *
+     * @param Request $request
+     * @param Paginator $paginator
+     * @param QueryBuilder $query
+     * @return \Knp\Component\Pager\Pagination\PaginationInterface
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
+    protected function getListQuery(Request $request, Paginator $paginator, QueryBuilder $query) {
+        $pagination = $paginator->paginate(
+            $query, /* query applied */
+            $request->query->getInt('page', 1)/* page number */,
+            10,/* limit per page */
+            array('defaultSortFieldName' => 'object.'. $this->getIdentifierProperty(), 'defaultSortDirection' => 'asc') /* Default sort */
+        );
+        $pagination->setPageRange(4);
+
+        return $pagination;
+    }
 
     /**
      * The returned format is given by select2 documentation
@@ -675,12 +692,7 @@ abstract class AdminController extends Controller
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
 	 */
 	public function updateAction($id, Request $request) {
-		$em = $this->container->get('doctrine')->getManager();
-		$repository = $em->getRepository($this->entityClass);
-		$object = $repository->find($id);
-
-		if($object === null)
-			throw new NotFoundHttpException("Can't find the object with the identifier ". $id ." to edit");
+		$object = $this->getUpdateObject($id);
 
 		$this->parseAssociations($object);
 
@@ -738,6 +750,24 @@ abstract class AdminController extends Controller
             ));
         }
 	}
+
+    /**
+     * Fetch the object used in the updateForm, in updateAction
+     *
+     *
+     * @param $id
+     * @return mixed
+     */
+    protected function getUpdateObject($id) {
+        $em = $this->container->get('doctrine')->getManager();
+        $repository = $em->getRepository($this->entityClass);
+        $object = $repository->find($id);
+
+        if($object === null)
+            throw new NotFoundHttpException("Can't find the object with the identifier ". $id ." to edit");
+
+        return $object;
+    }
 
 	/**
 	 * Action called to display the warning before final deletion. It generates a form so that the delete doesn't rely on a url
