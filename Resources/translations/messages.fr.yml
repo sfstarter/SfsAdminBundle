@@ -4,6 +4,7 @@ sfs:
             batch:
                 confirm: "Confirmer"
                 delete: "Supprimer"
+                placeholder: "Choisir..."
             button:
                 back_list: "Retourner à la liste"
                 cancel: "Annuler"
