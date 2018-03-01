@@ -4,6 +4,7 @@ sfs:
             batch:
                 confirm: "Confirmer"
                 delete: "Supprimer"
+                placeholder: "Choisir..."
             button:
                 back_list: "Retourner à la liste"
                 cancel: "Annuler"
@@ -34,6 +35,8 @@ sfs:
                 delete_message: "Confirmer l'action de Suppression groupée ?"
                 delete_success: "L'ensemble des entrées ont été supprimé avec succès"
                 delete_title: "Attention! Cette action est irreversible"
+                no_selection: "L'action requiert la sélection d'au moins un élément"
+                unknown_action: "L'action demandée n'a pu être effectuée"
             embedded_relation:
                 add_error: "Impossible d'associer l'objet %target%"
                 add_existing: "L'objet est déjà associé à %target%"

@@ -836,51 +836,64 @@ abstract class AdminController extends Controller
 		return $this->redirect($this->generateUrl($this->getRoute('list')));
 	}
 
-	/**
-	 * Receives ids to be manipulated & action from hand written form, from listAction(no CSRF test)
-	 * A BatchType (with CSRF) is filled with those values, and have to be confirmed to do activate the batchAction
-	 *
-	 * @param Request $request
-	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-	 */
-	public function batchAction(Request $request) {
-		$form = $this->createForm(BatchType::class);
+    /**
+     * Receives ids to be manipulated & action from hand written form, from listAction(no CSRF test)
+     * A BatchType (with CSRF) is filled with those values, and have to be confirmed to do activate the batchAction
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function batchAction(Request $request) {
+        $form = $this->createForm(BatchType::class);
 
-		$form->handleRequest($request);
+        $form->handleRequest($request);
 
-		// If form is valid, then activate the batch action
-		if ($form->isValid()) {
-			$ids = json_decode($form->get('batch_ids')->getData());
-			// Check if the method 'batch'.Action is available
-			$batchMethod = 'batch'. ucfirst($form->get('batch_action')->getData());
-			if(method_exists($this, $batchMethod) && count($ids)) {
-				$this->{$batchMethod}($ids);
-			}
+        // If form is valid, then activate the batch action
+        if ($form->isValid()) {
+            $ids = json_decode($form->get('batch_ids')->getData());
+            // Check if the method 'batch'.Action is available
+            $batchMethod = 'batch'. ucfirst($form->get('batch_action')->getData());
+            if(method_exists($this, $batchMethod) && count($ids)) {
+                $this->{$batchMethod}($ids);
+            }
 
-			return $this->redirect($this->generateUrl($this->getRoute('list')));
-		}
-		// Otherwise fill the fields with POST values from listAction
-		else {
-			$ids = json_encode($request->request->get('ids'));
-			$batchAction = $request->request->get('action');
+            return $this->redirect($this->generateUrl($this->getRoute('list')));
+        }
+        // Otherwise fill the fields with POST values from listAction
+        else {
+            $ids = json_encode($request->request->get('ids'));
+            $batchAction = $request->request->get('action');
 
-			// If no selection, automatically redirect to listing
-			if(count($request->request->get('ids')) == 0) {
-				return $this->redirect($this->generateUrl($this->getRoute('list')));
-			}
+            // If no selection, automatically redirect to listing
+            if(count($request->request->get('ids')) == 0) {
+                $this->addFlash(
+                    'error',
+                    $this->get('translator')->trans('sfs.admin.message.batch.no_selection', array())
+                );
 
-			/**
-			 * Set in hidden fields the type of batch & the ids to be manipulated,
-			 * so that we keep them in the next action
-			 */
-			$form->get('batch_ids')->setData($ids);
-			$form->get('batch_action')->setData($batchAction);
-			return $this->render($this->getTemplate('batch'), array(
-				'form' => $form->createView(),
-				'batchAction' => $batchAction
-			));
-		}
-	}
+                return $this->redirect($this->generateUrl($this->getRoute('list')));
+            }
+            if(!in_array($batchAction, $this->getActions())) {
+                $this->addFlash(
+                    'error',
+                    $this->get('translator')->trans('sfs.admin.message.batch.unknown_action', array())
+                );
+
+                return $this->redirect($this->generateUrl($this->getRoute('list')));
+            }
+
+            /**
+             * Set in hidden fields the type of batch & the ids to be manipulated,
+             * so that we keep them in the next action
+             */
+            $form->get('batch_ids')->setData($ids);
+            $form->get('batch_action')->setData($batchAction);
+            return $this->render($this->getTemplate('batch'), array(
+                'form' => $form->createView(),
+                'batchAction' => $batchAction
+            ));
+        }
+    }
 
 	/**
 	 * Only called once the user confirmed the batch deletion.
