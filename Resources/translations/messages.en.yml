@@ -35,6 +35,8 @@ sfs:
                 delete_message: "Do you confirm the batch Delete ?"
                 delete_success: "All the selected entries have been successfully deleted"
                 delete_title: "Warning! This action is irreversible"
+                no_selection: "Please select at least one element"
+                unknown_action: "The requested action could not be applied"
             embedded_relation:
                 add_error: "Cannot associate the object %target%"
                 add_existing: "The object is already related to %target%"
