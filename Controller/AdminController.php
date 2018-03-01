@@ -319,16 +319,18 @@ abstract class AdminController extends Controller
         // Filter form is disabled, for now at least
         $viewFilterForm = null;
 
+        // Current short class name, for a correct display in url & paginator
+        $currentObjectName = $this->getEntityClassShortName();
         // Pagination & sort mechanism
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query, /* query applied */
-            $request->query->getInt($property .'Page', 1)/* page number */,
+            $request->query->getInt($currentObjectName .'Page', 1)/* page number */,
             10,/* limit per page */
             array(
-                'sortFieldParameterName' => $property .'Sort',
-                'sortDirectionParameterName' => $property .'Direction',
-                'pageParameterName' => $property .'Page',
+                'sortFieldParameterName' => $currentObjectName .'Sort',
+                'sortDirectionParameterName' => $currentObjectName .'Direction',
+                'pageParameterName' => $currentObjectName .'Page',
                 'defaultSortFieldName' => 'object.'. $this->getIdentifierProperty(),
                 'defaultSortDirection' => 'asc') /* Default sort */
         );
@@ -995,6 +997,13 @@ abstract class AdminController extends Controller
 	public function getEntityClass() {
 		return $this->entityClass;
 	}
+
+	public function getEntityClassShortName() {
+        $reflectionClass = new \ReflectionClass($this->entityClass);
+        $shortName = $reflectionClass->getShortName();
+
+        return strtolower($shortName);
+    }
 
 	/**
 	 * Returns a classMetadata (instance that holds all the object-relational mapping metadata) for a specified entity Class
