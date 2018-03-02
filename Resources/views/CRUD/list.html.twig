@@ -59,6 +59,7 @@
 									</div>
 								</th>
 								{% for key, field in listFields %}
+									{% set sortAlias = (field['sortQuery']['alias'] is defined ? field['sortQuery']['alias'] : 'object.'~key) %}
 									<th>
 										{% if field.name is defined %}
 											{% set label = field.name %}
@@ -67,12 +68,12 @@
 										{% endif %}
 
 										{% if key is not property_is_relation() %}
-											{{ knp_pagination_sortable(pagination, label, 'object.'~key) }}
+											{{ knp_pagination_sortable(pagination, label, sortAlias) }}
 										{% else %}
 											 {{ field.name }}
 										{% endif %}
 
-										{% if pagination.isSorted('object.'~key) %}
+										{% if pagination.isSorted(sortAlias) %}
 											{% if pagination.getDirection() == 'asc' %}
 												<span class="fa fa-sort-asc"></span>
 											{% else %}
