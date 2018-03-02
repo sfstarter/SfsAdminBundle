@@ -26,7 +26,7 @@ use Sfs\AdminBundle\Form\ExportType;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-abstract class AdminController extends Controller
+abstract class AdminController extends Controller implements AdminControllerInterface
 {
 	/**
 	 * The slug used to identify the admin resource, plus it serves to generate the url
