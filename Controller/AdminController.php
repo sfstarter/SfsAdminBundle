@@ -8,7 +8,7 @@
 
 namespace Sfs\AdminBundle\Controller;
 
-use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityManager;
 use Knp\Component\Pager\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -203,14 +203,15 @@ abstract class AdminController extends Controller
 		));
 		$viewExportForm = $exportForm->createView();
 
-		// Pagination & sort mechanism
-		$paginator = $this->get('knp_paginator');
-		$pagination = $this->getListQuery($request, $paginator, $query);
+        $listFields = $this->setListFields();
+        $batchActions = $this->getBatchActions();
 
-		$listFields = $this->setListFields();
-		$batchActions = $this->getBatchActions();
+        // Pagination & sort mechanism
+        $paginator = $this->get('knp_paginator');
+        $pagination = $this->getListQuery($request, $listFields, $paginator, $query);
 
-		return $this->render($this->getTemplate('list'), array(
+
+        return $this->render($this->getTemplate('list'), array(
 				'filterForm' => $viewFilterForm,
 				'exportForm' => $viewExportForm,
 				'batchActions' => $batchActions,
@@ -229,7 +230,22 @@ abstract class AdminController extends Controller
      * @return \Knp\Component\Pager\Pagination\PaginationInterface
      * @throws \Doctrine\ORM\Mapping\MappingException
      */
-    protected function getListQuery(Request $request, Paginator $paginator, QueryBuilder $query) {
+    protected function getListQuery(Request $request, array $listFields, Paginator $paginator, QueryBuilder $query) {
+        foreach($listFields as $field) {
+            if(isset($field['sortQuery']['innerJoin'])) {
+                $query->innerJoin(
+                    $field['sortQuery']['innerJoin']['join'],
+                    $field['sortQuery']['innerJoin']['alias'],
+                    $field['sortQuery']['innerJoin']['conditionType'],
+                    $field['sortQuery']['innerJoin']['condition'],
+                    $field['sortQuery']['innerJoin']['indexBy']
+                );
+            }
+            if(isset($field['sortQuery']['conditions'])) {
+                $query->andWhere($field['sortQuery']['conditions']);
+            }
+        }
+
         $pagination = $paginator->paginate(
             $query, /* query applied */
             $request->query->getInt('page', 1)/* page number */,
