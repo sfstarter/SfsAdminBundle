@@ -67,7 +67,7 @@
 											{% set label = key|capitalize %}
 										{% endif %}
 
-										{% if key is not property_is_relation() %}
+                                        {% if (field['sortable'] is not defined or field['sortable'] != false) and key is not property_is_relation() %}
 											{{ knp_pagination_sortable(pagination, label, sortAlias) }}
 										{% else %}
 											 {{ field.name }}
