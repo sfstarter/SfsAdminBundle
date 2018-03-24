@@ -18,8 +18,17 @@
 	<div id="filters" class="panel-body collapse {% if filterForm.vars.submitted %}in{% endif %}">
 		<form method="get" class="form-horizontal">
 			<div class="form-body">
-		    	{{ form_rest(filterForm) }}
-		    </div>
+				{% for filter in filterForm %}
+                    {% if filter.vars.attr.row_collection is defined and filter.vars.attr.row_collection %}
+                        {% for subfilter in filter %}
+                            {{ form_widget(subfilter) }}
+                        {% endfor %}
+                    {% else %}
+                        {{ form_row(filter) }}
+                    {% endif %}
+                {% endfor %}
+                {{ form_rest(filterForm) }}
+			</div>
 
 		    <div class="form-actions text-right pal">
 				<button type="submit" name="submit-filter" class="btn btn-default">
