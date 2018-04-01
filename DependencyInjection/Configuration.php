@@ -61,8 +61,9 @@ class Configuration implements ConfigurationInterface
 					->end()
 				->end()
 			->end()
-			->scalarNode('title_text')->defaultValue('Sfs Admin')->end()
-			->scalarNode('title_logo')->defaultNull()->end()
+            ->scalarNode('routes_prefix')->defaultValue('sfs_admin')->end()
+            ->scalarNode('title_text')->defaultValue('Sfs Admin')->end()
+            ->scalarNode('title_logo')->defaultNull()->end()
 		->end();
 
 		return $treeBuilder;
