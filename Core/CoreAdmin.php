@@ -163,11 +163,11 @@ class CoreAdmin implements ContainerAwareInterface
 			}
 		}
 
-
-		$method = lcfirst(str_replace('_', '', ucwords($action, '_')));
+        $routePrefix = $this->container->getParameter('sfs_admin.routes_prefix');
+        $method = lcfirst(str_replace('_', '', ucwords($action, '_')));
 
 		$this->routes[$slug][$action] = array(
-			'route'				=> 'sfs_admin_'. $slug .'_'. $action,
+			'route'				=> $routePrefix .'_'. $slug .'_'. $action,
 			'action'			=> $method .'Action',
 			'path'				=> $path,
 			'requirements'		=> $requirements,
