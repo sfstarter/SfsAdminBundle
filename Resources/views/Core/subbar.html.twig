@@ -5,11 +5,12 @@
 
 <!--BEGIN SUBBAR-->
 <div class="sub-bar clearfix">
-	<div class="pull-left">
-		{% if object is defined %}
-			{% set subbarMenu = knp_menu_get('SfsAdminBundle:SubBarMenu:subBarMenu', [], {'currentObject': object}) %}
-			{{ knp_menu_render(subbarMenu, {'template': 'SfsAdminBundle:Menu:knp_subbar.html.twig', 'allow_safe_labels': true}) }}
-		{% endif %}
-	</div>
+    <div class="pull-left">
+        {% if object is defined %}
+            <ul class="nav navbar-nav">
+                {% include admin_get_template(object, 'subbar_list') %}
+            </ul>
+        {% endif %}
+    </div>
 </div>
 <!--END SUBBAR-->

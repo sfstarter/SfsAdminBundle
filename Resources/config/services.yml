@@ -77,7 +77,7 @@ services:
             - "@sfs.admin.core"
         tags:
             - { name: twig.extension }
-    sfs.adminu.twig.preferences_extension:
+    sfs.admin.twig.preferences_extension:
         class: Sfs\AdminBundle\Twig\PreferencesExtension
         arguments:
             - "@service_container"
@@ -85,7 +85,13 @@ services:
             - [setContainer, ["@service_container"]]
         tags:
             - { name: twig.extension }
-    sfs.adminu.twig.property_access_extension:
+    sfs.admin.twig.property_access_extension:
         class: Sfs\AdminBundle\Twig\PropertyAccessExtension
+        tags:
+            - { name: twig.extension }
+    sfs.admin.twig.template_extension:
+        class: Sfs\AdminBundle\Twig\AdminTemplateExtension
+        arguments:
+            - "@sfs.admin.core"
         tags:
             - { name: twig.extension }

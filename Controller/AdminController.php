@@ -51,21 +51,21 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * The formType for filters
-	 * 
+	 *
 	 * @var AbstractFilterType
 	 */
 	protected $filterForm;
 
 	/**
 	 * Used to keep a track of relations and persist them (bonus point for whom finds a better fix)
-	 * 
+	 *
 	 * @var array
 	 */
 	private $associations;
 
 	/**
 	 * Used to keep a track of relations and persist them (bonus point for whom finds a better fix)
-	 * 
+	 *
 	 * @var array
 	 */
 	private $relations;
@@ -76,6 +76,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 * @var array
 	 */
 	protected $templates = array(
+        'subbar_list'               => 'SfsAdminBundle:Core:subbar_list.html.twig',
 		'list'		                => 'SfsAdminBundle:CRUD:list.html.twig',
 		'embedded_relation_list'	=> 'SfsAdminBundle:CRUD:embedded_relation_list.html.twig',
 		'create'	                => 'SfsAdminBundle:CRUD:create.html.twig',
