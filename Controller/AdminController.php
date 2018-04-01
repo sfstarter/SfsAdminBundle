@@ -91,36 +91,21 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Array of accessible actions for current admin: only the routes inside this array will be configured & generated
-     * This array is a merge of globalActions & entryActions
 	 *
 	 * @var array
 	 */
-	protected $actions = array();
-
-    /**
-     * Array containing all the actions not related to one entry
-     *
-     * @var array
-     */
-	protected $globalActions = array(
-        'list',
-        'list_ajax',
-        'add_relation',
-        'embedded_relation_list',
-        'create',
-        'delete_relation',
-        'export',
-        'batch'
-    );
-
-    /**
-     * Actions for a specific entry
-     * @var array
-     */
-	protected $entryActions = array(
-        'update',
-        'delete',
-    );
+	protected $actions = array(
+		'list',
+		'list_ajax',
+		'add_relation',
+		'embedded_relation_list',
+		'create',
+		'update',
+		'delete',
+		'delete_relation',
+		'export',
+		'batch'
+	);
 
 	/**
 	 * Array of batch actions applied on list view. By default only delete is implemented
@@ -145,8 +130,6 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 */
 	public function __construct($entityClass) {
 		$this->entityClass = $entityClass;
-
-		$this->actions = array_merge($this->globalActions, $this->entryActions);
 
 		$this->setTemplates();
 		$this->setActions();
@@ -1223,64 +1206,4 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	{
 		return $this->actions;
 	}
-
-    /**
-     * @return array
-     */
-    public function getGlobalActions()
-    {
-        return $this->globalActions;
-    }
-
-    /**
-     * @param array $globalActions
-     * @return AdminController
-     */
-    public function setGlobalActions($globalActions)
-    {
-        $this->globalActions = $globalActions;
-        return $this;
-    }
-
-    /**
-     * @param string $globalAction
-     * @return array
-     */
-    public function addGlobalAction($globalAction) {
-        if(is_string($globalAction)) {
-            $this->globalActions[] = $globalAction;
-        }
-
-        return $this->globalActions;
-    }
-
-    /**
-     * @return array
-     */
-    public function getEntryActions()
-    {
-        return $this->entryActions;
-    }
-
-    /**
-     * @param array $entryActions
-     * @return AdminController
-     */
-    public function setEntryActions($entryActions)
-    {
-        $this->entryActions = $entryActions;
-        return $this;
-    }
-
-    /**
-     * @param string $entryAction
-     * @return array
-     */
-    public function addEntryAction($entryAction) {
-        if(is_string($entryAction)) {
-            $this->entryActions[] = $entryAction;
-        }
-
-        return $this->entryActions;
-    }
 }
