@@ -55,26 +55,27 @@
 						{% block topbar %}
 							{% include 'SfsAdminBundle:Core:topbar.html.twig' %}
 						{% endblock %}
-						{% block breadcrumb %}
-							{% include 'SfsAdminBundle:Core:breadcrumb.html.twig' %}
-						{% endblock %}
-
-						{% block footer %}
-							{% include 'SfsAdminBundle:Core:footer.html.twig' %}
+						{% block subbar %}
+							{% include 'SfsAdminBundle:Core:subbar.html.twig' %}
 						{% endblock %}
 						<!--END PAGE WRAPPER-->
 					</header>
 
 					<!--BEGIN CONTENT-->
-					<div class="page-content padding-24 clearfix">
-                        {% block flashbags %}
+					<div class="page-content padding-16 clearfix">
+						{% block flashbags %}
 							{% include 'SfsAdminBundle:Core:flashbags.html.twig' %}
                         {% endblock %}
 
 						{% block content %}
+							{% include 'SfsAdminBundle:Core:page_title.html.twig' %}
 						{% endblock %}
 					</div>
 					<!--END CONTENT-->
+
+					{% block footer %}
+						{% include 'SfsAdminBundle:Core:footer.html.twig' %}
+					{% endblock %}
 				</div>
 			</div>
 

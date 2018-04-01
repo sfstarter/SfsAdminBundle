@@ -8662,9 +8662,10 @@ html, body {
 
 #menu-top {
   background: #ffffff; }
-  #menu-top .breadcrumb-bar {
+  #menu-top .sub-bar {
     border-bottom: 1px solid rgba(0, 0, 0, 0.33);
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.25); }
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.25);
+    min-height: 50px; }
   #menu-top .navbar {
     border: 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
@@ -8684,6 +8685,10 @@ html, body {
       background: #fff; }
     #menu-top .navbar li > a:hover {
       background: #f2f2f2; }
+    #menu-top .navbar .breadcrumb li > a {
+      color: #ee9e35; }
+    #menu-top .navbar .breadcrumb li > a:hover {
+      background: transparent; }
     #menu-top .navbar .navbar-profile a {
       padding-right: 60px; }
       #menu-top .navbar .navbar-profile a img {
@@ -8702,7 +8707,7 @@ html, body {
     #menu-top .breadcrumb > li + li::before {
       content: "\f105";
       font-family: FontAwesome;
-      padding: 0 8px; }
+      padding: 0 4px; }
   #menu-top #topbar-title-site {
     display: none; }
     #menu-top #topbar-title-site.menu-toggled {
@@ -8744,9 +8749,15 @@ html, body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2); }
 
 .panel {
-  border: 0; }
+  border: 0;
+  -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05); }
   .panel .panel-title.text-primary {
     color: #ee9e35; }
+  .panel .panel-body {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd; }
   .panel .panel-actions {
     float: right;
     position: absolute;

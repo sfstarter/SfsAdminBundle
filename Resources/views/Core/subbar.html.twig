@@ -1,0 +1,16 @@
+{#
+	SfsAdminBundle - Symfony3 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+<!--BEGIN SUBBAR-->
+<div class="sub-bar clearfix">
+    <div class="pull-left">
+        {% if object is defined %}
+            <ul class="nav navbar-nav">
+                {% include admin_get_template(object, 'subbar_list') %}
+            </ul>
+        {% endif %}
+    </div>
+</div>
+<!--END SUBBAR-->

@@ -6,6 +6,7 @@
 {% extends 'SfsAdminBundle:Core:base.html.twig' %}
 
 {% block content %}
+	{{ parent() }}
 	{% set formId = random() %}
 
 	{{ form_start(form, { 'attr': {'class': 'form-horizontal form-seperated dashed'} }) }}
@@ -15,10 +16,7 @@
 			<!-- Nav tabs -->
 			<div class="tabs">
 				<div class="tab-title clearfix">
-					<h4 class="pull-left">
-						Update <strong>{{ object }}</strong>
-					</h4>
-					<ul class="nav nav-tabs pull-right" role="tablist">
+					<ul class="nav nav-tabs" role="tablist">
 						{% for key, tab in form.vars.tabs %}
 							<li class="{% if loop.index == 1 %}active{% endif %}" role="presentation">
 								<a href="#admin-tab-{{ key }}-{{ formId }}" role="tab" data-toggle="tab">{{ tab.title }}</a>
