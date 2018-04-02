@@ -204,7 +204,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 		if($this->filterForm !== null) {
 			$this->filterForm->handleRequest($request);
 			// build the query filter
-			if ($this->filterForm->isValid()) {
+			if ($this->filterForm->isSubmitted() && $this->filterForm->isValid()) {
 				/** @var \Doctrine\ORM\QueryBuilder $query */
 				$query = $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($this->filterForm, $query);
 			}
@@ -491,7 +491,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
         $form->handleRequest($request);
         // Compute the form if valid, otherwise just (re)send the template
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $accessor = PropertyAccess::createPropertyAccessor();
             if ($accessor->isWritable($object, $property)) {
@@ -646,7 +646,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 		$form = $this->setCreateForm($object);
 
 		$form->handleRequest($request);
-		if ($form->isValid()) {
+		if ($form->isSubmitted() && $form->isValid()) {
 			$em = $this->container->get('doctrine')->getManager();
 
 			$this->persistAssociations($em, $object);
@@ -727,16 +727,15 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 */
 	public function updateAction($id, Request $request) {
 		$object = $this->getUpdateObject($id);
-
 		$this->parseAssociations($object);
 
 		$form = $this->setUpdateForm($object);
 
 		$form->handleRequest($request);
-		if ($form->isValid()) {
+		if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->container->get('doctrine')->getManager();
 
 			$this->persistAssociations($em, $object);
-
 			$this->persistUpdate($em, $object);
 			$em->flush();
 
@@ -826,7 +825,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
             ));
 
 			$form->handleRequest($request);
-			if ($form->isValid()) {
+			if ($form->isSubmitted() && $form->isValid()) {
 				$em->remove($object);
 				$em->flush();
 
@@ -888,7 +887,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 		));
 
 		$exportForm->handleRequest($request);
-		if ($exportForm->isValid()) {
+		if ($exportForm->isSubmitted() && $exportForm->isValid()) {
 			$entityClass = $this->entityClass;
 			$listFields = $exportForm->getData()['fields'];
 			if(!empty($listFields)) {
@@ -915,7 +914,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
         $form->handleRequest($request);
 
         // If form is valid, then activate the batch action
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $ids = json_decode($form->get('batch_ids')->getData());
             // Check if the method 'batch'.Action is available
             $batchMethod = 'batch'. ucfirst($form->get('batch_action')->getData());
