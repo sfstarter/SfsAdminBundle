@@ -1,0 +1,12 @@
+{#
+	SfsAdminBundle - Symfony2 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+<!--BEGIN TITLE & BREADCRUMB PAGE-->
+<div class="breadcrumb-bar clearfix">
+    {% block breadcrumb_list %}
+        {{ knp_menu_render('breadcrumb', {'template': 'SfsAdminBundle:Menu:knp_breadcrumb.html.twig', 'allow_safe_labels': true}) }}
+    {% endblock %}
+</div>
+<!--END TITLE & BREADCRUMB PAGE-->

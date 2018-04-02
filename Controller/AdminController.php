@@ -91,21 +91,36 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Array of accessible actions for current admin: only the routes inside this array will be configured & generated
+     * This array is a merge of globalActions & entryActions
 	 *
 	 * @var array
 	 */
-	protected $actions = array(
-		'list',
-		'list_ajax',
-		'add_relation',
-		'embedded_relation_list',
-		'create',
-		'update',
-		'delete',
-		'delete_relation',
-		'export',
-		'batch'
-	);
+	protected $actions = array();
+
+    /**
+     * Array containing all the actions not related to one entry
+     *
+     * @var array
+     */
+	protected $globalActions = array(
+        'list',
+        'list_ajax',
+        'add_relation',
+        'embedded_relation_list',
+        'create',
+        'delete_relation',
+        'export',
+        'batch'
+    );
+
+    /**
+     * Actions for a specific entry
+     * @var array
+     */
+	protected $entryActions = array(
+        'update',
+        'delete',
+    );
 
 	/**
 	 * Array of batch actions applied on list view. By default only delete is implemented
@@ -120,7 +135,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Set the form to be displayed on update view
-	 * 
+	 *
 	 * @param Form $object
 	 */
 	abstract protected function setUpdateForm($object);
@@ -130,6 +145,8 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 */
 	public function __construct($entityClass) {
 		$this->entityClass = $entityClass;
+
+		$this->actions = array_merge($this->globalActions, $this->entryActions);
 
 		$this->setTemplates();
 		$this->setActions();
@@ -155,9 +172,9 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	/**
 	 * Sets the fields to be listed
 	 * Default list array is resumed by it's ID and the __toString value
-	 * 
+	 *
 	 * @return array
-	 */ 
+	 */
 	protected function setListFields() {
 		if(!method_exists($this->entityClass, '__toString')) {
 			throw new \RuntimeException(
@@ -543,7 +560,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	/**
 	 * Set the form to be displayed on create view
 	 * By default the create form is the same as the update one
-	 * 
+	 *
 	 * @param mixed $object
 	 */
 	protected function setCreateForm($object) {
@@ -576,7 +593,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Persist associations registered in associations array. Useful for oneToMany relations
-	 * 
+	 *
 	 * @param \Doctrine\ORM\EntityManager $em
 	 * @param mixed $object
 	 */
@@ -606,7 +623,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Persist function called when sending an update form
-	 * 
+	 *
 	 * @param \Doctrine\ORM\EntityManager $em
 	 * @param mixed $object
 	 */
@@ -616,9 +633,9 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Action called for the create form view
-	 * 
+	 *
 	 * @param Request $request
-	 * 
+	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function createAction(Request $request) {
@@ -682,9 +699,9 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Action called to view one object. By default it redirects to the update view
-	 * 
+	 *
 	 * @param integer $id
-	 * 
+	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function readAction($id) {
@@ -693,7 +710,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Persist function called when sending an update form
-	 * 
+	 *
 	 * @param \Doctrine\ORM\EntityManager $em
 	 * @param mixed $object
 	 */
@@ -703,7 +720,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Action called to display the update form
-	 * 
+	 *
 	 * @param $id
 	 * @param Request $request
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -788,18 +805,18 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Action called to display the warning before final deletion. It generates a form so that the delete doesn't rely on a url
-	 * 
+	 *
 	 * @param integer $id
 	 * @param Request $request
 	 * @throws NotFoundHttpException
-	 * 
+	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function deleteAction($id, Request $request) {
 		$em = $this->container->get('doctrine')->getManager();
 		$repository = $em->getRepository($this->entityClass);
 		$object = $repository->find($id);
-		
+
 		if($object === null) {
 			throw new NotFoundHttpException("Can't find the object with the identifier ". $id ." to delete");
 		}
@@ -860,7 +877,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
  	 * Call the exporter to return a streamed response with the file, using the form specifying which fields to export
-	 * 
+	 *
 	 * @param Request $request
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\StreamedResponse
 	 */
@@ -877,7 +894,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 			if(!empty($listFields)) {
 				$em = $this->container->get('doctrine')->getManager();
 				$format = $exportForm->getData()['format'];
-	
+
 				return Exporter::getResponse($em, $format, null, $entityClass, $listFields);
 			}
 		}
@@ -987,9 +1004,9 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * setSlug
-	 * 
+	 *
 	 * @param string $slug
-	 * 
+	 *
 	 * @return AdminController
 	 */
 	public function setSlug($slug) {
@@ -1031,9 +1048,9 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Get the route of the specified action, for the current Admin Resource
-	 * 
+	 *
 	 * @param string $action
-	 * 
+	 *
 	 * @return string $route
 	 */
 	public function getRoute($action) {
@@ -1042,7 +1059,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Get the core of SfsAdmin
-	 * 
+	 *
 	 * @return \Sfs\AdminBundle\Core\CoreAdmin
 	 */
 	public function getCore() {
@@ -1051,7 +1068,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Return the entity class for the current Admin Resource
-	 * 
+	 *
 	 * @return string $entityClass;
 	 */
 	public function getEntityClass() {
@@ -1067,9 +1084,9 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 	/**
 	 * Returns a classMetadata (instance that holds all the object-relational mapping metadata) for a specified entity Class
-	 * 
+	 *
 	 * @param string $class
-	 * 
+	 *
 	 * @return \Doctrine\ORM\Mapping\ClassMetadataInfo
 	 */
 	protected function getMetadata($class)
@@ -1206,4 +1223,64 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	{
 		return $this->actions;
 	}
+
+    /**
+     * @return array
+     */
+    public function getGlobalActions()
+    {
+        return $this->globalActions;
+    }
+
+    /**
+     * @param array $globalActions
+     * @return AdminController
+     */
+    public function setGlobalActions($globalActions)
+    {
+        $this->globalActions = $globalActions;
+        return $this;
+    }
+
+    /**
+     * @param string $globalAction
+     * @return array
+     */
+    public function addGlobalAction($globalAction) {
+        if(is_string($globalAction)) {
+            $this->globalActions[] = $globalAction;
+        }
+
+        return $this->globalActions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEntryActions()
+    {
+        return $this->entryActions;
+    }
+
+    /**
+     * @param array $entryActions
+     * @return AdminController
+     */
+    public function setEntryActions($entryActions)
+    {
+        $this->entryActions = $entryActions;
+        return $this;
+    }
+
+    /**
+     * @param string $entryAction
+     * @return array
+     */
+    public function addEntryAction($entryAction) {
+        if(is_string($entryAction)) {
+            $this->entryActions[] = $entryAction;
+        }
+
+        return $this->entryActions;
+    }
 }

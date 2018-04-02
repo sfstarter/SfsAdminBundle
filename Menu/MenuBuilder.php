@@ -1,5 +1,4 @@
 <?php
-
 /**
  * SfsAdminBundle - Symfony2 project
  *
@@ -17,185 +16,214 @@ use Sfs\AdminBundle\Menu\Topbar\TopbarBlockInterface;
 
 class MenuBuilder implements ContainerAwareInterface
 {
-	use ContainerAwareTrait;
+    use ContainerAwareTrait;
+    /**
+     * Contains all admin resources to be displayed on the menu
+     *
+     * @var array
+     */
+    protected $adminResources;
+    /**
+     * Contains all topbar blocks, by the name of the services, to be displayed in the topbar menu
+     * @var array
+     */
+    protected $topbarBlocks;
+    /**
+     *
+     * @var FactoryInterface
+     */
+    private $factory;
 
-	/**
-	 * Contains all admin resources to be displayed on the menu
-	 * 
-	 * @var array
-	 */
-	protected $adminResources;
+    /**
+     *
+     * @param FactoryInterface $factory
+     */
+    public function __construct(FactoryInterface $factory)
+    {
+        $this->adminResources = array();
+        $this->adminPages = array();
+        $this->factory = $factory;
+    }
 
-	/**
-	 * Contains all topbar blocks, by the name of the services, to be displayed in the topbar menu
-	 * @var array
-	 */
-	protected $topbarBlocks;
-
-	/**
-	 * 
-	 * @var FactoryInterface
-	 */
-	private $factory;
-
-	/**
-	 * 
-	 * @param FactoryInterface $factory
-	 */
-	public function __construct(FactoryInterface $factory) {
-		$this->adminResources = array();
-		$this->adminPages = array();
-		$this->factory = $factory;
-	}
-
-	/**
-	 * Register a new admin resource, to be used when the menu is displayed
-	 * @param unknown $attributes
-	 */
-	public function addResource($attributes) {
-		$this->adminResources[] = array(
-			'slug' => $attributes['slug'],
-			'title' => $attributes['title'],
-			'category' => $attributes['category'],
-			'icon' => $attributes['icon']
-		);
-	}
+    /**
+     * Register a new admin resource, to be used when the menu is displayed
+     * @param unknown $attributes
+     */
+    public function addResource($attributes)
+    {
+        $this->adminResources[] = array(
+            'slug' => $attributes['slug'],
+            'title' => $attributes['title'],
+            'category' => $attributes['category'],
+            'icon' => $attributes['icon']
+        );
+    }
 
     /**
      * Register a new topbar block, to be used when the topbar menu is displayed
      * @param array $attributes
      */
-	public function addTopbarBlock($service) {
-		$this->topbarBlocks[] = $service;
-	}
-
-	/**
-     * sidebarMenu
-	 *
-	 * @param RequestStack $requestStack
-	 * @return \Knp\Menu\ItemInterface
-	 */
-	public function sidebarMenu(RequestStack $requestStack) {
-		$routes = $this->container->get('sfs.admin.core')->getRoutes();
-		$categories = $this->container->getParameter('sfs_admin.menu_categories');
-		$pages = $this->container->getParameter('sfs_admin.pages');
-
-		$menu = $this->factory->createItem('sidebar', array(
-			'childrenAttributes'    => array(
-				'class'             => 'nav nav-sidebar mt-32'
-	    	)
-		));
-
-		foreach($categories as $category) {
-			$idCategory = strtolower(preg_replace('/\s+/', '_', $category['name']));
-			$menu->addChild($category['name'], array(
-					'uri' => 'javascript:void(0);',
-					'linkAttributes' => array(
-						'data-toggle' => 'collapse',
-						'data-target' => '#'.$idCategory
-					),
-					'childrenAttributes' => array(
-						'id' => $idCategory,
-						'class'		=> 'nav nav-second-level collapse'
-					),
-					'attributes' => array(
-						'icon' => $category['icon']
-					)
-			));
-
-			foreach($this->adminResources as $resource) {
-				if($resource['category'] == $category['name']) {
-					$slug = $resource['slug'];
-					$menu[$category['name']]->addChild(
-							$resource['title'],
-							array('route' 	=> $routes[$slug]['list']['route'],
-							'attributes' => array(
-									'icon' => $resource['icon']
-							)
-					));
-				}
-			}
-			foreach($pages as $page) {
-				if($page['category'] == $category['name']) {
-					$slug = $resource['slug'];
-					$menu[$category['name']]->addChild(
-							$page['title'],
-							array('route' 	=> $page['route'],
-									'attributes' => array(
-											'icon' => $page['icon']
-									)
-							));
-				}
-			}
-		}
-
-		return $menu;
-	}
-
-	/**
-	 * topbarMenu contains the twig file to display the user dropdown
-	 *
-	 * @param RequestStack $requestStack
-	 *
-	 * @return \Knp\Menu\ItemInterface
-	 */
-	public function topbarMenu(RequestStack $requestStack) {
-		$buttons = $this->container->getParameter('sfs_admin.topbar_buttons');
-
-		$menu = $this->factory->createItem('topbar', array(
-				'childrenAttributes' => array(
-						'class' => 'nav navbar-nav navbar-right'
-				)
-		));
-
-		foreach($buttons as $button) {
-			if($button['route']) {
-				$menu->addChild($button['title'], array(
-						'route' 	=> $button['route'],
-						'attributes' => array(
-							'icon' => $button['icon']
-						)
-				));
-			}
-			else if($button['url']) {
-				$menu->addChild($button['title'], array(
-						'uri' 	=> $button['url'],
-						'attributes' => array(
-							'icon' => $button['icon']
-						),
-						'linkAttributes' => array(
-							'target' => '_blank'
-						)
-				));
-			}
-		}
-
-		$this->displayTopbarBlocks($menu);
-
-		return $menu;
-	}
+    public function addTopbarBlock($service)
+    {
+        $this->topbarBlocks[] = $service;
+    }
 
     /**
-	 * Display in the Topbar menu all the blocks services tagged as sfs_admin.menu.topbar
-	 *
-	 * @param ItemInterface $menu
-	 */
-	private function displayTopbarBlocks(ItemInterface $menu) {
-		foreach ($this->topbarBlocks as $service) {
-			$block = $this->container->get($service);
+     * sidebarMenu
+     *
+     * @param RequestStack $requestStack
+     * @return \Knp\Menu\ItemInterface
+     */
+    public function sidebarMenu(RequestStack $requestStack)
+    {
+        $routes = $this->container->get('sfs.admin.core')->getRoutes();
+        $categories = $this->container->getParameter('sfs_admin.menu_categories');
+        $pages = $this->container->getParameter('sfs_admin.pages');
+        $menu = $this->factory->createItem('sidebar', array(
+            'childrenAttributes' => array(
+                'class' => 'nav nav-sidebar mt-32'
+            )
+        ));
+        foreach ($categories as $category) {
+            $idCategory = strtolower(preg_replace('/\s+/', '_', $category['name']));
+            $menu->addChild($category['name'], array(
+                'uri' => 'javascript:void(0);',
+                'linkAttributes' => array(
+                    'data-toggle' => 'collapse',
+                    'data-target' => '#' . $idCategory
+                ),
+                'childrenAttributes' => array(
+                    'id' => $idCategory,
+                    'class' => 'nav nav-second-level collapse'
+                ),
+                'attributes' => array(
+                    'icon' => $category['icon']
+                )
+            ));
+            foreach ($this->adminResources as $resource) {
+                if ($resource['category'] == $category['name']) {
+                    $slug = $resource['slug'];
+                    $menu[$category['name']]->addChild(
+                        $resource['title'],
+                        array('route' => $routes[$slug]['list']['route'],
+                            'attributes' => array(
+                                'icon' => $resource['icon']
+                            )
+                        ));
+                }
+            }
+            foreach ($pages as $page) {
+                if ($page['category'] == $category['name']) {
+                    $slug = $resource['slug'];
+                    $menu[$category['name']]->addChild(
+                        $page['title'],
+                        array('route' => $page['route'],
+                            'attributes' => array(
+                                'icon' => $page['icon']
+                            )
+                        ));
+                }
+            }
+        }
+        return $menu;
+    }
 
-			// Only consider the true topbar blocks : they must implement InterfaceTopbarBlock
-			if($block instanceof TopbarBlockInterface) {
-				$htmlContent = $block->display();
+    /**
+     * breadcrumbMenu
+     *
+     * @param RequestStack $requestStack
+     *
+     * @return \Knp\Menu\ItemInterface
+     */
+    public function breadcrumbMenu(RequestStack $requestStack)
+    {
+        $translator = $this->container->get('translator');
+        $core = $this->container->get('sfs.admin.core');
+        $currentAdmin = $core->getCurrentAdmin();
+        $menu = $this->factory->createItem('breadcrumb', array(
+            'childrenAttributes' => array(
+                'class' => 'breadcrumb pull-left mt-8 mb-8'
+            )
+        ));
+        $menu->addChild($translator->trans('sfs.admin.page.dashboard'), array(
+            'route' => 'sfs_admin_dashboard',
+            'attributes' => array(
+                'icon' => 'fa-home'
+            )
+        ));
+        // Two possibilities: currently on an Admin Resource
+        if ($currentAdmin !== null) {
+            $admin = $this->container->get($currentAdmin['service']);
+            if ($core->getCurrentAction() === 'list') {
+                $menu->addChild($admin->getTitle() . ' List');
+            } else {
+                $menu->addChild($admin->getTitle() . ' List', array('route' => $core->getRouteBySlug($admin->getSlug(), 'list')));
+            }
+        } // Otherwise looking on a custom page
+        else {
+        }
+        return $menu;
+    }
 
-				$menu->addChild($htmlContent, array(
-						'attributes'	=> $block->getAttributes(),
-						'extras' 		=> array(
-							'noSpan' 		=> true,
-							'safe_label' => true
-						)
-				));
-			}
-		}
-	}
+    /**
+     * topbarMenu contains the twig file to display the user dropdown
+     *
+     * @param RequestStack $requestStack
+     *
+     * @return \Knp\Menu\ItemInterface
+     */
+    public function topbarMenu(RequestStack $requestStack)
+    {
+        $buttons = $this->container->getParameter('sfs_admin.topbar_buttons');
+        $menu = $this->factory->createItem('topbar', array(
+            'childrenAttributes' => array(
+                'class' => 'nav navbar-nav navbar-right'
+            )
+        ));
+        foreach ($buttons as $button) {
+            if ($button['route']) {
+                $menu->addChild($button['title'], array(
+                    'route' => $button['route'],
+                    'attributes' => array(
+                        'icon' => $button['icon']
+                    )
+                ));
+            } else if ($button['url']) {
+                $menu->addChild($button['title'], array(
+                    'uri' => $button['url'],
+                    'attributes' => array(
+                        'icon' => $button['icon']
+                    ),
+                    'linkAttributes' => array(
+                        'target' => '_blank'
+                    )
+                ));
+            }
+        }
+        $this->displayTopbarBlocks($menu);
+        return $menu;
+    }
+
+    /**
+     * Display in the Topbar menu all the blocks services tagged as sfs_admin.menu.topbar
+     *
+     * @param ItemInterface $menu
+     */
+    private function displayTopbarBlocks(ItemInterface $menu)
+    {
+        foreach ($this->topbarBlocks as $service) {
+            $block = $this->container->get($service);
+            // Only consider the true topbar blocks : they must implement InterfaceTopbarBlock
+            if ($block instanceof TopbarBlockInterface) {
+                $htmlContent = $block->display();
+                $menu->addChild($htmlContent, array(
+                    'attributes' => $block->getAttributes(),
+                    'extras' => array(
+                        'noSpan' => true,
+                        'safe_label' => true
+                    )
+                ));
+            }
+        }
+    }
 }
