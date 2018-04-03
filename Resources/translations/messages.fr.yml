@@ -17,8 +17,11 @@ sfs:
                 json: "Exporter en JSON"
                 modal_title: "Configuration d'export en"
             label:
+                create: "Créer"
                 delete: "Supprimer"
-                update: "Modifier"
+                read: "Voir"
+                reset: "Réinitialiser"
+                update: "Editer"
             tools: "Outils"
         crud:
             actions: "Actions"
