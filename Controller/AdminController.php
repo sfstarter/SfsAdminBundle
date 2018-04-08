@@ -86,6 +86,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 		'delete'	                => 'SfsAdminBundle:CRUD:delete.html.twig',
 		'delete_ajax'	            => 'SfsAdminBundle:CRUD:delete_ajax.html.twig',
 		'delete_relation_ajax'      => 'SfsAdminBundle:CRUD:delete_relation_ajax.html.twig',
+		'read'                      => 'SfsAdminBundle:CRUD:read.html.twig',
 		'batch'		                => 'SfsAdminBundle:CRUD:batch.html.twig'
 	);
 
@@ -118,6 +119,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
      * @var array
      */
 	protected $entryActions = array(
+	    'read',
         'update',
         'delete',
     );
@@ -705,7 +707,11 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function readAction($id) {
-		return $this->redirect($this->generateUrl($this->getRoute('update'), array('id' => $id)));
+        $object = $this->getUpdateObject($id);
+
+        return $this->render($this->getTemplate('read'), array(
+            'object' => $object
+        ));
 	}
 
 	/**

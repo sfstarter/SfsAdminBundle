@@ -5,6 +5,14 @@
 				<h3 class="panel-title">
 					{% if object is defined %}
 						{{ object }} - {{ ("sfs.admin.action.label."~ admin_get_current_action())|trans }}
+
+                        {% block list_actions %}
+	                        <table class="pull-right">
+		                        <tbody>
+		                            {% include 'SfsAdminBundle:CRUD:list_actions.html.twig' %}
+		                        </tbody>
+	                        </table>
+                        {% endblock %}
 					{% endif %}
 				</h3>
 			</div>
