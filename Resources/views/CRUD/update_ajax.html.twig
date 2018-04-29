@@ -2,7 +2,6 @@
 	SfsAdminBundle - Symfony3 project
 	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
 #}
-
 {% block content %}
 	{% set formId = 'form-ajax-'~ random() %}
 
@@ -11,10 +10,13 @@
 		
 		<!-- Nav tabs -->
 		<div class="tabs">
+            {% if form.vars.tabs|length %}
 			<div class="tab-title clearfix">
+				{% block tabTitle %}
 				<h4 class="pull-left">
 					Update <strong>{{ object }}</strong>
 				</h4>
+				{% endblock tabTitle %}
 				<ul class="nav nav-tabs pull-right" role="tablist">
 					{% for key, tab in form.vars.tabs %}
 						<li class="{% if loop.index == 1 %}active{% endif %}" role="presentation">
@@ -23,30 +25,32 @@
 					{% endfor %}
 				</ul>
 			</div>
+			{% endif %}
 
 			<!-- Tab panes -->
 			<div class="tab-content">
-				{% for key, tab in form.vars.tabs %}
-					<div id="admin-tab-{{ key }}-{{ formId }}" class="tab-pane fade row {% if loop.index == 1 %}in active{% endif %}" role="tabpanel">
-						{% for block in tab.blocks %}
-							{% set blockColumnClass = attribute(form.vars.blocks, block).classes.column | default('col-md-12') %}
-							{% set blockPanelClass = attribute(form.vars.blocks, block).classes.panel | default('panel-primary') %}
+				{% if form.vars.tabs|length %}
+					{% for key, tab in form.vars.tabs %}
+						<div id="admin-tab-{{ key }}-{{ formId }}" class="tab-pane fade row {% if loop.index == 1 %}in active{% endif %}" role="tabpanel">
+							{% for block in tab.blocks %}
+                                {% set block = form.vars.blocks[block] %}
+                                {% set blockColumnClass = block.classes.column | default('col-md-12') %}
+                                {% set blockPanelClass = block.classes.panel | default('panel-primary') %}
 
-							<div class="col-sm-12">
-								<div class="panel {{ blockPanelClass }}">
-									<div class="panel-heading">{{ attribute(form.vars.blocks, block).title }}</div>
-									<div class="panel-body">
-										<div class="form-body">
-											{% for field in attribute(form.vars.blocks, block).fields %}
-												{{ form_row(attribute(form.children, field)) }}
-											{% endfor %}
-										</div>
-									</div>
-								</div>
-							</div>
+                                {% include admin_get_template(object, 'update_ajax_block_column') %}
+							{% endfor %}
+						</div>
+					{% endfor %}
+				{% else %}
+					<div id="admin-tab-{{ formId }}" class="tab-pane fade row in active" role="tabpanel">
+						{% for block in form.vars.blocks %}
+							{% set blockColumnClass = block.classes.column | default('col-md-12') %}
+							{% set blockPanelClass = block.classes.panel | default('panel-primary') %}
+
+							{% include admin_get_template(object, 'update_ajax_block_column') %}
 						{% endfor %}
 					</div>
-				{% endfor %}
+				{% endif %}
 				{{ form_rest(form) }}
 			</div>
 		</div>
