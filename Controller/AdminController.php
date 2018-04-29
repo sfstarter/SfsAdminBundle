@@ -2,17 +2,19 @@
 
 /**
  * SfsAdminBundle - Symfony2 project
- * 
+ *
  * @author Ramine AGOUNE <ramine.agoune@solidlynx.com>
  */
 
 namespace Sfs\AdminBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\EntityManager;
 use Knp\Component\Pager\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -30,21 +32,21 @@ abstract class AdminController extends Controller implements AdminControllerInte
 {
 	/**
 	 * The slug used to identify the admin resource, plus it serves to generate the url
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $slug;
 
 	/**
 	 * Title related to the admin resource
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $title;
 
 	/**
 	 * Class of the related entity, in string type
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $entityClass;
@@ -87,7 +89,11 @@ abstract class AdminController extends Controller implements AdminControllerInte
 		'delete_ajax'	            => 'SfsAdminBundle:CRUD:delete_ajax.html.twig',
 		'delete_relation_ajax'      => 'SfsAdminBundle:CRUD:delete_relation_ajax.html.twig',
 		'read'                      => 'SfsAdminBundle:CRUD:read.html.twig',
-		'batch'		                => 'SfsAdminBundle:CRUD:batch.html.twig'
+		'batch'		                => 'SfsAdminBundle:CRUD:batch.html.twig',
+        'create_block_column'	    => 'SfsAdminBundle:CRUD:create_block_column.html.twig',
+        'create_ajax_block_column'	=> 'SfsAdminBundle:CRUD:create_ajax_block_column.html.twig',
+        'update_block_column'	    => 'SfsAdminBundle:CRUD:update_block_column.html.twig',
+        'update_ajax_block_column'	=> 'SfsAdminBundle:CRUD:update_ajax_block_column.html.twig',
 	);
 
 	/**
@@ -135,12 +141,10 @@ abstract class AdminController extends Controller implements AdminControllerInte
 		'delete'
 	);
 
-	/**
-	 * Set the form to be displayed on update view
-	 *
-	 * @param Form $object
-	 */
-	abstract protected function setUpdateForm($object);
+    /**
+     * @var FormTypeInterface
+     */
+	protected $updateFormType;
 
 	/**
 	 * @param string
@@ -154,6 +158,21 @@ abstract class AdminController extends Controller implements AdminControllerInte
 		$this->setActions();
 		$this->setBatchActions();
 	}
+
+	/**
+	 * Set the form to be displayed on update view
+	 *
+	 * @param Form $object
+	 */
+    protected function setUpdateForm($object)
+    {
+        if(null === $this->getUpdateFormType()) {
+            throw new \Exception('UpdateFormType not defined.');
+        }
+        $updateForm = $this->createAdminForm($this->getUpdateFormType(), $object);
+
+        return $updateForm;
+    }
 
 	/**
 	 * Creates and returns a Form instance from the type of the form (override of the Symfony default)
@@ -229,7 +248,6 @@ abstract class AdminController extends Controller implements AdminControllerInte
         // Pagination & sort mechanism
         $paginator = $this->get('knp_paginator');
         $pagination = $this->getListQuery($request, $listFields, $paginator, $query);
-
 
         return $this->render($this->getTemplate('list'), array(
 				'filterForm' => $viewFilterForm,
@@ -1296,5 +1314,24 @@ abstract class AdminController extends Controller implements AdminControllerInte
         }
 
         return $this->entryActions;
+    }
+
+    /**
+     * @return
+     */
+    public function getUpdateFormType()
+    {
+        return $this->updateFormType;
+    }
+
+    /**
+     * @param string $updateForm
+     * @return AdminController
+     */
+    public function setUpdateFormType($updateFormType)
+    {
+        $this->updateFormType = $updateFormType;
+
+        return $this;
     }
 }

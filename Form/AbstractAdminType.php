@@ -45,7 +45,7 @@ abstract class AbstractAdminType extends AbstractType
 	 * @param array $blocks
 	 */
 	public function addTab($slug, $title, $blocks = array()) {
-		$this->tabs[$slug] = array(
+        $this->tabs[$slug] = array(
 				'title'		=> $title,
 				'blocks'	=> $blocks
 		);

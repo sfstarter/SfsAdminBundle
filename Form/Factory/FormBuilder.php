@@ -44,11 +44,11 @@ class FormBuilder extends BaseFormBuilder
 		if($this->currentTab)
 			throw new \RuntimeException('You must end the tab before creating a new one');
 
-		$slug = strtolower(preg_replace('/\s+/', '_', $name));
-		$this->tabs[$slug] = $name;
-		$this->currentTab = $slug;
+		$key = count($this->tabs) + 1;
+		$this->tabs[$key] = $name;
+		$this->currentTab = $key;
 
-		$this->getType()->getInnerType()->addTab($slug, $name);
+		$this->getType()->getInnerType()->addTab($key, $name);
 
 		return $this;
 	}
@@ -90,17 +90,19 @@ class FormBuilder extends BaseFormBuilder
 	 * @return FormBuilder
 	 */
 	public function addBlock($name, $classes = array()) {
-		if($this->currentTab === null)
+		if(0 < count($this->tabs) && $this->currentTab === null)
 			throw new \RuntimeException('You must create a tab before opening a block');
 		if($this->currentBlock)
 			throw new \RuntimeException('You must end the block before creating a new one');
 
-		$slug = strtolower(preg_replace('/\s+/', '_', $name));
-		$this->blocks[$slug] = $name;
-		$this->currentBlock = $slug;
+		$key = count($this->blocks) + 1;
+		$this->blocks[$key] = $name;
+		$this->currentBlock = $key;
 
-		$this->getType()->getInnerType()->addBlock($slug, $name, array(), $classes);
-		$this->getType()->getInnerType()->addBlockToTab($this->currentTab, $this->currentBlock);
+		$this->getType()->getInnerType()->addBlock($key, $name, array(), $classes);
+		if(null !== $this->currentTab) {
+            $this->getType()->getInnerType()->addBlockToTab($this->currentTab, $this->currentBlock);
+        }
 
 		return $this;
 	}
@@ -135,7 +137,7 @@ class FormBuilder extends BaseFormBuilder
      */
     public function add($child, $type = null, array $options = array()) {
         if(is_subclass_of($this->getType()->getInnerType(), 'Sfs\AdminBundle\Form\AbstractAdminType')) {
-            if ($this->currentTab === null)
+            if (0 < count($this->tabs) && $this->currentTab === null)
                 throw new \RuntimeException('You must create a tab before adding fields');
             if ($this->currentBlock === null)
                 throw new \RuntimeException('You must create a block before adding fields');
