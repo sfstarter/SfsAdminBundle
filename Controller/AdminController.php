@@ -244,11 +244,11 @@ abstract class AdminController extends Controller implements AdminControllerInte
      *
      * @param Request $request
      * @param Paginator $paginator
-     * @param QueryBuilder $query
+     * @param $query
      * @return \Knp\Component\Pager\Pagination\PaginationInterface
      * @throws \Doctrine\ORM\Mapping\MappingException
      */
-    protected function getListQuery(Request $request, array $listFields, Paginator $paginator, QueryBuilder $query) {
+    protected function getListQuery(Request $request, array $listFields, Paginator $paginator, $query) {
         foreach($listFields as $field) {
             if(isset($field['sortQuery']['innerJoin'])) {
                 $query->innerJoin(
@@ -257,6 +257,15 @@ abstract class AdminController extends Controller implements AdminControllerInte
                     $field['sortQuery']['innerJoin']['conditionType'],
                     $field['sortQuery']['innerJoin']['condition'],
                     $field['sortQuery']['innerJoin']['indexBy']
+                );
+            }
+            if(isset($field['sortQuery']['leftJoin'])) {
+                $query->leftJoin(
+                    $field['sortQuery']['leftJoin']['join'],
+                    $field['sortQuery']['leftJoin']['alias'],
+                    $field['sortQuery']['leftJoin']['conditionType'],
+                    $field['sortQuery']['leftJoin']['condition'],
+                    $field['sortQuery']['leftJoin']['indexBy']
                 );
             }
             if(isset($field['sortQuery']['conditions'])) {
