@@ -2,6 +2,7 @@
 
 	<table class="table table-bordered table-hover">
 		<!-- LIST HEADER -->
+        {% block list_header %}
 		<thead>
 		<tr>
 			{% for key, field in listFields %}
@@ -30,6 +31,7 @@
 			<th class="" style="width:90px">{% trans %}sfs.admin.crud.actions{% endtrans %}</th>
 		</tr>
 		</thead>
+        {% endblock list_header %}
 
 		<!-- LIST CONTENT -->
 		<tbody>
@@ -77,6 +79,7 @@
 		</tbody>
 
 		<!-- LIST FOOTER -->
+        {% block list_footer %}
 		<tfoot>
 		<tr>
 			<td colspan='1000'>
@@ -102,6 +105,7 @@
 			</td>
 		</tr>
 		</tfoot>
+        {% endblock list_footer %}
 	</table>
 
 	{# Ajax select to add an existant element #}

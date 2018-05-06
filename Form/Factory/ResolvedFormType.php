@@ -11,6 +11,10 @@ namespace Sfs\AdminBundle\Form\Factory;
 use Symfony\Component\Form\ResolvedFormType as BaseResolvedFormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Form\ButtonTypeInterface;
+use Symfony\Component\Form\ButtonBuilder;
+use Symfony\Component\Form\SubmitButtonTypeInterface;
+use Symfony\Component\Form\SubmitButtonBuilder;
 
 class ResolvedFormType extends BaseResolvedFormType
 {
@@ -28,7 +32,13 @@ class ResolvedFormType extends BaseResolvedFormType
 	 */
 	protected function newBuilder($name, $dataClass, FormFactoryInterface $factory, array $options)
 	{
-		parent::newBuilder($name, $dataClass, $factory, $options);
+        if ($this->getInnerType() instanceof ButtonTypeInterface) {
+            return new ButtonBuilder($name, $options);
+        }
+
+        if ($this->getInnerType() instanceof SubmitButtonTypeInterface) {
+            return new SubmitButtonBuilder($name, $options);
+        }
 
 		return new FormBuilder($name, $dataClass, new EventDispatcher(), $factory, $options);
 	}

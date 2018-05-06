@@ -39,7 +39,7 @@ class OfTypeExtension extends \Twig_Extension {
 
 	/**
 	 * getTests
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getTests() {
@@ -51,7 +51,7 @@ class OfTypeExtension extends \Twig_Extension {
 
 	/**
 	 * getFilters
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getFilters() {
@@ -75,7 +75,7 @@ class OfTypeExtension extends \Twig_Extension {
 
 	/**
 	 * isOfType
-	 * 
+	 *
 	 * @param mixed $var
 	 * @param string $typeTest
 	 * @param string $className
@@ -128,9 +128,9 @@ class OfTypeExtension extends \Twig_Extension {
 
 	/**
 	 * getType
-	 * 
+	 *
 	 * @param mixed $var
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getType($var) {
@@ -138,13 +138,13 @@ class OfTypeExtension extends \Twig_Extension {
 			return gettype($var);
 		}
 		else {
-			return get_class($var);
+            return get_class($var);
 		}
 	}
 
 	/**
 	 * getName
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getName() {

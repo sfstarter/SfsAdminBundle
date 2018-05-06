@@ -146,6 +146,11 @@ abstract class AdminController extends Controller implements AdminControllerInte
      */
 	protected $updateFormType;
 
+    /**
+     * @var array
+     */
+	private $updateFormOptions = [];
+
 	/**
 	 * @param string
 	 */
@@ -169,7 +174,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
         if(null === $this->getUpdateFormType()) {
             throw new \Exception('UpdateFormType not defined.');
         }
-        $updateForm = $this->createAdminForm($this->getUpdateFormType(), $object);
+        $updateForm = $this->createAdminForm($this->getUpdateFormType(), $object, $this->getUpdateFormOptions());
 
         return $updateForm;
     }
@@ -183,7 +188,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 *
 	 * @return \Symfony\Component\Form\Form
 	 */
-	protected function createAdminForm($type, $data = null, array $options = array())
+	protected function createAdminForm($type, $data = null, array $options = [])
 	{
 		$form = $this->container->get('sfs_admin.form.factory')->create($type, $data, $options);
 
@@ -374,37 +379,27 @@ abstract class AdminController extends Controller implements AdminControllerInte
      *      but we keep it separated to do specific logic here later
      *
      * @param string $property
+     * @param string $inversedProperty
      * @param int $relationId
      * @return \Symfony\Component\HttpFoundation\Response
      */
-	public function embeddedRelationListAction($property, $relationId) {
+	public function embeddedRelationListAction($property, $inversedProperty, $relationId) {
 	    $request = $this->get('request_stack')->getMasterRequest();
         // TODO : check here if the object has the property, to avoid crashing
         $accessor = PropertyAccess::createPropertyAccessor();
         if(!isset($this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property])) {
             throw new NoSuchPropertyException("The current object ". $this->getEntityClass() ." has no property named ". $property);
         }
-
-        $em = $this->container->get('doctrine')->getManager();
-        /** @var QueryBuilder $query */
-        $query = $em->getRepository($this->entityClass)->createQueryBuilder('object');
-
-        // relationId is false on create pages, so we have to handle this case
-        if($relationId !== null)
-            $query->where('object.'. $property .'= '. $relationId);
-        // The queryBuilder does not handle a 'where FALSE' so we fake it
-        else
-            $query->where('object.id = FALSE');
-
         // Filter form is disabled, for now at least
         $viewFilterForm = null;
 
         // Current short class name, for a correct display in url & paginator
         $currentObjectName = $this->getEntityClassShortName();
+
         // Pagination & sort mechanism
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $query, /* query applied */
+            $this->getEmbeddedRelationListQueryBuilder($property, $inversedProperty, $relationId), /* queryBuilder applied */
             $request->query->getInt($currentObjectName .'Page', 1)/* page number */,
             10,/* limit per page */
             array(
@@ -787,10 +782,11 @@ abstract class AdminController extends Controller implements AdminControllerInte
                     'message' => 'Updated'
                 ));
             }
-            else {
-                if (null !== $request->get('btn_save_and_list')) {
-                    return $this->redirect($this->generateUrl($this->getRoute('list')));
-                }
+            elseif (null !== $request->get('btn_save_and_list')) {
+                return $this->redirect($this->generateUrl($this->getRoute('list')));
+            } else {
+                $referer = $request->headers->get('referer');
+                return $this->redirect($referer);
             }
 		}
 		else if($form->isSubmitted() && !$form->isValid()) {
@@ -1328,10 +1324,52 @@ abstract class AdminController extends Controller implements AdminControllerInte
      * @param string $updateForm
      * @return AdminController
      */
-    public function setUpdateFormType($updateFormType)
+    public function setUpdateFormType($updateFormType, array $options = [])
     {
         $this->updateFormType = $updateFormType;
+        $this->setUpdateFormOptions($options);
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUpdateFormOptions(){
+        return $this->updateFormOptions;
+    }
+
+    /**
+     * @param string $updateForm
+     * @return AdminController
+     */
+    public function setUpdateFormOptions(array $options = [])
+    {
+        $this->updateFormOptions = $options;
+
+        return $this;
+    }
+
+    /**
+     * @param string $property
+     * @param int $relationId
+     * @return QueryBuilder
+     */
+    protected function getEmbeddedRelationListQueryBuilder($property, $inversedProperty, $relationId)
+    {
+        $objectManager = $this->get('doctrine')->getManager();
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $objectManager->getRepository($this->entityClass)->createQueryBuilder('object');
+
+        // relationId is false on create pages, so we have to handle this case
+        if($relationId !== null) {
+            $queryBuilder->where('object.' . $property . '= ' . $relationId);
+        }
+        // The queryBuilder does not handle a 'where FALSE' so we fake it
+        else {
+            $queryBuilder->where('object.id = FALSE');
+        }
+
+        return $queryBuilder;
     }
 }

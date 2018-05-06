@@ -8,6 +8,7 @@
 
 namespace Sfs\AdminBundle\Form\Type;
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormView;
@@ -21,6 +22,7 @@ class TagType extends AbstractType {
 	 */
 	private $defaultAttrOptions = array(
 		'class' => 'selectpicker',
+        'tags' => true,
 	);
 
 	/**

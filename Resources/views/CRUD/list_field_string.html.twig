@@ -23,6 +23,18 @@
 		{% else %}
 			{{ admin_get_property(object, key) }}
 		{% endif %}
+	{% elseif field.link is defined and field.link %}
+        {% if admin_has_action('read') %}
+			<a href="{{ admin_url('read', {'object': object}) }}">
+                {{ admin_get_property(object, key) }}
+			</a>
+        {% elseif admin_has_action('update') %}
+			<a href="{{ admin_url('update', {'object': object}) }}">
+                {{ admin_get_property(object, key) }}
+			</a>
+        {% else %}
+            {{ admin_get_property(object, key) }}
+        {% endif %}
 	{% else %}
 		{{ admin_get_property(object, key) }}
 	{% endif %}
