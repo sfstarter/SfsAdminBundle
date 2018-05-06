@@ -189,7 +189,7 @@ class CoreAdmin implements ContainerAwareInterface
         if(in_array('add_relation', $resourceAdmin->getActions()))
             $this->addRoute($slug, 'add_relation', null, array('id' => '\d+', 'property' => '[a-zA-Z_]+', 'relationId' => '\d+'));
         if(in_array('embedded_relation_list', $resourceAdmin->getActions()))
-            $this->addRoute($slug, 'embedded_relation_list', null, array('property' => '[a-zA-Z_]+', 'relationId' => '\d+'), array('relationId' => null));
+            $this->addRoute($slug, 'embedded_relation_list', null, array('property' => '[a-zA-Z_]+', 'inversedProperty' => '[a-zA-Z_]+', 'relationId' => '\d+'), array('relationId' => null));
 		if(in_array('create', $resourceAdmin->getActions()))
 			$this->addRoute($slug, 'create');
 		if(in_array('read', $resourceAdmin->getActions()))

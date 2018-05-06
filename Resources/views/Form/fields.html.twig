@@ -210,9 +210,9 @@
 {% block sfs_admin_field_table_entity_widget %}
 	<div id="table-entity-{{ form.vars.id }}">
 		{% if form.parent.vars.data.id is not null %}
-			{{ render(url(admin_route('embedded_relation_list', form.vars.class), {'property': form.vars.property,'relationId': form.parent.vars.data.id})) }}
+			{{ render(url(admin_route('embedded_relation_list', form.vars.class), {'property': form.vars.property, 'inversedProperty': form.vars.name, 'relationId': form.parent.vars.data.id})) }}
 		{% else %}
-			{{ render(url(admin_route('embedded_relation_list', form.vars.class), {'property': form.vars.property })) }}
+			{{ render(url(admin_route('embedded_relation_list', form.vars.class), {'property': form.vars.property, 'inversedProperty': form.vars.name})) }}
 		{% endif %}
 	</div>
 

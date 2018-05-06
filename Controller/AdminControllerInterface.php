@@ -19,7 +19,7 @@ interface AdminControllerInterface
     public function createAction(Request $request);
     public function deleteAction($id, Request $request);
     public function deleteRelationAction($id, $property, $relationId, Request $request);
-    public function embeddedRelationListAction($property, $relationId);
+    public function embeddedRelationListAction($property, $inversedProperty, $relationId);
     public function exportAction(Request $request);
     public function listAction(Request $request);
     public function listAjaxAction(Request $request);
