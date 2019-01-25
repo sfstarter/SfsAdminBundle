@@ -577,7 +577,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
     /**
 	 * Set the filter form, but can't be defined automatically so it is set to null by default
 	 */
-	protected function setFilterForm() {
+	public function setFilterForm() {
 		$this->filterForm = null;
 	}
 
