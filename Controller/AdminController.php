@@ -457,7 +457,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
 		$accessor = PropertyAccess::createPropertyAccessor();
         // Check if the relation already exist & no update required
-		if($this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property]['type'] == ClassMetadataInfo::ONE_TO_MANY) {
+		if($this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property]['type'] == ClassMetadataInfo::MANY_TO_ONE) {
 			if ($accessor->getValue($object, $property) === $relationObject) {
 				$this->addFlash(
 					'error',
