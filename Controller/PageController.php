@@ -18,7 +18,7 @@ class PageController extends Controller
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function dashboardAction() {
-		return $this->render('SfsAdminBundle:Core:dashboard.html.twig', array(
+		return $this->render('@SfsAdmin/Core/dashboard.html.twig', array(
 		));
 	}
 }

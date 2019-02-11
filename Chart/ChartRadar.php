@@ -11,6 +11,6 @@ namespace Sfs\AdminBundle\Chart;
 class ChartRadar extends GraphAbstract
 {
 	protected function getTwigFile() {
-		return 'SfsAdminBundle:Chart:radar.html.twig';
+		return '@SfsAdmin/Chart/radar.html.twig';
 	}
 }

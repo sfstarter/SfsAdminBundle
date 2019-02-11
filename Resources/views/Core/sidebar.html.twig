@@ -17,8 +17,8 @@
 		</a>
 	</div>
 
-	{{ knp_menu_render('sidebar', {'template': 'SfsAdminBundle:Menu:knp_sidebar.html.twig', 'allow_safe_labels': true, 'currentClass': 'active', 'ancestorClass': 'active'}) }}
-
+	{% set menu = knp_menu_get('sidebar', []) %}
+	{{ knp_menu_render(menu, {'template': '@SfsAdmin/Menu/knp_sidebar.html.twig', 'allow_safe_labels': true }) }}
 
 	<div class="horizontal-separator mt-24"></div>
 	<div class="text-center mt-8">

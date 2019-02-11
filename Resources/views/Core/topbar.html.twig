@@ -15,14 +15,14 @@
 		</ul>
 		{% block breadcrumb_list %}
 			{% if object is not defined %}
-				{% set breadcrumbMenu = knp_menu_get('SfsAdminBundle:BreadcrumbMenu:breadcrumbMenu', [], {'currentObject': null}) %}
+				{% set breadcrumbMenu = knp_menu_get('breadcrumb', [], {'currentObject': null}) %}
 			{% else %}
-				{% set breadcrumbMenu = knp_menu_get('SfsAdminBundle:BreadcrumbMenu:breadcrumbMenu', [], {'currentObject': object}) %}
+				{% set breadcrumbMenu = knp_menu_get('breadcrumb', [], {'currentObject': object}) %}
 			{% endif %}
-			{{ knp_menu_render(breadcrumbMenu, {'template': 'SfsAdminBundle:Menu:knp_breadcrumb.html.twig', 'allow_safe_labels': true}) }}
+			{{ knp_menu_render(breadcrumbMenu, {'template': '@SfsAdmin/Menu/knp_breadcrumb.html.twig', 'allow_safe_labels': true}) }}
 		{% endblock %}
 
-		{{ knp_menu_render('topbar', {'template': 'SfsAdminBundle:Menu:knp_topbar.html.twig', 'allow_safe_labels': true }) }}
+		{{ knp_menu_render('topbar', {'template': '@SfsAdmin/Menu/knp_topbar.html.twig', 'allow_safe_labels': true }) }}
 	</nav>
 </div>
 <!--END TOPBAR-->

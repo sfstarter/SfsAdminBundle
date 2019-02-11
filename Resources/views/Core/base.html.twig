@@ -46,17 +46,17 @@
 		{% block body %}
 			<div id="wrapper">
 				{% block sidebar %}
-					{% include 'SfsAdminBundle:Core:sidebar.html.twig' %}
+					{% include '@SfsAdmin/Core/sidebar.html.twig' %}
 				{% endblock %}
 
 				<!-- TOP MENU -->
 				<div>
 					<header id="menu-top" >
 						{% block topbar %}
-							{% include 'SfsAdminBundle:Core:topbar.html.twig' %}
+							{% include '@SfsAdmin/Core/topbar.html.twig' %}
 						{% endblock %}
 						{% block subbar %}
-							{% include 'SfsAdminBundle:Core:subbar.html.twig' %}
+							{% include '@SfsAdmin/Core/subbar.html.twig' %}
 						{% endblock %}
 						<!--END PAGE WRAPPER-->
 					</header>
@@ -64,22 +64,22 @@
 					<!--BEGIN CONTENT-->
 					<div class="page-content padding-16 clearfix">
 						{% block flashbags %}
-							{% include 'SfsAdminBundle:Core:flashbags.html.twig' %}
+							{% include '@SfsAdmin/Core/flashbags.html.twig' %}
                         {% endblock %}
 
 						{% block content %}
-							{% include 'SfsAdminBundle:Core:page_title.html.twig' %}
+							{% include '@SfsAdmin/Core/page_title.html.twig' %}
 						{% endblock %}
 					</div>
 					<!--END CONTENT-->
 
 					{% block footer %}
-						{% include 'SfsAdminBundle:Core:footer.html.twig' %}
+						{% include '@SfsAdmin/Core/footer.html.twig' %}
 					{% endblock %}
 				</div>
 			</div>
 
-			{% include 'SfsAdminBundle:Core:ajax_modal.html.twig' %}
+			{% include '@SfsAdmin/Core/ajax_modal.html.twig' %}
 		{% endblock %}
 
 		<!-- JS -->

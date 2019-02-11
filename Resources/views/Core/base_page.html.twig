@@ -3,10 +3,10 @@
 	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
 #}
 
-{% extends 'SfsAdminBundle:Core:base.html.twig' %}
+{% extends '@SfsAdmin/Core/base.html.twig' %}
 
 {% block subbar %}
-	{% embed 'SfsAdminBundle:Core:subbar.html.twig' %}
+	{% embed '@SfsAdmin/Core/subbar.html.twig' %}
 		{% block breadcrumb_page_title %}
 			{% if pageTitle is defined %}
 				{{ pageTitle }}

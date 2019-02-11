@@ -3,7 +3,7 @@
 	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
 #}
 
-{% extends 'SfsAdminBundle:Core:base.html.twig' %}
+{% extends '@SfsAdmin/Core/base.html.twig' %}
 
 {% block content %}
 	{{ parent() }}
@@ -15,7 +15,6 @@
 		
 		<div class="col-lg-12">
 			<!-- Nav tabs -->
-
 			<div class="tabs">
 				{% if form.vars.tabs|length %}
 				<div class="tab-title clearfix">
@@ -58,7 +57,7 @@
 			</div>
 
 			{% block create_actions %}
-				{% include 'SfsAdminBundle:CRUD:create_buttons.html.twig' %}
+				{% include '@SfsAdmin/CRUD/create_buttons.html.twig' %}
 			{% endblock %}
 		</div>
 	{{ form_end(form) }}

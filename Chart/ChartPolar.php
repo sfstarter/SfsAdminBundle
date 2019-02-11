@@ -11,6 +11,6 @@ namespace Sfs\AdminBundle\Chart;
 class ChartPolar extends PieAbstract
 {
 	protected function getTwigFile() {
-		return 'SfsAdminBundle:Chart:polar.html.twig';
+		return '@SfsAdmin/Chart/polar.html.twig';
 	}
 }

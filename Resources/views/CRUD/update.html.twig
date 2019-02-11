@@ -3,10 +3,11 @@
 	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
 #}
 
-{% extends 'SfsAdminBundle:Core:base.html.twig' %}
+{% extends '@SfsAdmin/Core/base.html.twig' %}
 
 {% block content %}
 	{{ parent() }}
+
 	{% set formId = random() %}
 
 	{{ form_start(form, { 'attr': {'class': 'form-horizontal form-seperated dashed'} }) }}
@@ -56,7 +57,7 @@
 			</div>
 
 			{% block update_actions %}
-				{% include 'SfsAdminBundle:CRUD:update_buttons.html.twig' %}
+				{% include '@SfsAdmin/CRUD/update_buttons.html.twig' %}
 			{% endblock %}
 		</div>
 	{{ form_end(form) }}

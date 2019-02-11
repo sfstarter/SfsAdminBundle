@@ -8,6 +8,8 @@
 
 namespace Sfs\AdminBundle\Controller;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\EntityManager;
@@ -78,22 +80,22 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 * @var array
 	 */
 	protected $templates = array(
-        'subbar_list'               => 'SfsAdminBundle:Core:subbar_list.html.twig',
-		'list'		                => 'SfsAdminBundle:CRUD:list.html.twig',
-		'embedded_relation_list'	=> 'SfsAdminBundle:CRUD:embedded_relation_list.html.twig',
-		'create'	                => 'SfsAdminBundle:CRUD:create.html.twig',
-		'create_ajax'	            => 'SfsAdminBundle:CRUD:create_ajax.html.twig',
-		'update'	                => 'SfsAdminBundle:CRUD:update.html.twig',
-		'update_ajax'	            => 'SfsAdminBundle:CRUD:update_ajax.html.twig',
-		'delete'	                => 'SfsAdminBundle:CRUD:delete.html.twig',
-		'delete_ajax'	            => 'SfsAdminBundle:CRUD:delete_ajax.html.twig',
-		'delete_relation_ajax'      => 'SfsAdminBundle:CRUD:delete_relation_ajax.html.twig',
-		'read'                      => 'SfsAdminBundle:CRUD:read.html.twig',
-		'batch'		                => 'SfsAdminBundle:CRUD:batch.html.twig',
-        'create_block_column'	    => 'SfsAdminBundle:CRUD:create_block_column.html.twig',
-        'create_ajax_block_column'	=> 'SfsAdminBundle:CRUD:create_ajax_block_column.html.twig',
-        'update_block_column'	    => 'SfsAdminBundle:CRUD:update_block_column.html.twig',
-        'update_ajax_block_column'	=> 'SfsAdminBundle:CRUD:update_ajax_block_column.html.twig',
+        'subbar_list'               => '@SfsAdmin/Core/subbar_list.html.twig',
+		'list'		                => '@SfsAdmin/CRUD/list.html.twig',
+		'embedded_relation_list'	=> '@SfsAdmin/CRUD/embedded_relation_list.html.twig',
+		'create'	                => '@SfsAdmin/CRUD/create.html.twig',
+		'create_ajax'	            => '@SfsAdmin/CRUD/create_ajax.html.twig',
+		'update'	                => '@SfsAdmin/CRUD/update.html.twig',
+		'update_ajax'	            => '@SfsAdmin/CRUD/update_ajax.html.twig',
+		'delete'	                => '@SfsAdmin/CRUD/delete.html.twig',
+		'delete_ajax'	            => '@SfsAdmin/CRUD/delete_ajax.html.twig',
+		'delete_relation_ajax'      => '@SfsAdmin/CRUD/delete_relation_ajax.html.twig',
+		'read'                      => '@SfsAdmin/CRUD/read.html.twig',
+		'batch'		                => '@SfsAdmin/CRUD/batch.html.twig',
+        'create_block_column'	    => '@SfsAdmin/CRUD/create_block_column.html.twig',
+        'create_ajax_block_column'	=> '@SfsAdmin/CRUD/create_ajax_block_column.html.twig',
+        'update_block_column'	    => '@SfsAdmin/CRUD/update_block_column.html.twig',
+        'update_ajax_block_column'	=> '@SfsAdmin/CRUD/update_ajax_block_column.html.twig',
 	);
 
 	/**
@@ -146,6 +148,8 @@ abstract class AdminController extends Controller implements AdminControllerInte
      */
 	protected $updateFormType;
 
+	protected $rows = 10;
+
     /**
      * @var array
      */
@@ -157,11 +161,11 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	public function __construct($entityClass) {
 		$this->entityClass = $entityClass;
 
-		$this->actions = array_merge($this->globalActions, $this->entryActions);
-
 		$this->setTemplates();
 		$this->setActions();
 		$this->setBatchActions();
+
+		$this->actions = array_merge($this->globalActions, $this->entryActions);
 	}
 
 	/**
@@ -273,7 +277,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
      * @return \Knp\Component\Pager\Pagination\PaginationInterface
      * @throws \Doctrine\ORM\Mapping\MappingException
      */
-    protected function getListQuery(Request $request, array $listFields, Paginator $paginator, $query) {
+    protected function getListQuery(Request $request, array $listFields, Paginator $paginator, QueryBuilder $query) {
         foreach($listFields as $field) {
             if(isset($field['sortQuery']['innerJoin'])) {
                 $query->innerJoin(
@@ -301,7 +305,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
         $pagination = $paginator->paginate(
             $query, /* query applied */
             $request->query->getInt('page', 1)/* page number */,
-            10,/* limit per page */
+            $this->rows,/* limit per page */
             array('defaultSortFieldName' => 'object.'. $this->getIdentifierProperty(), 'defaultSortDirection' => 'asc') /* Default sort */
         );
         $pagination->setPageRange(4);
@@ -323,7 +327,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
         $search = $request->get('term');
         $page = $request->get('page', 1);
-        $elementsPerPage = 10;
+        $elementsPerPage = $this->rows;
 
         $results = $this->queryAjax($query, $search, $page, $elementsPerPage);
 
@@ -368,7 +372,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
         else
             $query->where('object.id = FALSE');
 
-        $results = $query->getQuery()->getSQL()->getResult();
+        $results = $query->getQuery()->getResult();
 
         return $results;
     }
@@ -401,7 +405,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
         $pagination = $paginator->paginate(
             $this->getEmbeddedRelationListQueryBuilder($property, $inversedProperty, $relationId), /* queryBuilder applied */
             $request->query->getInt($currentObjectName .'Page', 1)/* page number */,
-            10,/* limit per page */
+            $this->rows,/* limit per page */
             array(
                 'sortFieldParameterName' => $currentObjectName .'Sort',
                 'sortDirectionParameterName' => $currentObjectName .'Direction',
@@ -451,39 +455,97 @@ abstract class AdminController extends Controller implements AdminControllerInte
             throw new NotFoundHttpException("Can't find the object with the identifier ". $relationId);
         }
 
+		$accessor = PropertyAccess::createPropertyAccessor();
         // Check if the relation already exist & no update required
-        $accessor = PropertyAccess::createPropertyAccessor();
-        if($accessor->getValue($object, $property) === $relationObject) {
-            $this->addFlash(
-                'error',
-                $this->get('translator')->trans('sfs.admin.message.embedded_relation.add_existing', array(
-                    '%target%' => $object->__toString(),
-                ))
-            );
-        }
-        // If everything ok, let's set the value
-        else if ($accessor->isWritable($object, $property)) {
-            $accessor->setValue($object, $property, $relationObject);
+		if($this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property]['type'] == ClassMetadataInfo::ONE_TO_MANY) {
+			if ($accessor->getValue($object, $property) === $relationObject) {
+				$this->addFlash(
+					'error',
+					$this->get('translator')->trans('sfs.admin.message.embedded_relation.add_existing', array(
+						'%target%' => $object->__toString(),
+					))
+				);
+			}
+			// If everything ok, let's set the value
+			else if ($accessor->isWritable($object, $property)) {
+				$accessor->setValue($object, $property, $relationObject);
+				$em->persist($object);
+				$em->flush();
 
-            $em->persist($object);
-            $em->flush();
+				$this->addFlash(
+					'success',
+					$this->get('translator')->trans('sfs.admin.message.embedded_relation.add_success', array(
+						'%current%' => $object->__toString(),
+						'%target%' => $relationObject->__toString()
+					))
+				);
+			}
+			else {
+				$this->addFlash(
+					'error',
+					$this->get('translator')->trans('sfs.admin.message.embedded_relation.add_error', array(
+						'%target%' => $object->__toString(),
+					))
+				);
+			}
+		}
+		// Otherwise, it is an MTM and needs to be filled
+		else if($this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property]['type'] == ClassMetadataInfo::MANY_TO_MANY) {
+			// Owner side, perfect
+			if($this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property]['isOwningSide'] === true) {
+				$ownerObject = $object;
+				$addedObject = $relationObject;
+				$ownerProperty = $property;
+			}
+			// Switch to owner side
+			else {
+				$ownerObject = $relationObject;
+				$addedObject = $object;
+				$ownerProperty = $this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property]['mappedBy'];
+			}
 
-            $this->addFlash(
-                'success',
-                $this->get('translator')->trans('sfs.admin.message.embedded_relation.add_success', array(
-                    '%current%' => $object->__toString(),
-                    '%target%' => $relationObject->__toString()
-                ))
-            );
-        }
-        else {
-            $this->addFlash(
-                'error',
-                $this->get('translator')->trans('sfs.admin.message.embedded_relation.add_error', array(
-                    '%target%' => $object->__toString(),
-                ))
-            );
-        }
+			$currentValue = $accessor->getValue($ownerObject, $ownerProperty);
+
+			if ($currentValue->contains($addedObject)) {
+				$this->addFlash(
+					'error',
+					$this->get('translator')->trans('sfs.admin.message.embedded_relation.add_existing', array(
+						'%target%' => $object->__toString(),
+					))
+				);
+			}
+			// If everything ok, let's set the value
+			else if ($accessor->isWritable($object, $property)) {
+					$currentValue->add($addedObject);
+					$accessor->setValue($ownerObject, $ownerProperty, $currentValue);
+					$em->persist($ownerObject);
+					$em->flush();
+
+					$this->addFlash(
+						'success',
+						$this->get('translator')->trans('sfs.admin.message.embedded_relation.add_success', array(
+							'%current%' => $object->__toString(),
+							'%target%' => $relationObject->__toString()
+						))
+					);
+				}
+			else {
+				$this->addFlash(
+					'error',
+					$this->get('translator')->trans('sfs.admin.message.embedded_relation.add_error', array(
+						'%target%' => $object->__toString(),
+					))
+				);
+			}
+		}
+		else {
+			$this->addFlash(
+				'error',
+				$this->get('translator')->trans('sfs.admin.message.embedded_relation.add_error', array(
+					'%target%' => $object->__toString(),
+				))
+			);
+		}
 
         return $this->redirect($request->headers->get('referer'));
     }
@@ -491,7 +553,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
     /**
      * @param int $id
      * @param string $property
-     * @param int $relationId (not used for now, but might be useful later)
+     * @param int $relationId
      * @param Request $request
      * @return Response
      */
@@ -499,6 +561,10 @@ abstract class AdminController extends Controller implements AdminControllerInte
         $em = $this->container->get('doctrine')->getManager();
         $repository = $em->getRepository($this->entityClass);
         $object = $repository->find($id);
+
+		$relationClass = $this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property]['targetEntity'];
+		$repository = $em->getRepository($relationClass);
+		$relationObject = $repository->find($relationId);
 
         if($object === null) {
             throw new NotFoundHttpException("Can't find the object with the identifier ". $id ." to delete");
@@ -519,30 +585,79 @@ abstract class AdminController extends Controller implements AdminControllerInte
 
             $accessor = PropertyAccess::createPropertyAccessor();
             if ($accessor->isWritable($object, $property)) {
-                // Check if the relation can be nullable, otherwise we can't remove it
-                if ($this->isPropertyNullable($property)) {
-                    $accessor->setValue($object, $property, null);
+				$relationType = $this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property]['type'];
 
-                    $em->persist($object);
-                    $em->flush();
+				if($relationType == ClassMetadataInfo::MANY_TO_ONE) {
+					// Check if the relation can be nullable, otherwise we can't remove it
+					if ($this->isPropertyNullable($property)) {
+						$accessor->setValue($object, $property, null);
 
-                    $this->addFlash(
-                        'success',
-                        $this->get('translator')->trans('sfs.admin.message.embedded_relation.remove_success', array(
-                            '%id%' => $object->getId(),
-                            '%name%' => $object->__toString()
-                        ))
-                    );
-                }
-                else {
-                    $this->addFlash(
-                        'error',
-                        $this->get('translator')->trans('sfs.admin.message.embedded_relation.remove_error', array(
-                            '%id%' => $object->getId(),
-                            '%name%' => $object->__toString()
-                        ))
-                    );
-                }
+						$em->persist($object);
+						$em->flush();
+
+						$this->addFlash(
+							'success',
+							$this->get('translator')->trans('sfs.admin.message.embedded_relation.remove_success', array(
+								'%id%' => $object->getId(),
+								'%name%' => $object->__toString()
+							))
+						);
+					}
+					else {
+						$this->addFlash(
+							'error',
+							$this->get('translator')->trans('sfs.admin.message.embedded_relation.remove_error', array(
+								'%id%' => $object->getId(),
+								'%name%' => $object->__toString()
+							))
+						);
+					}
+				}
+				// Otherwise, it is an MTM and needs to be filled
+				else if($relationType == ClassMetadataInfo::ONE_TO_MANY || $relationType == ClassMetadataInfo::MANY_TO_MANY) {
+					if($relationType == ClassMetadataInfo::ONE_TO_MANY ||
+						$this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property]['isOwningSide'] === true) {
+						$ownerObject = $object;
+						$removedObject = $relationObject;
+						$ownerProperty = $property;
+					}
+					// Switch to owner side
+					else {
+						$ownerObject = $relationObject;
+						$removedObject = $object;
+						$ownerProperty = $this->getMetadata($this->getEntityClass())->getAssociationMappings()[$property]['mappedBy'];
+					}
+
+					$currentValue = $accessor->getValue($ownerObject, $ownerProperty);
+
+					// If everything ok, let's set the value
+					if ($accessor->isWritable($object, $property)) {
+
+						if ($currentValue->contains($removedObject)) {
+							$currentValue->removeElement($removedObject);
+							$accessor->setValue($ownerObject, $ownerProperty, $currentValue);
+							$em->persist($ownerObject);
+							$em->flush();
+
+							$this->addFlash(
+								'success',
+								$this->get('translator')->trans('sfs.admin.message.embedded_relation.remove_success', array(
+									'%name%' => $removedObject->__toString(),
+									'%id%' => $removedObject->getId()
+								))
+							);
+						}
+					}
+					else {
+						$this->addFlash(
+							'error',
+							$this->get('translator')->trans('sfs.admin.message.embedded_relation.remove_error', array(
+								'%id%' => $object->getId(),
+								'%name%' => $object->__toString()
+							))
+						);
+					}
+				}
             }
             else {
                 $this->addFlash(
@@ -570,7 +685,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
         return $this->render($this->getTemplate('delete_relation_ajax'), array(
             'form' => $form->createView(),
             'object' => $object,
-            'property' => $property
+            'relationObject' => $relationObject
         ));
     }
 
@@ -651,8 +766,8 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 * @param \Doctrine\ORM\EntityManager $em
 	 * @param mixed $object
 	 */
-	protected function persistCreate($em, $object) {
-		$this->persistUpdate($em, $object);
+	protected function persistCreate($em, $object, Form $form) {
+		$this->persistUpdate($em, $object, $form);
 	}
 
 	/**
@@ -674,7 +789,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 			$em = $this->container->get('doctrine')->getManager();
 
 			$this->persistAssociations($em, $object);
-			$this->persistCreate($em, $object);
+			$this->persistCreate($em, $object, $form);
 			$em->flush();
 
             $this->addFlash(
@@ -689,7 +804,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
             if($request->isXmlHttpRequest()) {
                 return new JsonResponse(array(
                     'result' => 'success',
-                    'message' => 'Created'
+                    'message' => 'Created',
                 ));
             }
             else {
@@ -742,7 +857,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 * @param \Doctrine\ORM\EntityManager $em
 	 * @param mixed $object
 	 */
-	protected function persistUpdate($em, $object) {
+	protected function persistUpdate($em, $object, Form $form) {
 		$em->persist($object);
 	}
 
@@ -764,7 +879,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
             $em = $this->container->get('doctrine')->getManager();
 
 			$this->persistAssociations($em, $object);
-			$this->persistUpdate($em, $object);
+			$this->persistUpdate($em, $object, $form);
 			$em->flush();
 
             $this->addFlash(
@@ -1161,6 +1276,12 @@ abstract class AdminController extends Controller implements AdminControllerInte
      */
     protected function isPropertyNullable($property) {
 	    $metadatas = $this->getMetadata($this->entityClass);
+
+	    if($metadatas->getAssociationMapping($property)['type'] = ClassMetadataInfo::MANY_TO_MANY)
+	    	return true;
+		if(!isset($metadatas->getAssociationMapping($property)['joinColumns']['0']['nullable']))
+			return false;
+
         return $metadatas->getAssociationMapping($property)['joinColumns']['0']['nullable'];
     }
 

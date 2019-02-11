@@ -8,8 +8,12 @@
 		{% for element in admin_get_property(object, key) %}
 			<tr>
 				<td class="no-border" style="width: 100%;">
-					{% if field.relation is defined and field.relation %}
+					{% if field.relation is defined and field.relation and admin_has_action('read') %}
 						<a href="{{ admin_url('read', {'object': element}) }}">
+							{{ element }}
+						</a>
+					{% elseif field.relation is defined and field.relation and admin_has_action('update') %}
+						<a href="{{ admin_url('update', {'object': element}) }}">
 							{{ element }}
 						</a>
 					{% else %}
@@ -18,10 +22,10 @@
 				</td>
 				<td class="no-border">
 					{% if field.relation is defined and field.relation %}
-						{% if admin_has_action('update') %}
-							<a href="{{ admin_url('update', {'object': element}) }}" data-title="Edit row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-default btn-equal" type="button">
-								<i class="fa fa-pencil"></i>
-							</a>
+						{% if admin_has_action('delete_relation') %}
+							<button data-ajax-url="{{ url(admin_route('delete_relation', object|get_type), {'id': object.id, 'property': key,'relationId': element.Id}) }}" data-title="{% trans %}sfs.admin.message.embedded_relation.remove_title{% endtrans %}" data-toggle="ajax-modal" class="btn btn-xs btn-danger btn-equal" type="button">
+								<i class="fa fa-remove"></i>
+							</button>
 						{% endif %}
 					{% endif %}
 				</td>

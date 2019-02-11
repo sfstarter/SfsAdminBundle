@@ -31,7 +31,7 @@ class SecurityController extends Controller
 		// Csrf token generation
 		$csrfToken = $this->get('security.csrf.token_manager')->getToken('authenticate')->getValue();
 
-		return $this->render('SfsAdminBundle:Security:login.html.twig', array(
+		return $this->render('@SfsAdmin/Security/login.html.twig', array(
 			'last_username' => $lastUsername,
 			'error'         => $error,
 			'csrf_token' 	=> $csrfToken

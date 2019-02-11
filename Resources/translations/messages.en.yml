@@ -47,6 +47,7 @@ sfs:
                 add_error: "Cannot associate the object %target%"
                 add_existing: "The object is already related to %target%"
                 add_success: "The relation between %current% and %target% has been successfully saved"
+                create_page: "You will be able to add elements once you have saved this object"
                 remove_error: "Cannot delete the relation between the objects, as it is required"
                 remove_message: "This action will delete the relation between <i>%current%</i> and <i>%target%</i>. The related object <i>%target%</i> will be kept"
                 remove_success: "The relation with %name% (ID: %id%) has been successfully deleted"

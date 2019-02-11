@@ -53,6 +53,17 @@ class CoreAdmin implements ContainerAwareInterface
 	 * @return string $currentSlug
 	 */
 	public function getCurrentSlug() {
+		// Because we sometimes render other controllers, the current slug might change during the rendering
+		// To reswitch to the correct controller, we fetch it through the current request
+		$controller = $this->container->get('request_stack')->getCurrentRequest()->attributes->get("_controller");
+		$controller = explode(':', $controller);
+
+		foreach($this->getAdmins() as $slug => $admin) {
+			if($admin['service'] == $controller[0]) {
+				$this->currentSlug = $slug;
+			}
+		}
+
 		return $this->currentSlug;
 	}
 	/**

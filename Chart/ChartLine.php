@@ -11,6 +11,6 @@ namespace Sfs\AdminBundle\Chart;
 class ChartLine extends GraphAbstract
 {
 	protected function getTwigFile() {
-		return 'SfsAdminBundle:Chart:line.html.twig';
+		return '@SfsAdmin/Chart/line.html.twig';
 	}
 }

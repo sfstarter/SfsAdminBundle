@@ -11,6 +11,6 @@ namespace Sfs\AdminBundle\Chart;
 class ChartBar extends GraphAbstract
 {
 	protected function getTwigFile() {
-		return 'SfsAdminBundle:Chart:bar.html.twig';
+		return '@SfsAdmin/Chart/bar.html.twig';
 	}
 }

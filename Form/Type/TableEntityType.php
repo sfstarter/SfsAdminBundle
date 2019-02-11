@@ -38,7 +38,8 @@ class TableEntityType extends AbstractType
     {
         $resolver->setDefaults(array(
             'attr' => $this->defaultAttrOptions,
-            'ajax_route' => null
+            'ajax_route' => null,
+			'mapped' => false
         ));
 
         $resolver->setRequired('class');

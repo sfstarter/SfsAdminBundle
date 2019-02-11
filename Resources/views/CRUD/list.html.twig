@@ -3,11 +3,11 @@
 	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
 #}
 
-{% extends 'SfsAdminBundle:Core:base.html.twig' %}
+{% extends '@SfsAdmin/Core/base.html.twig' %}
 {% block content %}
 	{% if filterForm %}
 		<div class="col-lg-12">
-			{% include 'SfsAdminBundle:CRUD:list_filter.html.twig' %}
+			{% include '@SfsAdmin/CRUD/list_filter.html.twig' %}
 		</div>
 	{% endif %}
 
@@ -101,22 +101,22 @@
 										{% if field['template'] is defined %}
 											{% include field['template'] %}
 										{% elseif admin_get_property(object, key) is of_type('bool') %}
-											{% include 'SfsAdminBundle:CRUD:list_field_bool.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_bool.html.twig' %}
 										{% elseif admin_get_property(object, key) is of_type('class', 'DateTime') %}
-											{% include 'SfsAdminBundle:CRUD:list_field_datetime.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_datetime.html.twig' %}
 										{% elseif admin_get_property(object, key) is of_type('class', "Doctrine\\ORM\\PersistentCollection") %}
-											{% include 'SfsAdminBundle:CRUD:list_field_many.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_many.html.twig' %}
 										{% elseif admin_get_property(object, key) is of_type('class', "Doctrine\\Common\\Collections\\ArrayCollection") %}
-											{% include 'SfsAdminBundle:CRUD:list_field_arraycollection.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_arraycollection.html.twig' %}
 										{% elseif admin_get_property(object, key) is iterable %}
-											{% include 'SfsAdminBundle:CRUD:list_field_array.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_array.html.twig' %}
 										{% else %}
-											{% include 'SfsAdminBundle:CRUD:list_field_string.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_string.html.twig' %}
 										{% endif %}
 									{% endfor %}
 
 									{% block list_actions %}
-										{% include 'SfsAdminBundle:CRUD:list_actions.html.twig' %}
+										{% include '@SfsAdmin/CRUD/list_actions.html.twig' %}
 									{% endblock %}
 								</tr>
 							{% endfor %}
@@ -142,7 +142,7 @@
 
 							<div class="pull-right text-right">
 								<div class="pagination-panel">
-									{{ knp_pagination_render(pagination, 'SfsAdminBundle:CRUD:pagination.html.twig') }}
+									{{ knp_pagination_render(pagination, '@SfsAdmin/CRUD/pagination.html.twig') }}
 								</div>
 								<p class="">{% trans with {'%count%': pagination.getTotalItemCount} %}sfs.admin.message.list_total{% endtrans %}</p>
 							</div>
@@ -153,5 +153,5 @@
 		</div>
 	</div>
 
-	{% include 'SfsAdminBundle:CRUD:export_modal.html.twig' %}
+	{% include '@SfsAdmin/CRUD/export_modal.html.twig' %}
 {% endblock %}

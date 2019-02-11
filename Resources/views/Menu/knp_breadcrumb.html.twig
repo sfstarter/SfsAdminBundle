@@ -88,7 +88,7 @@
         {%- if item.uri is not empty and (not matcher.isCurrent(item) or options.currentAsLink) %}
 	        {{ block('linkElement') }}
         {%- else %}
-	        {{ block('spanElement') }}
+	        <strong>{{ block('spanElement') }}</strong>
         {%- endif %}
 {# render the list of children#}
         {%- set childrenClasses = item.childrenAttribute('class') is not empty ? [item.childrenAttribute('class')] : [] %}

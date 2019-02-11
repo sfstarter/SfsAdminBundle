@@ -9,7 +9,6 @@ namespace Sfs\AdminBundle\Menu;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Sfs\AdminBundle\Menu\Topbar\TopbarBlockInterface;
@@ -71,10 +70,10 @@ class MenuBuilder implements ContainerAwareInterface
     /**
      * sidebarMenu
      *
-     * @param RequestStack $requestStack
+     * @param array $options
      * @return \Knp\Menu\ItemInterface
      */
-    public function sidebarMenu(RequestStack $requestStack)
+    public function sidebarMenu(array $options)
     {
         $routes = $this->container->get('sfs.admin.core')->getRoutes();
         $categories = $this->container->getParameter('sfs_admin.menu_categories');
@@ -125,17 +124,18 @@ class MenuBuilder implements ContainerAwareInterface
                 }
             }
         }
+
         return $menu;
     }
 
     /**
      * breadcrumbMenu
      *
-     * @param RequestStack $requestStack
+     * @param array $options
      *
      * @return \Knp\Menu\ItemInterface
      */
-    public function breadcrumbMenu(RequestStack $requestStack)
+    public function breadcrumbMenu(array $options)
     {
         $translator = $this->container->get('translator');
         $core = $this->container->get('sfs.admin.core');
@@ -168,11 +168,11 @@ class MenuBuilder implements ContainerAwareInterface
     /**
      * topbarMenu contains the twig file to display the user dropdown
      *
-     * @param RequestStack $requestStack
+     * @param array $options
      *
      * @return \Knp\Menu\ItemInterface
      */
-    public function topbarMenu(RequestStack $requestStack)
+    public function topbarMenu(array $options)
     {
         $buttons = $this->container->getParameter('sfs_admin.topbar_buttons');
         $menu = $this->factory->createItem('topbar', array(

@@ -11,6 +11,6 @@ namespace Sfs\AdminBundle\Chart;
 class ChartDoughnut extends PieAbstract
 {
 	protected function getTwigFile() {
-		return 'SfsAdminBundle:Chart:doughnut.html.twig';
+		return '@SfsAdmin/Chart/doughnut.html.twig';
 	}
 }

@@ -211,16 +211,16 @@
 	<div id="table-entity-{{ form.vars.id }}">
 		{% if form.parent.vars.data.id is not null %}
 			{{ render(url(admin_route('embedded_relation_list', form.vars.class), {'property': form.vars.property, 'inversedProperty': form.vars.name, 'relationId': form.parent.vars.data.id})) }}
+
+			<script>
+				{% if form.vars.ajax_route is not null %}
+                var ajax_route_{{ form.vars.property }} = "{{ path(form.vars.ajax_route) }}";
+				{% else %}
+                var ajax_route_{{ form.vars.property }} = null;
+				{% endif %}
+			</script>
 		{% else %}
-			{{ render(url(admin_route('embedded_relation_list', form.vars.class), {'property': form.vars.property, 'inversedProperty': form.vars.name})) }}
+			<em class="ita text-info">{% trans %}sfs.admin.message.embedded_relation.create_page{% endtrans %}</em>
 		{% endif %}
 	</div>
-
-	<script>
-		{% if form.vars.ajax_route is not null %}
-			var ajax_route_{{ form.vars.property }} = "{{ path(form.vars.ajax_route) }}";
-		{% else %}
-        	var ajax_route_{{ form.vars.property }} = null;
-		{% endif %}
-	</script>
 {% endblock %}

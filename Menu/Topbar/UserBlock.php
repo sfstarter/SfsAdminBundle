@@ -17,6 +17,6 @@ class UserBlock extends TopbarBlockAbstract
 	}
 
 	public function display() {
-		return $this->twig->render('SfsAdminBundle:Menu/TopbarBlocks:user.html.twig', array());
+		return $this->twig->render('@SfsAdmin/Menu/TopbarBlocks/user.html.twig', array());
 	}
 }

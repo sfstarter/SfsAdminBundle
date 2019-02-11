@@ -11,6 +11,6 @@ namespace Sfs\AdminBundle\Chart;
 class ChartPie extends PieAbstract
 {
 	protected function getTwigFile() {
-		return 'SfsAdminBundle:Chart:pie.html.twig';
+		return '@SfsAdmin/Chart/pie.html.twig';
 	}
 }
