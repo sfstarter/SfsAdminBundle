@@ -7,10 +7,11 @@
 
 namespace Sfs\AdminBundle\Twig;
 
-use Twig_SimpleFunction;
+use Twig\Extension\AbstractExtension;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Twig\TwigFunction;
 
-class PropertyAccessExtension extends \Twig_Extension {
+class PropertyAccessExtension extends AbstractExtension {
 
 	/**
 	 * PropertyAccessExtension constructor.
@@ -25,7 +26,7 @@ class PropertyAccessExtension extends \Twig_Extension {
 	 */
 	public function getFunctions() {
 		return array(
-			new Twig_SimpleFunction('admin_get_property', array($this, 'getProperty')),
+			new TwigFunction('admin_get_property', array($this, 'getProperty')),
 		);
 	}
 

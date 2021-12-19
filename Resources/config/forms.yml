@@ -14,6 +14,7 @@ services:
             - "@sfs_admin.form.resolved_type_factory"
     sfs_admin.form.factory:
         class: Symfony\Component\Form\FormFactory
+        public: true
         arguments:
             - "@sfs_admin.form.registry"
             - "@sfs_admin.form.resolved_type_factory"

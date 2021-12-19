@@ -8,9 +8,9 @@
 
 namespace Sfs\AdminBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class PageController extends Controller
+class PageController extends AbstractController
 {
 	/**
 	 * Dashboard action, main page of the admin

@@ -8,7 +8,7 @@
 
 namespace Sfs\AdminBundle\Listener;
 
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Sfs\AdminBundle\Core\CoreAdmin;
 
 class AdminListener
@@ -32,7 +32,7 @@ class AdminListener
 	 * 
 	 * @param FilterControllerEvent $event
 	 */
-	public function onKernelController(FilterControllerEvent $event)
+	public function onKernelController(ControllerEvent $event)
 	{
         $controller = $event->getController();
 

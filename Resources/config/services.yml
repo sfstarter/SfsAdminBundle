@@ -4,6 +4,22 @@
 ###
 
 services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+
+    Sfs\AdminBundle\Controller\SecurityController:
+        public: true
+        tags: ['container.service_subscriber']
+        arguments:
+            - "@security.authentication_utils"
+            - "@security.csrf.token_manager"
+
+    Sfs\AdminBundle\Controller\PageController:
+        public: true
+        tags: ['container.service_subscriber']
+
 # SFS Admin
     Sfs\AdminBundle\Core\CoreAdmin:
         calls:

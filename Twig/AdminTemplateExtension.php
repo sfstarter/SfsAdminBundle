@@ -10,9 +10,10 @@
 namespace Sfs\AdminBundle\Twig;
 
 use Sfs\AdminBundle\Core\CoreAdmin;
-use Twig_SimpleFunction;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class AdminTemplateExtension extends \Twig_Extension {
+class AdminTemplateExtension extends AbstractExtension {
     /**
      * @var CoreAdmin
      */
@@ -33,7 +34,7 @@ class AdminTemplateExtension extends \Twig_Extension {
      */
     public function getFunctions() {
         return array (
-            new Twig_SimpleFunction('admin_get_template', array($this, 'getAdminTemplate')),
+            new TwigFunction('admin_get_template', array($this, 'getAdminTemplate')),
         );
     }
 

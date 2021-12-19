@@ -3,11 +3,11 @@
 	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
 #}
 
-{% extends 'MopaBootstrapBundle:Form:fields.html.twig' %}
+{% extends '@MopaBootstrap/Form/fields.html.twig' %}
 
 {% block sfs_admin_field_switch_widget %}
-	{% spaceless %}
-		{% if label is not sameas(false) and label is empty %}
+	{% apply spaceless %}
+		{% if label is not same as(false) and label is empty %}
 			{%- if label_format is defined and label_format is not empty -%}
                 {% set label = label_format|replace({
                 '%name%': name,
@@ -20,13 +20,13 @@
             <div class="make-switch" {% for attrname, attrvalue in switch_colors %} {{attrname}}="{{attrvalue}}"{% endfor %}>
 				<input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}/>
             </div>
-	{% endspaceless %}
+	{% endapply %}
 {% endblock %}
 
 {% block sfs_admin_field_slider_widget %}
-	{% spaceless %}
+	{% apply spaceless %}
 		<input type="text" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %} />
-	{% endspaceless %}
+	{% endapply %}
 {% endblock %}
 
 {% block sfs_admin_field_color_picker_widget %}
@@ -37,7 +37,7 @@
 {% endblock %}
 
 {% block sfs_admin_field_datetime_picker_widget %}
-	{% spaceless %}
+	{% apply spaceless %}
 		{% if widget == 'single_text' %}
 			{% set attr = attr|merge({'class': ' form-control'}) %}
 			<div class="input-group datetimepicker date">
@@ -54,7 +54,7 @@
 				{{ form_widget(form.time) }}
 			</div>
 		{% endif %}
-	{% endspaceless %}
+	{% endapply %}
 {% endblock %}
 
 {% block sfs_admin_field_select_widget %}
@@ -123,7 +123,7 @@
 {% endblock %}
 
 {% block choice_widget_expanded %}
-	{% spaceless %}
+	{% apply spaceless %}
 		{% set label_attr = label_attr|merge({'class': (label_attr.class|default(''))}) %}
 		{% set label_attr = label_attr|merge({'class': (label_attr.class ~ ' ' ~ (widget_type != '' ? (multiple ? 'checkbox' : 'radio') ~ '-' ~ widget_type : ''))}) %}
 		{% if expanded %}
@@ -160,11 +160,11 @@
 		{% if widget_type == 'inline-btn' %}
 			</div>
 		{% endif %}
-	{% endspaceless %}
+	{% endapply %}
 {% endblock choice_widget_expanded %}
 
 {% block checkbox_widget %}
-    {% spaceless %}
+    {% apply spaceless %}
         {% if label is not same as(false) and label is empty %}
             {%- if label_format is defined and label_format is not empty -%}
                 {% set label = label_format|replace({
@@ -204,7 +204,7 @@
         {% if form.parent != null and 'choice' not in form.parent.vars.block_prefixes %}
             </div>
         {% endif %}
-    {% endspaceless %}
+    {% endapply %}
 {% endblock checkbox_widget %}
 
 {% block sfs_admin_field_table_entity_widget %}

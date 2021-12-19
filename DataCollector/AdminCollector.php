@@ -30,23 +30,20 @@ class AdminCollector extends DataCollector
 		$this->core = $core;
 	}
 
-	/**
-	 * @param Request $request
-	 * @param Response $response
-	 * @param \Exception|null $exception
-	 */
-	public function collect(Request $request, Response $response, \Exception $exception = null)
+	public function collect(Request $request, Response $response, ?\Throwable $exception = null)
 	{
 		$this->data = array(
 			'adminsTotal' => count($this->core->getAdmins()),
 			'admins' => $this->core->getAdmins(),
 			'routes' => $this->core->getRoutes(),
-			'currentAdminService' => $this->core->getCurrentAdmin()['service'],
+			'currentAdminService' => $this->core->getCurrentAdmin() ? $this->core->getCurrentAdmin()['service'] : null,
 			'currentAdminSlug' => $this->core->getCurrentSlug(),
 			'currentEntityClass' => $this->core->getCurrentEntityClass(),
 			'currentAction' => $this->core->getCurrentAction(),
 		);
 	}
+
+	public function reset() {}
 
 	/**
 	 * @return integer

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * SfsAdminBundle - Symfony2 project
@@ -9,9 +9,10 @@
 namespace Sfs\AdminBundle\Twig;
 
 use Symfony\Component\DependencyInjection\Container;
-use Twig_Extension_GlobalsInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\Extension\GlobalsInterface;
 
-class PreferencesExtension extends \Twig_Extension implements Twig_Extension_GlobalsInterface
+class PreferencesExtension extends AbstractExtension implements GlobalsInterface
 {
 	/**
 	 * @var Container
@@ -21,16 +22,18 @@ class PreferencesExtension extends \Twig_Extension implements Twig_Extension_Glo
 	/**
 	 * @param Container $container
 	 */
-	public function setContainer(Container $container) {
+	public function setContainer(Container $container)
+	{
 		$this->container = $container;
 	}
 
 	/**
 	 * Generate globals variables accessible from the administration
-	 * 
+	 *
 	 * @return array
 	 */
-	public function getGlobals() {
+	public function getGlobals(): array
+	{
 		$preferences = array(
 			'title_text' => $this->container->getParameter('sfs_admin.title_text'),
 			'title_logo' => $this->container->getParameter('sfs_admin.title_logo')
@@ -41,11 +44,11 @@ class PreferencesExtension extends \Twig_Extension implements Twig_Extension_Glo
 
 	/**
 	 * getName
-	 * 
+	 *
 	 * @return string
 	 */
-    public function getName()
-    {
-        return 'sfs_admin_preferences_twig';
-    }
+	public function getName()
+	{
+		return 'sfs_admin_preferences_twig';
+	}
 }

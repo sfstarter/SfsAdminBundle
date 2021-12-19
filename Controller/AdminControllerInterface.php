@@ -10,6 +10,7 @@
 namespace Sfs\AdminBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Knp\Component\Pager\PaginatorInterface;
 
 interface AdminControllerInterface
 {
@@ -21,7 +22,7 @@ interface AdminControllerInterface
     public function deleteRelationAction($id, $property, $relationId, Request $request);
     public function embeddedRelationListAction($property, $inversedProperty, $relationId);
     public function exportAction(Request $request);
-    public function listAction(Request $request);
+    public function listAction(Request $request, PaginatorInterface $paginator);
     public function listAjaxAction(Request $request);
     public function readAction($id);
     public function updateAction($id, Request $request);

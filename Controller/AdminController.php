@@ -13,8 +13,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\EntityManager;
-use Knp\Component\Pager\Paginator;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,7 +30,7 @@ use Sfs\AdminBundle\Form\ExportType;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-abstract class AdminController extends Controller implements AdminControllerInterface
+abstract class AdminController extends AbstractController implements AdminControllerInterface
 {
 	/**
 	 * The slug used to identify the admin resource, plus it serves to generate the url
@@ -192,7 +192,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 *
 	 * @return \Symfony\Component\Form\Form
 	 */
-	protected function createAdminForm($type, $data = null, array $options = [])
+	protected function createAdminForm(string $type, $data = null, array $options = [])
 	{
 		$form = $this->container->get('sfs_admin.form.factory')->create($type, $data, $options);
 
@@ -225,7 +225,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	public function listAction(Request $request) {
+	public function listAction(Request $request, PaginatorInterface $paginator) {
 		$em = $this->container->get('doctrine')->getManager();
         /** @var QueryBuilder $query */
 		$query = $em->getRepository($this->entityClass)->createQueryBuilder('object');
@@ -254,11 +254,10 @@ abstract class AdminController extends Controller implements AdminControllerInte
         $listFields = $this->setListFields();
         $batchActions = $this->getBatchActions();
 
-        // Pagination & sort mechanism
-        $paginator = $this->get('knp_paginator');
-        $pagination = $this->getListQuery($request, $listFields, $paginator, $query);
+		// Pagination & sort mechanism
+		$pagination = $this->getListQuery($request, $listFields, $paginator, $query);
 
-        return $this->render($this->getTemplate('list'), array(
+		return $this->render($this->getTemplate('list'), array(
 				'filterForm' => $viewFilterForm,
 				'exportForm' => $viewExportForm,
 				'batchActions' => $batchActions,
@@ -277,7 +276,7 @@ abstract class AdminController extends Controller implements AdminControllerInte
      * @return \Knp\Component\Pager\Pagination\PaginationInterface
      * @throws \Doctrine\ORM\Mapping\MappingException
      */
-    protected function getListQuery(Request $request, array $listFields, Paginator $paginator, QueryBuilder $query) {
+    protected function getListQuery(Request $request, array $listFields, PaginatorInterface $paginator, QueryBuilder $query) {
         foreach($listFields as $field) {
             if(isset($field['sortQuery']['innerJoin'])) {
                 $query->innerJoin(
