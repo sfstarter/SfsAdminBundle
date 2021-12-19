@@ -21,7 +21,7 @@
         "symfony/framework-bundle": "^5.4",
         "symfony/security-bundle": "^5.4",
         "symfony/twig-bundle": "^5.4",
-        "symfony/swiftmailer-bundle": "^5.4",
+        "symfony/swiftmailer-bundle": "^3.5",
 
         "doctrine/orm": "^2.5",
         "doctrine/doctrine-bundle": "2.5",
