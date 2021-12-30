@@ -1,0 +1,14 @@
+{#
+	SfsAdminBundle - Symfony3 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+
+
+{% block content %}
+	<p>{% trans with {'%current%': object, '%target%': relationObject } %}sfs.admin.message.embedded_relation.remove_message{% endtrans %}</p>
+
+	{{ form_start(form) }}
+		{{ form_widget(form.delete) }}
+		{{ form_end(form) }}
+	{{ form_end(form) }}
+{% endblock %}

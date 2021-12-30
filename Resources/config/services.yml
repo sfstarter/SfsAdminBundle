@@ -1,97 +1,140 @@
 ###
-### SfsAdminBundle - Symfony2 project
+### SfsAdminBundle - Symfony4 project
 ### (c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
 ###
 
 services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+
+    Sfs\AdminBundle\Controller\SecurityController:
+        public: true
+        tags: ['container.service_subscriber']
+        arguments:
+            - "@security.authentication_utils"
+            - "@security.csrf.token_manager"
+
+    Sfs\AdminBundle\Controller\PageController:
+        public: true
+        tags: ['container.service_subscriber']
+
 # SFS Admin
-    sfs.admin.core:
-        class: Sfs\AdminBundle\Core\CoreAdmin
+    Sfs\AdminBundle\Core\CoreAdmin:
         calls:
             - [setContainer, ["@service_container"]]
-    sfs.admin.routing_loader:
-        class: Sfs\AdminBundle\Routing\RouteAdminLoader
+        public: false
+    sfs.admin.core:
+        alias: Sfs\AdminBundle\Core\CoreAdmin
+        public: true
+#
+    Sfs\AdminBundle\Routing\RouteAdminLoader:
         tags:
             - { name: routing.loader }
         arguments:
             - "@sfs.admin.core"
-    sfs.admin.menu_builder:
-        class: Sfs\AdminBundle\Menu\MenuBuilder
+        public: false
+    sfs.admin.routing_loader:
+        alias: Sfs\AdminBundle\Routing\RouteAdminLoader
+        public: true
+#
+    Sfs\AdminBundle\Menu\MenuBuilder:
         arguments: ["@knp_menu.factory"]
         calls:
             - [setContainer, ["@service_container"]]
+        tags:
+            - { name: knp_menu.menu_builder, method: sidebarMenu, alias: sidebar }
+            - { name: knp_menu.menu_builder, method: breadcrumbMenu, alias: breadcrumb }
+            - { name: knp_menu.menu_builder, method: topbarMenu, alias: topbar }
+        public: true
+    sfs.admin.menu_builder:
+        alias: Sfs\AdminBundle\Menu\MenuBuilder
+        public: true
 
-## Menus
-    sfs.admin.sidebar_menu:
-        class: Knp\Menu\MenuItem
-        factory: ["@sfs.admin.menu_builder", sidebarMenu]
-        arguments: ["@request_stack"]
-        tags:
-            - { name: knp_menu.menu, alias: sidebar }
-    sfs.admin.breadcrumb_menu:
-        class: Knp\Menu\MenuItem
-        factory: ["@sfs.admin.menu_builder", breadcrumbMenu]
-        arguments: ["@request_stack"]
-        tags:
-            - { name: knp_menu.menu, alias: breadcrumb }
-    sfs.admin.topbar_menu:
-        class: Knp\Menu\MenuItem
-        factory: ["@sfs.admin.menu_builder", topbarMenu]
-        arguments: ["@request_stack"]
-        tags:
-            - { name: knp_menu.menu, alias: topbar }
-
+#
 ## Topbar
-    sfs.admin.topbar_menu.user:
-        class: Sfs\AdminBundle\Menu\Topbar\UserBlock
+    Sfs\AdminBundle\Menu\Topbar\UserBlock:
         arguments:
             - "@twig"
         tags:
             - { name: sfs_admin.menu.topbar }
-
+        public: true
+#
 ## Listeners
-    sfs.admin.action_listener:
-        class: Sfs\AdminBundle\Listener\AdminListener
+    Sfs\AdminBundle\Listener\AdminListener:
         arguments:
             - "@sfs.admin.core"
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+        public: false
+    sfs.admin.action_listener:
+        alias: Sfs\AdminBundle\Listener\AdminListener
+        public: true
 #
 ## Collectors
-    sfs.admin.admin_collector:
-        class: Sfs\AdminBundle\DataCollector\AdminCollector
+    Sfs\AdminBundle\DataCollector\AdminCollector:
         public: false
         arguments:
             - "@sfs.admin.core"
         tags:
             -
                 name: data_collector
-                template: 'SfsAdminBundle:DataCollector:admin_collector.html.twig'
+                template: '@SfsAdmin/DataCollector/admin_collector.html.twig'
                 id:       'sfs.admin.admin_collector'
-
+    sfs.admin.admin_collector:
+        alias: Sfs\AdminBundle\DataCollector\AdminCollector
+        public: true
+#
 # Twig extensions
-    sfs.admin.twig.url_extension:
-        class: Sfs\AdminBundle\Twig\AdminRouterExtension
+    Sfs\AdminBundle\Twig\AdminRouterExtension:
         arguments:
             - "@sfs.admin.core"
         tags:
             - { name: twig.extension }
-    sfs.admin.twig.of_type:
-        class: Sfs\AdminBundle\Twig\OfTypeExtension
+        public: false
+    sfs.admin.twig.url_extension:
+        alias: Sfs\AdminBundle\Twig\AdminRouterExtension
+        public: true
+#
+    Sfs\AdminBundle\Twig\OfTypeExtension:
         arguments:
             - "@doctrine.orm.entity_manager"
             - "@sfs.admin.core"
         tags:
             - { name: twig.extension }
-    sfs.adminu.twig.preferences_extension:
-        class: Sfs\AdminBundle\Twig\PreferencesExtension
+        public: false
+    sfs.admin.twig.of_type:
+        alias: Sfs\AdminBundle\Twig\OfTypeExtension
+        public: true
+#
+    Sfs\AdminBundle\Twig\PreferencesExtension:
         arguments:
             - "@service_container"
         calls:
             - [setContainer, ["@service_container"]]
         tags:
             - { name: twig.extension }
-    sfs.adminu.twig.property_access_extension:
-        class: Sfs\AdminBundle\Twig\PropertyAccessExtension
+        public: false
+    sfs.admin.twig.preferences_extension:
+        alias: Sfs\AdminBundle\Twig\PreferencesExtension
+        public: true
+#
+    Sfs\AdminBundle\Twig\PropertyAccessExtension:
         tags:
             - { name: twig.extension }
+        public: false
+    sfs.admin.twig.property_access_extension:
+        alias: Sfs\AdminBundle\Twig\PropertyAccessExtension
+        public: true
+#
+    Sfs\AdminBundle\Twig\AdminTemplateExtension:
+        arguments:
+            - "@sfs.admin.core"
+        tags:
+            - { name: twig.extension }
+        public: false
+    sfs.admin.twig.template_extension:
+        alias: Sfs\AdminBundle\Twig\AdminTemplateExtension
+        public: true
+#

@@ -1,0 +1,148 @@
+{% block list %}
+
+	<table class="table table-bordered table-hover">
+		<!-- LIST HEADER -->
+        {% block list_header %}
+		<thead>
+		<tr>
+			{% for key, field in listFields %}
+				<th>
+					{% if field.name is defined %}
+						{% set label = field.name %}
+					{% else %}
+						{% set label = key|capitalize %}
+					{% endif %}
+
+					{% if key is not property_is_relation() %}
+						{{ knp_pagination_sortable(pagination, label, 'object.'~key) }}
+					{% else %}
+						{{ field.name }}
+					{% endif %}
+
+					{% if pagination.isSorted('object.'~key) %}
+						{% if pagination.getDirection() == 'asc' %}
+							<span class="fa fa-sort-asc"></span>
+						{% else %}
+							<span class="fa fa-sort-desc"></span>
+						{% endif %}
+					{% endif %}
+				</th>
+			{% endfor %}
+			<th class="" style="width:90px">{% trans %}sfs.admin.crud.actions{% endtrans %}</th>
+		</tr>
+		</thead>
+        {% endblock list_header %}
+
+		<!-- LIST CONTENT -->
+		<tbody>
+		{% for object in pagination %}
+			<tr>
+				{% for key, field in listFields %}
+					{% if field['template'] is defined %}
+						{% include field['template'] %}
+					{% elseif admin_get_property(object, key) is of_type('bool') %}
+						{% include '@SfsAdmin/CRUD/list_field_bool.html.twig' %}
+					{% elseif admin_get_property(object, key) is of_type('class', 'DateTime') %}
+						{% include '@SfsAdmin/CRUD/list_field_datetime.html.twig' %}
+					{% elseif admin_get_property(object, key) is of_type('class', "Doctrine\\ORM\\PersistentCollection") %}
+						{% include '@SfsAdmin/CRUD/list_field_many.html.twig' %}
+					{% elseif admin_get_property(object, key) is of_type('class', "Doctrine\\Common\\Collections\\ArrayCollection") %}
+						{% include '@SfsAdmin/CRUD/list_field_arraycollection.html.twig' %}
+					{% elseif admin_get_property(object, key) is iterable %}
+						{% include '@SfsAdmin/CRUD/list_field_array.html.twig' %}
+					{% else %}
+						{% include '@SfsAdmin/CRUD/list_field_string.html.twig' %}
+					{% endif %}
+				{% endfor %}
+
+				{% block list_actions %}
+					<td class="text-right">
+						{% if admin_has_action('update') %}
+							<a href="" data-ajax-url="{{ admin_url('update', {'object': object}) }}" data-title="{% trans %}sfs.admin.message.embedded_relation.update_title{% endtrans %}" data-modal-type="modal-lg" data-toggle="ajax-modal" class="btn btn-xs btn-default btn-equal" type="button">
+								<i class="fa fa-pencil"></i>
+							</a>
+						{% endif %}
+						{% if admin_has_action('delete_relation') and isNullable %}
+							<a href="" data-ajax-url="{{ url(admin_route('delete_relation', entityClass), {'id': object.id, 'property': relationProperty,'relationId': relationId}) }}" data-title="{% trans %}sfs.admin.message.embedded_relation.remove_title{% endtrans %}" data-toggle="ajax-modal" class="btn btn-xs btn-danger btn-equal" type="button">
+								<i class="fa fa-remove"></i>
+							</a>
+						{% endif %}
+						{% if admin_has_action('delete') %}
+							<a href="" data-ajax-url="{{ admin_url('delete', {'object': object}) }}" data-title="{% trans %}sfs.admin.message.delete_title{% endtrans %}" data-toggle="ajax-modal" class="btn btn-xs btn-danger btn-equal" type="button">
+								<i class="fa fa-trash"></i>
+							</a>
+						{% endif %}
+					</td>
+				{% endblock %}
+			</tr>
+		{% endfor %}
+		</tbody>
+
+		<!-- LIST FOOTER -->
+        {% block list_footer %}
+		<tfoot>
+		<tr>
+			<td colspan='1000'>
+				<div class="btn-group mt-8" role="group" aria-label="...">
+					<a href="" data-ajax-url="{{ admin_url('create') }}" data-title="{% trans %}sfs.admin.crud.create{% endtrans %}" data-modal-type="modal-lg" data-toggle="ajax-modal" class="btn btn-default btn-rounded btn-outlined" role="button">
+						<i class="fa fa-plus-circle"></i> Créer
+					</a>
+
+					<div id="relation-search-ajax-{{ relationProperty }}" class="relation-search-ajax" style="display: none;">
+						<select id="relation-search-ajax-select-{{ relationProperty }}"></select>
+						<button id="relation-search-ajax-button-{{ relationProperty }}" type="button" class="btn btn-default">
+							<i class="fa fa-plus-search"></i> Ajouter existant
+						</button>
+					</div>
+				</div>
+
+				<div class="pull-right text-right">
+					<div class="pagination-panel">
+						{{ knp_pagination_render(pagination, '@SfsAdmin/CRUD/pagination.html.twig') }}
+					</div>
+					<p class="mb-0">{% trans with {'%count%': pagination.getTotalItemCount} %}sfs.admin.message.list_total{% endtrans %}</p>
+				</div>
+			</td>
+		</tr>
+		</tfoot>
+        {% endblock list_footer %}
+	</table>
+
+	{# Ajax select to add an existant element #}
+	<script>
+		$(document).ready(function() {
+		    if(ajax_route_{{ relationProperty }} !== null) {
+		        $('#relation-search-ajax-{{ relationProperty }}').show();
+                $('#relation-search-ajax-select-{{ relationProperty }}').select2({
+                    ajax: {
+                        url: ajax_route_{{ relationProperty }},
+                        dataType: 'json'
+                        // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+                    },
+                    minimumInputLength: 3,
+                });
+            }
+            else {
+                $('#relation-search-ajax-{{ relationProperty }}').hide();
+			}
+
+			{# Generate route #}
+            var url = "{{ admin_url('add_relation', {'id': 0, 'property': relationProperty, 'relationId': relationId }) }}";
+			$('#relation-search-ajax-button-{{ relationProperty }}').on('click', function() {
+                var selection = $('#relation-search-ajax-select-{{ relationProperty }}').select2('data');
+
+				if(selection !== null && selection.length !== 0) {
+                    var ajaxUrl = url.replace(0, selection[0]['id']);
+
+                    $.ajax({
+                        type: "GET",
+                        url: ajaxUrl,
+                        success: function (data) {
+                            location.reload();
+                        }
+                    });
+                }
+			});
+		});
+	</script>
+{% endblock %}

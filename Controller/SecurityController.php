@@ -8,36 +8,47 @@
 
 namespace Sfs\AdminBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Exception\RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 
-class SecurityController extends Controller
+class SecurityController extends AbstractController
 {
+	private $authenticationUtils;
+	private $tokenManager;
+
+	public function __construct(AuthenticationUtils $authenticationUtils, CsrfTokenManagerInterface $tokenManager)
+	{
+		$this->authenticationUtils = $authenticationUtils;
+		$this->tokenManager = $tokenManager;
+	}
+
 	/**
-	 * @param Request $request
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @return Response
 	 */
-	public function loginAction(Request $request) {
-		$authenticationUtils = $this->get('security.authentication_utils');
+	public function loginAction()
+	{
+		$error = $this->authenticationUtils->getLastAuthenticationError();
+		$lastUsername = $this->authenticationUtils->getLastUsername();
 
-		// get the login error if there is one
-		$error = $authenticationUtils->getLastAuthenticationError();
+		$csrfToken = $this->tokenManager
+			? $this->tokenManager->getToken('authenticate')->getValue()
+			: null;
 
-		// last username entered by the user
-		$lastUsername = $authenticationUtils->getLastUsername();
-
-		// Csrf token generation
-		$csrfToken = $this->get('security.csrf.token_manager')->getToken('authenticate')->getValue();
-
-		return $this->render('SfsAdminBundle:Security:login.html.twig', array(
+		return $this->render('@SfsAdmin/Security/login.html.twig', array(
 			'last_username' => $lastUsername,
 			'error'         => $error,
 			'csrf_token' 	=> $csrfToken
 		));
 	}
 
+	public function checkAction()
+	{
+		throw new \RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
+	}
 
 	/**
 	 * Symfony is supposed to intercept the logout call, only a misconfiguration would lead to go into the action

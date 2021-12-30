@@ -8,9 +8,9 @@
 
 namespace Sfs\AdminBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class PageController extends Controller
+class PageController extends AbstractController
 {
 	/**
 	 * Dashboard action, main page of the admin
@@ -18,7 +18,7 @@ class PageController extends Controller
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function dashboardAction() {
-		return $this->render('SfsAdminBundle:Core:dashboard.html.twig', array(
+		return $this->render('@SfsAdmin/Core/dashboard.html.twig', array(
 		));
 	}
 }

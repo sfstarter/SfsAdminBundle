@@ -21,12 +21,12 @@ class ResourceCompilerPass implements CompilerPassInterface
 	 */
 	public function process(ContainerBuilder $container)
 	{
-		if (!$container->hasDefinition('sfs.admin.routing_loader') || !$container->hasDefinition('sfs.admin.menu_builder')) {
+		if (!$container->hasAlias('sfs.admin.routing_loader') || !$container->hasAlias('sfs.admin.menu_builder')) {
 			return;
 		}
 
-		$core = $container->getDefinition('sfs.admin.core');
-		$menuBuilder = $container->getDefinition('sfs.admin.menu_builder');
+		$core = $container->getDefinition("Sfs\AdminBundle\Core\CoreAdmin");
+		$menuBuilder = $container->getDefinition("Sfs\AdminBundle\Menu\MenuBuilder");
 
 		/**
 		 * Handles the admin Resources, connected to an entity

@@ -1,0 +1,78 @@
+{#
+	SfsAdminBundle - Symfony3 project
+	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
+#}
+{% block content %}
+	{% set formId = 'form-ajax-'~ random() %}
+
+	{{ form_start(form, { 'action': admin_url('create'), 'attr': {'id': formId, 'class': 'form-horizontal form-seperated dashed'} }) }}
+		{{ form_errors(form) }}
+		
+		<!-- Nav tabs -->
+		<div class="tabs">
+            {% if form.vars.tabs|length %}
+			<div class="tab-title clearfix">
+				{% block tabTitle %}
+				<h4 class="pull-left">
+					Update <strong>{{ object }}</strong>
+				</h4>
+				{% endblock tabTitle %}
+				<ul class="nav nav-tabs pull-right" role="tablist">
+					{% for key, tab in form.vars.tabs %}
+						<li class="{% if loop.index == 1 %}active{% endif %}" role="presentation">
+							<a href="#admin-tab-{{ key }}-{{ formId }}" role="tab" data-toggle="tab">{{ tab.title }}</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+			{% endif %}
+
+			<!-- Tab panes -->
+			<div class="tab-content">
+				{% if form.vars.tabs|length %}
+					{% for key, tab in form.vars.tabs %}
+						<div id="admin-tab-{{ key }}-{{ formId }}" class="tab-pane fade row {% if loop.index == 1 %}in active{% endif %}" role="tabpanel">
+							{% for block in tab.blocks %}
+                                {% set block = form.vars.blocks[block] %}
+                                {% set blockColumnClass = block.classes.column | default('col-md-12') %}
+                                {% set blockPanelClass = block.classes.panel | default('panel-primary') %}
+
+                                {% include admin_get_template(object, 'update_ajax_block_column') %}
+							{% endfor %}
+						</div>
+					{% endfor %}
+				{% else %}
+					<div id="admin-tab-{{ formId }}" class="tab-pane fade row in active" role="tabpanel">
+						{% for block in form.vars.blocks %}
+							{% set blockColumnClass = block.classes.column | default('col-md-12') %}
+							{% set blockPanelClass = block.classes.panel | default('panel-primary') %}
+
+							{% include admin_get_template(object, 'update_ajax_block_column') %}
+						{% endfor %}
+					</div>
+				{% endif %}
+				{{ form_rest(form) }}
+			</div>
+		</div>
+
+		<button class="btn btn-success" name="btn_save" type="submit">
+			<i class="fa fa-save"></i> {% trans %}sfs.admin.action.button.save{% endtrans %}
+		</button>
+	{{ form_end(form) }}
+
+	<script>
+        $("#{{ formId }}").submit(function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                type: "{{ form.vars.method }}",
+                url: "{{ admin_url('update', {'id': object.id}) }}",
+                data: $("#{{ formId }}").serialize(),
+                success: function(data)
+                {
+                    location.reload();
+                }
+            });
+        });
+	</script>
+{% endblock %}

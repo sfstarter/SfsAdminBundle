@@ -25,17 +25,18 @@ class SfsAdminExtension extends Extension implements PrependExtensionInterface
      * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container)
-    {
+	{
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('sfs_admin.menu_categories', $config['menu_categories']);
         $container->setParameter('sfs_admin.pages', $config['pages']);
         $container->setParameter('sfs_admin.topbar_buttons', $config['topbar_buttons']);
+        $container->setParameter('sfs_admin.routes_prefix', $config['routes_prefix']);
         $container->setParameter('sfs_admin.title_text', $config['title_text']);
         $container->setParameter('sfs_admin.title_logo', $config['title_logo']);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+		$loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
         $loader->load('forms.yml');
     }
@@ -77,7 +78,7 @@ class SfsAdminExtension extends Extension implements PrependExtensionInterface
 				case 'twig':
 					$config = array(
 							'form_themes' => array(
-									'SfsAdminBundle:Form:fields.html.twig'
+									'@SfsAdmin/Form/fields.html.twig'
 							)
 					);
 					$container->prependExtensionConfig($name, $config);

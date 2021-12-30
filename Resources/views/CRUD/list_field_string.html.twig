@@ -5,10 +5,36 @@
 
 <td>
 	{% if field.relation is defined and field.relation %}
-		{% set relatedObject = admin_get_property(object, key) %}
-		<a target="_blank" href="{{ admin_url('read', {'object': relatedObject}) }}">
-			{{ relatedObject }}
-		</a>
+		{% set value = admin_get_property(object, key) %}
+		{% if field.relation is same as(true) %}
+			{% set relatedObject = admin_get_property(object, key) %}
+		{% else %}
+			{% set relatedObject = admin_get_property(object, field.relation) %}
+		{% endif %}
+
+		{% if relatedObject is not null and admin_has_action('read') %}
+			<a href="{{ admin_url('read', {'object': relatedObject}) }}">
+				{{ value }}
+			</a>
+		{% elseif relatedObject is not null and admin_has_action('update') %}
+			<a href="{{ admin_url('update', {'object': relatedObject}) }}">
+				{{ value }}
+			</a>
+		{% else %}
+			{{ admin_get_property(object, key) }}
+		{% endif %}
+	{% elseif field.link is defined and field.link %}
+        {% if admin_has_action('read') %}
+			<a href="{{ admin_url('read', {'object': object}) }}">
+                {{ admin_get_property(object, key) }}
+			</a>
+        {% elseif admin_has_action('update') %}
+			<a href="{{ admin_url('update', {'object': object}) }}">
+                {{ admin_get_property(object, key) }}
+			</a>
+        {% else %}
+            {{ admin_get_property(object, key) }}
+        {% endif %}
 	{% else %}
 		{{ admin_get_property(object, key) }}
 	{% endif %}

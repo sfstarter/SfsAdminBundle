@@ -1,0 +1,16 @@
+{% block blockColumn %}
+	<div class="{{ blockColumnClass }}">
+		<div class="panel {{ blockPanelClass }}">
+            {% if block.title is not empty %}
+				<div class="panel-heading">{{ block.title }}</div>
+            {% endif %}
+			<div class="panel-body">
+				<div class="form-body">
+                    {% for field in block.fields %}
+                        {{ form_row(attribute(form.children, field)) }}
+                    {% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock blockColumn %}

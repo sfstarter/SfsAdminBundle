@@ -10,9 +10,10 @@ namespace Sfs\AdminBundle\Twig;
 
 use Sfs\AdminBundle\Controller\AdminController;
 use Sfs\AdminBundle\Core\CoreAdmin;
-use Twig_SimpleFunction;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class AdminRouterExtension extends \Twig_Extension {
+class AdminRouterExtension extends AbstractExtension {
 	/**
 	 * @var CoreAdmin
 	 */
@@ -32,15 +33,95 @@ class AdminRouterExtension extends \Twig_Extension {
 	 * @return array
 	 */
 	public function getFunctions() {
-		return array (
-				new Twig_SimpleFunction('admin_has_action', array($this, 'adminHasAction')),
-				new Twig_SimpleFunction('admin_identifier', array($this, 'getAdminIdentifier')),
-				new Twig_SimpleFunction('admin_route', array($this, 'getAdminRoute')),
-				new Twig_SimpleFunction('admin_url', array($this, 'getAdminUrl')),
-		);
+		return [
+				new TwigFunction('admin_get_actions', [$this, 'adminGetActions']),
+				new TwigFunction('admin_get_entry_actions', [$this, 'adminGetEntryActions']),
+                new TwigFunction('admin_get_global_actions', [$this, 'adminGetGlobalActions']),
+                new TwigFunction('admin_get_current_action', [$this, 'adminGetCurrentAction']),
+                new TwigFunction('admin_has_action', [$this, 'adminHasAction']),
+                new TwigFunction('admin_identifier', [$this, 'getAdminIdentifier']),
+				new TwigFunction('admin_route', [$this, 'getAdminRoute']),
+				new TwigFunction('admin_url', [$this, 'getAdminUrl']),
+		];
 	}
 
-	/**
+    /**
+     * @param null $object
+     * @return array
+     * @throws \Symfony\Component\Routing\Exception\ResourceNotFoundException
+     */
+    public function adminGetActions($object = null) {
+        if(isset($object)) {
+            $slug = $this->core->getAdminSlug($object);
+        }
+        else {
+            $slug = $this->core->getCurrentSlug();
+        }
+
+        $adminService = $this->core->getAdminService($slug);
+
+        if(null !== $adminService) {
+            return $adminService->getActions();
+        }
+        else {
+            return array();
+        }
+    }
+
+    /**
+     * @param null $object
+     * @return array
+     * @throws \Symfony\Component\Routing\Exception\ResourceNotFoundException
+     */
+    public function adminGetEntryActions($object = null) {
+        if(isset($object)) {
+            $slug = $this->core->getAdminSlug($object);
+        }
+        else {
+            $slug = $this->core->getCurrentSlug();
+        }
+
+        $adminService = $this->core->getAdminService($slug);
+
+        if(null !== $adminService) {
+            return $adminService->getEntryActions();
+        }
+        else {
+            return array();
+        }
+    }
+
+    /**
+     * @param null $object
+     * @return array
+     * @throws \Symfony\Component\Routing\Exception\ResourceNotFoundException
+     */
+    public function adminGetGlobalActions($object = null) {
+        if(isset($object)) {
+            $slug = $this->core->getAdminSlug($object);
+        }
+        else {
+            $slug = $this->core->getCurrentSlug();
+        }
+
+        $adminService = $this->core->getAdminService($slug);
+
+        if(null !== $adminService) {
+            return $adminService->getGlobalActions();
+        }
+        else {
+            return array();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function adminGetCurrentAction() {
+        return $this->core->getCurrentAction();
+    }
+
+    /**
 	 * @param string $action
 	 * @param null $object
 	 * @return bool
@@ -81,11 +162,17 @@ class AdminRouterExtension extends \Twig_Extension {
 		return $property;
 	}
 
-	/**
-	 * @deprecated
-	 */
+    /**
+     * @param $action
+     * @param null $object
+     * @return string
+     */
 	public function getAdminRoute($action, $object = null) {
-		if($object !== null) {
+	    if($object !== null && is_string($object)) {
+	        $object = new $object;
+        }
+
+        if($object !== null && is_object($object)) {
 			$url = $this->core->getRouteByEntity($object, $action);
 			return $url;
 		}

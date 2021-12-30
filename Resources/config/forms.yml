@@ -14,6 +14,7 @@ services:
             - "@sfs_admin.form.resolved_type_factory"
     sfs_admin.form.factory:
         class: Symfony\Component\Form\FormFactory
+        public: true
         arguments:
             - "@sfs_admin.form.registry"
             - "@sfs_admin.form.resolved_type_factory"
@@ -58,6 +59,11 @@ services:
             - { name: form.type }
     sfs_admin.form.type.datetime_picker:
         class: Sfs\AdminBundle\Form\Type\DateTimePickerType
+        tags:
+            - { name: form.type }
+
+    sfs_admin.form.type.table_entity:
+        class: Sfs\AdminBundle\Form\Type\TableEntityType
         tags:
             - { name: form.type }
 

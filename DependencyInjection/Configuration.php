@@ -23,8 +23,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('sfs_admin');
+        $treeBuilder = new TreeBuilder('sfs_admin');
+        $rootNode = $treeBuilder->getRootNode();
 
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for
@@ -61,8 +61,9 @@ class Configuration implements ConfigurationInterface
 					->end()
 				->end()
 			->end()
-			->scalarNode('title_text')->defaultValue('Sfs Admin')->end()
-			->scalarNode('title_logo')->defaultNull()->end()
+            ->scalarNode('routes_prefix')->defaultValue('sfs_admin')->end()
+            ->scalarNode('title_text')->defaultValue('Sfs Admin')->end()
+            ->scalarNode('title_logo')->defaultNull()->end()
 		->end();
 
 		return $treeBuilder;

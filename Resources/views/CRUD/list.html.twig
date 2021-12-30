@@ -3,11 +3,11 @@
 	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
 #}
 
-{% extends 'SfsAdminBundle:Core:base.html.twig' %}
+{% extends '@SfsAdmin/Core/base.html.twig' %}
 {% block content %}
 	{% if filterForm %}
 		<div class="col-lg-12">
-			{% include 'SfsAdminBundle:CRUD:list_filter.html.twig' %}
+			{% include '@SfsAdmin/CRUD/list_filter.html.twig' %}
 		</div>
 	{% endif %}
 
@@ -46,7 +46,7 @@
 				</div>
 			</div>
 
-			<div class="panel-body">
+			<div class="panel-body no-border">
 				<form action="{{ admin_url('batch') }}" method="POST" >
 					<table class="table table-striped table-hover">
 						<!-- LIST HEADER -->
@@ -59,6 +59,7 @@
 									</div>
 								</th>
 								{% for key, field in listFields %}
+									{% set sortAlias = (field['sortQuery']['alias'] is defined ? field['sortQuery']['alias'] : 'object.'~key) %}
 									<th>
 										{% if field.name is defined %}
 											{% set label = field.name %}
@@ -66,13 +67,13 @@
 											{% set label = key|capitalize %}
 										{% endif %}
 
-										{% if key is not property_is_relation() %}
-											{{ knp_pagination_sortable(pagination, label, 'object.'~key) }}
+                                        {% if (field['sortable'] is not defined or field['sortable'] != false) and key is not property_is_relation() %}
+											{{ knp_pagination_sortable(pagination, label, sortAlias) }}
 										{% else %}
 											 {{ field.name }}
 										{% endif %}
 
-										{% if pagination.isSorted('object.'~key) %}
+										{% if pagination.isSorted(sortAlias) %}
 											{% if pagination.getDirection() == 'asc' %}
 												<span class="fa fa-sort-asc"></span>
 											{% else %}
@@ -81,7 +82,7 @@
 										{% endif %}
 									</th>
 								{% endfor %}
-								<th class="text-right" style="width:90px">{% trans %}sfs.admin.crud.actions{% endtrans %}</th>
+								<th class="text-right" style="width:128px">{% trans %}sfs.admin.crud.actions{% endtrans %}</th>
 							</tr>
 						</thead>
 
@@ -100,33 +101,22 @@
 										{% if field['template'] is defined %}
 											{% include field['template'] %}
 										{% elseif admin_get_property(object, key) is of_type('bool') %}
-											{% include 'SfsAdminBundle:CRUD:list_field_bool.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_bool.html.twig' %}
 										{% elseif admin_get_property(object, key) is of_type('class', 'DateTime') %}
-											{% include 'SfsAdminBundle:CRUD:list_field_datetime.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_datetime.html.twig' %}
 										{% elseif admin_get_property(object, key) is of_type('class', "Doctrine\\ORM\\PersistentCollection") %}
-											{% include 'SfsAdminBundle:CRUD:list_field_many.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_many.html.twig' %}
 										{% elseif admin_get_property(object, key) is of_type('class', "Doctrine\\Common\\Collections\\ArrayCollection") %}
-											{% include 'SfsAdminBundle:CRUD:list_field_arraycollection.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_arraycollection.html.twig' %}
 										{% elseif admin_get_property(object, key) is iterable %}
-											{% include 'SfsAdminBundle:CRUD:list_field_array.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_array.html.twig' %}
 										{% else %}
-											{% include 'SfsAdminBundle:CRUD:list_field_string.html.twig' %}
+											{% include '@SfsAdmin/CRUD/list_field_string.html.twig' %}
 										{% endif %}
 									{% endfor %}
 
 									{% block list_actions %}
-										<td class="text-right">
-											{% if admin_has_action('update') %}
-												<a href="{{ admin_url('update', {'object': object}) }}" data-title="Edit row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-default btn-equal" type="button">
-													<i class="fa fa-pencil"></i>
-												</a>
-											{% endif %}
-											{% if admin_has_action('delete') %}
-												<a href="{{ admin_url('delete', {'object': object}) }}" data-title="Delete row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-danger btn-equal" type="button">
-													<i class="fa fa-trash"></i>
-												</a>
-											{% endif %}
-										</td>
+										{% include '@SfsAdmin/CRUD/list_actions.html.twig' %}
 									{% endblock %}
 								</tr>
 							{% endfor %}
@@ -137,21 +127,22 @@
 						<div class="col-lg-12">
 							<!-- BATCH SELECTOR ACTIONS -->
 							<div class="pull-left">
-								{% if admin_has_action('batch') %}
+                                {% if admin_has_action('batch') %}
 									<div class="mt-16">
-										<select id="batch-action" name="action" class="selectpicker form-control">
-											{% for action in batchActions %}
+										<select id="batch-action" name="action" data-placeholder="{{ ('sfs.admin.action.batch.placeholder')|trans }}" class="selectpicker form-control">
+											<option></option>
+                                            {% for action in batchActions %}
 												<option value="{{ action }}">{{ ('sfs.admin.action.batch.'~action)|trans }}</option>
-											{% endfor %}
+                                            {% endfor %}
 										</select>
 										<button type="submit" class="btn btn-default">{% trans %}sfs.admin.action.batch.confirm{% endtrans %}</button>
 									</div>
-								{% endif %}
+                                {% endif %}
 							</div>
 
-							<div class="pull-right">
+							<div class="pull-right text-right">
 								<div class="pagination-panel">
-									{{ knp_pagination_render(pagination, 'SfsAdminBundle:CRUD:pagination.html.twig') }}
+									{{ knp_pagination_render(pagination, '@SfsAdmin/CRUD/pagination.html.twig') }}
 								</div>
 								<p class="">{% trans with {'%count%': pagination.getTotalItemCount} %}sfs.admin.message.list_total{% endtrans %}</p>
 							</div>
@@ -162,5 +153,5 @@
 		</div>
 	</div>
 
-	{% include 'SfsAdminBundle:CRUD:export_modal.html.twig' %}
+	{% include '@SfsAdmin/CRUD/export_modal.html.twig' %}
 {% endblock %}

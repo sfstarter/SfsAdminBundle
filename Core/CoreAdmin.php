@@ -53,6 +53,17 @@ class CoreAdmin implements ContainerAwareInterface
 	 * @return string $currentSlug
 	 */
 	public function getCurrentSlug() {
+		// Because we sometimes render other controllers, the current slug might change during the rendering
+		// To reswitch to the correct controller, we fetch it through the current request
+		$controller = $this->container->get('request_stack')->getCurrentRequest()->attributes->get("_controller");
+		$controller = explode(':', $controller);
+
+		foreach($this->getAdmins() as $slug => $admin) {
+			if($admin['service'] == $controller[0]) {
+				$this->currentSlug = $slug;
+			}
+		}
+
 		return $this->currentSlug;
 	}
 	/**
@@ -149,10 +160,12 @@ class CoreAdmin implements ContainerAwareInterface
 	 * @param array $requirements
 	 * @param array $defaults
 	 */
+
+
 	public function addRoute($slug, $action, $path = null, $requirements = array(), $defaults = array()) {
 		// We can specify the pattern of the path. Otherwise generate the default one
 		if($path === null) {
-			$path = $slug .'/'. $action;
+			$path = str_replace('_', '-', $slug) .'/'. str_replace('_', '-', $action);
 
 			if(count($requirements) > 0) {
 				foreach($requirements as $key => $requirement) {
@@ -160,10 +173,13 @@ class CoreAdmin implements ContainerAwareInterface
 				}
 			}
 		}
-			
+
+        $routePrefix = $this->container->getParameter('sfs_admin.routes_prefix');
+        $method = lcfirst(str_replace('_', '', ucwords($action, '_')));
+
 		$this->routes[$slug][$action] = array(
-			'route'				=> 'sfs_admin_'. $slug .'_'. $action,
-			'action'			=> $action .'Action',
+			'route'				=> $routePrefix .'_'. $slug .'_'. $action,
+			'action'			=> $method .'Action',
 			'path'				=> $path,
 			'requirements'		=> $requirements,
 			'defaults'			=> $defaults
@@ -179,6 +195,12 @@ class CoreAdmin implements ContainerAwareInterface
 	private function generateRoutes($resourceAdmin, $slug) {
 		if(in_array('list', $resourceAdmin->getActions()))
 			$this->addRoute($slug, 'list');
+        if(in_array('list_ajax', $resourceAdmin->getActions()))
+            $this->addRoute($slug, 'list_ajax');
+        if(in_array('add_relation', $resourceAdmin->getActions()))
+            $this->addRoute($slug, 'add_relation', null, array('id' => '\d+', 'property' => '[a-zA-Z_]+', 'relationId' => '\d+'));
+        if(in_array('embedded_relation_list', $resourceAdmin->getActions()))
+            $this->addRoute($slug, 'embedded_relation_list', null, array('property' => '[a-zA-Z_]+', 'inversedProperty' => '[a-zA-Z_]+', 'relationId' => '\d+'), array('relationId' => null));
 		if(in_array('create', $resourceAdmin->getActions()))
 			$this->addRoute($slug, 'create');
 		if(in_array('read', $resourceAdmin->getActions()))
@@ -187,6 +209,8 @@ class CoreAdmin implements ContainerAwareInterface
 			$this->addRoute($slug, 'update', null, array('id' => '\d+'));
 		if(in_array('delete', $resourceAdmin->getActions()))
 			$this->addRoute($slug, 'delete', null, array('id' => '\d+'));
+        if(in_array('delete_relation', $resourceAdmin->getActions()))
+            $this->addRoute($slug, 'delete_relation', null, array('id' => '\d+', 'property' => '[a-zA-Z_]+', 'relationId' => '\d+'));
 		if(in_array('export', $resourceAdmin->getActions()))
 			$this->addRoute($slug, 'export');
 		if(in_array('batch', $resourceAdmin->getActions()))

@@ -1,0 +1,40 @@
+{% if attribute(object, admin_identifier()) is not null %}
+	{% if admin_get_entry_actions(object)|length < 4 %}
+		<td class="text-right">
+			{% if admin_has_action('read') %}
+				<a href="{{ admin_url('read', {'object': object}) }}" data-title="Read" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-default btn-equal" type="button">
+					<i class="fa fa-eye"></i>
+				</a>
+			{% endif %}
+			{% if admin_has_action('update') %}
+				<a href="{{ admin_url('update', {'object': object}) }}" data-title="Edit row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-default btn-equal" type="button">
+					<i class="fa fa-pencil"></i>
+				</a>
+			{% endif %}
+			{% if admin_has_action('delete') %}
+				<a href="{{ admin_url('delete', {'object': object}) }}" data-title="Delete row" data-placement="top" data-toggle="tooltip" class="btn btn-xs btn-danger btn-equal" type="button">
+					<i class="fa fa-trash"></i>
+				</a>
+			{% endif %}
+		</td>
+	{% else %}
+		<td class="text-right">
+			<div class="btn-group">
+				<span class="btn btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
+					  aria-haspopup="true" aria-expanded="true">
+					<i class="fa fa-ellipsis-h"></i>
+				</span>
+				<ul class="dropdown-menu pull-right">
+					{% for action in admin_get_entry_actions(object) %}
+						<li>
+							<a href="{{ admin_url(action, {'object': object}) }}" data-title="{{ ("sfs.admin.action.label."~ action)|trans }}"
+							   data-placement="top" data-toggle="tooltip">
+								{{ ("sfs.admin.action.label."~ action)|trans }}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</td>
+	{% endif %}
+{% endif %}

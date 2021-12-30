@@ -3,12 +3,14 @@
 	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
 #}
 
-{% extends 'SfsAdminBundle:Core:base.html.twig' %}
+{% extends '@SfsAdmin/Core/base.html.twig' %}
 
 {% block content %}
+	{{ parent() }}
+
 <div class="col-lg-12">
 	<h3>{% trans %}sfs.admin.message.delete_title{% endtrans %}</h3>
-	<p>{% trans with {'%id%': attribute(object, admin_identifier())} %}sfs.admin.message.delete_message{% endtrans %}</p>
+	<p>{% trans with {'%target%': object} %}sfs.admin.message.delete_message{% endtrans %}</p>
 
 	{{ form_start(form) }}
 		{{ form_widget(form.delete) }}

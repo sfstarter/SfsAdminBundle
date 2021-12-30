@@ -46,6 +46,7 @@ class ExportType extends AbstractType
 		$builder->add('format', HiddenType::class);
 		$builder
 			->add('download', SubmitType::class, array(
+					'label' => 'sfs.admin.action.export.download',
 					'attr' => array(
 						'class'	=> 'btn btn-primary'
 					),

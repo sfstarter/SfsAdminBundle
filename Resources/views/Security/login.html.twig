@@ -3,7 +3,7 @@
 	(c) Ramine AGOUNE <ramine.agoune@solidlynx.com>
 #}
 
-{% extends "SfsAdminBundle:Core:base.html.twig" %}
+{% extends "@SfsAdmin/Core/base.html.twig" %}
 
 {% block body_id %}login-page{% endblock %}
 
@@ -13,7 +13,7 @@
 	</div>
 
 	<div class="page-form padding-24">
-		<form action="{{ path("sfs_admin_login") }}" method="post" class="form">
+		<form action="{{ path("sfs_admin_login_check") }}" method="post" class="form">
 			<div class="header-content text-center mb-24">
 				<h2 class="mt-0">{% trans %}sfs.admin.security.login_title{% endtrans %}</h2>
 			</div>
