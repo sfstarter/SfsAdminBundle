@@ -16,6 +16,7 @@ sfs:
                 csv: "Export To CSV"
                 json: "Export to JSON"
                 modal_title: "Export configuration for"
+                download: "Download"
             label:
                 create: "Create"
                 delete: "Delete"
